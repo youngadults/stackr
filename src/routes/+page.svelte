@@ -175,7 +175,7 @@
 							{:else}
 								<span class="text-xs text-slate-400">{stack.completedCount}/{stack.totalCount}</span>
 							{/if}
-							<a href="/stacks/{stack.id}" class="text-slate-400 hover:text-white">
+							<a href="/stacks/{stack.id}" class="text-slate-400 hover:text-white" aria-label="View stack details">
 								<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 								</svg>
@@ -260,13 +260,14 @@
 
 <!-- New Stack Modal -->
 {#if showNewStack}
-	<div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center animate-fade-in" onclick={(e) => { if (e.target === e.currentTarget) showNewStack = false; }}>
+	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+	<div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center animate-fade-in" role="dialog" aria-modal="true" onclick={(e) => { if (e.target === e.currentTarget) showNewStack = false; }} onkeydown={(e) => { if (e.key === 'Escape') showNewStack = false; }}>
 		<div class="w-full max-w-lg bg-slate-900 rounded-t-2xl p-6 animate-slide-up safe-bottom">
 			<h2 class="text-lg font-bold text-white mb-4">Create New Stack</h2>
 
 			<div class="space-y-4">
 				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-1">Stack Name</label>
+					<label for="new-stack-name" class="block text-sm font-medium text-slate-300 mb-1">Stack Name</label>
 					<input
 						type="text"
 						bind:value={newStackName}
@@ -276,7 +277,7 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-1">Trigger</label>
+					<label for="new-stack-trigger" class="block text-sm font-medium text-slate-300 mb-1">Trigger</label>
 					<input
 						type="text"
 						bind:value={newStackTrigger}
