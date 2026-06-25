@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAppState, checkAndUnlockAchievements } from '$lib/stores/app';
+	import { getAppState, checkAndUnlockAchievements } from '$lib/stores/app.svelte';
 	import { BADGES } from '$lib/utils/badges';
 	import { onMount } from 'svelte';
 

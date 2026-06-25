@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAppState } from '$lib/stores/app';
+	import { getAppState } from '$lib/stores/app.svelte';
 	import { calculateStreak, xpProgressInLevel, completionHeatmapData, heatmapLevel } from '$lib/utils/gamification';
 	import { today, generateDateRange, formatDate } from '$lib/utils/helpers';
 

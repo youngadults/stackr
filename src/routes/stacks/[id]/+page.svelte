@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAppState, createHabit, updateHabit, removeHabit } from '$lib/stores/app';
+	import { getAppState, createHabit, updateHabit, removeHabit } from '$lib/stores/app.svelte';
 	import { page } from '$app/state';
 
 	const appState = getAppState();

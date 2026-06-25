@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAppState, removeStack, updateStack } from '$lib/stores/app';
+	import { getAppState, removeStack, updateStack } from '$lib/stores/app.svelte';
 	import { STACK_COLORS, STACK_ICONS } from '$lib/utils/helpers';
 
 	const appState = getAppState();

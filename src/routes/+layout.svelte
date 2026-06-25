@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { getAppState, initializeState, resetState } from '$lib/stores/app';
+	import { getAppState, initializeState, resetState } from '$lib/stores/app.svelte';
 	import { signIn, signUp } from '$lib/services/auth';
 	import '$lib/services/pwa';
 	import { onMount } from 'svelte';

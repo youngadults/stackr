@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAppState, toggleCompletion, createStack, createHabit } from '$lib/stores/app';
+	import { getAppState, toggleCompletion, createStack, createHabit } from '$lib/stores/app.svelte';
 	import { today, formatDate, randomColor, randomIcon } from '$lib/utils/helpers';
 	import { calculateStreak, xpProgressInLevel } from '$lib/utils/gamification';
 	import NewStackModal from '$lib/components/NewStackModal.svelte';
