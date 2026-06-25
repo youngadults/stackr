@@ -1,4 +1,4 @@
-// Core data types for StackFlow
+// Core data types for Stackr
 
 export interface Stack {
 	id: string;

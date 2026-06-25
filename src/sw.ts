@@ -1,4 +1,4 @@
-// Service Worker for StackFlow PWA
+// Service Worker for Stackr PWA
 // Build output: static/service-worker.js
 // This file is built separately by vite and placed in static/
 
@@ -7,7 +7,7 @@
 declare const self: ServiceWorkerGlobalScope;
 declare const CACHE_NAME: string;
 
-const CACHE = 'stackflow-v1';
+const CACHE = 'stackr-v1';
 
 const SHELL = [
 	'/',

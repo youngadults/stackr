@@ -1,10 +1,10 @@
-# StackFlow
+# Stackr
 
 > Micro-habit tracker built on habit stacking — define triggers, attach tiny habits, stack your way to better routines.
 
 ## What Is It?
 
-StackFlow is a mobile-first PWA that uses the science of **habit stacking**: instead of building habits by time ("I'll meditate at 7 AM"), you attach them to triggers you already do ("After I make coffee, I'll meditate for 2 minutes").
+Stackr is a mobile-first PWA that uses the science of **habit stacking**: instead of building habits by time ("I'll meditate at 7 AM"), you attach them to triggers you already do ("After I make coffee, I'll meditate for 2 minutes").
 
 ### Core Concept
 
@@ -39,14 +39,14 @@ A **Stack** has a trigger ("After I make coffee") and a set of micro-habits atta
 ### Install
 
 ```bash
-git clone https://github.com/your-username/stackflow.git
-cd stackflow
+git clone https://github.com/youngadults/habitstack.git
+cd habitstack
 npm install
 ```
 
 ## Local Mode (No Supabase)
 
-StackFlow works without Supabase! If `VITE_SUPABASE_URL` is not set, the app runs in **local mode**:
+Stackr works without Supabase! If `VITE_SUPABASE_URL` is not set, the app runs in **local mode**:
 
 - No login screen — you're dropped straight into the app
 - All data is stored in your browser's IndexedDB
@@ -140,7 +140,7 @@ src/
 
 ## Offline-First Architecture
 
-StackFlow uses IndexedDB as the primary data store:
+Stackr uses IndexedDB as the primary data store:
 
 1. **All reads/writes go to IndexedDB first** — instant, works offline
 2. **Changes are queued in a sync table** — pending mutations

@@ -4,10 +4,10 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import type { Stack, Habit, Completion, Achievement, Profile, SyncQueueItem } from '$lib/types';
 
-const DB_NAME = 'stackflow';
+const DB_NAME = 'stackr';
 const DB_VERSION = 2;
 
-interface StackFlowDB {
+interface StackrDB {
 	stacks: Stack;
 	habits: Habit;
 	completions: Completion;
@@ -16,12 +16,12 @@ interface StackFlowDB {
 	syncQueue: SyncQueueItem;
 }
 
-let dbInstance: IDBPDatabase<StackFlowDB> | null = null;
+let dbInstance: IDBPDatabase<StackrDB> | null = null;
 
-async function getDB(): Promise<IDBPDatabase<StackFlowDB>> {
+async function getDB(): Promise<IDBPDatabase<StackrDB>> {
 	if (dbInstance) return dbInstance;
 
-	dbInstance = await openDB<StackFlowDB>(DB_NAME, DB_VERSION, {
+	dbInstance = await openDB<StackrDB>(DB_NAME, DB_VERSION, {
 		upgrade(db, oldVersion) {
 			if (oldVersion < 1) {
 				// Stacks store

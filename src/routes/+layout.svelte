@@ -22,10 +22,10 @@
 	const hasSupabase = SUPABASE_URL && SUPABASE_URL !== '';
 
 	function generateLocalUserId(): string {
-		let id = localStorage.getItem('stackflow_local_user_id');
+		let id = localStorage.getItem('stackr_local_user_id');
 		if (!id) {
 			id = 'local_' + crypto.randomUUID();
-			localStorage.setItem('stackflow_local_user_id', id);
+			localStorage.setItem('stackr_local_user_id', id);
 		}
 		return id;
 	}
@@ -137,7 +137,7 @@
 	<div class="flex items-center justify-center min-h-screen">
 		<div class="text-center">
 			<div class="text-5xl mb-4 animate-pulse-slow">🏗️</div>
-			<div class="text-xl font-bold text-indigo-400">StackFlow</div>
+			<div class="text-xl font-bold text-indigo-400">Stackr</div>
 			<div class="text-sm text-slate-500 mt-2">Loading...</div>
 		</div>
 	</div>
@@ -147,7 +147,7 @@
 		<div class="w-full max-w-sm">
 			<div class="text-center mb-8">
 				<div class="text-5xl mb-3">🏗️</div>
-				<h1 class="text-2xl font-bold text-white">StackFlow</h1>
+				<h1 class="text-2xl font-bold text-white">Stackr</h1>
 				<p class="text-slate-400 mt-1">Build habits, one stack at a time</p>
 			</div>
 
@@ -248,7 +248,7 @@
 		<header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-sm border-b border-slate-800/50 px-4 pt-safe">
 			<div class="max-w-lg mx-auto flex items-center justify-between py-3">
 				<div class="flex items-center gap-2">
-					<span class="text-lg font-bold text-indigo-400">🏗️ StackFlow</span>
+					<span class="text-lg font-bold text-indigo-400">🏗️ Stackr</span>
 				</div>
 				<div class="flex items-center gap-3">
 					{#if appState.profile}

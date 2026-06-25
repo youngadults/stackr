@@ -1,6 +1,6 @@
 {
-	"name": "StackFlow",
-	"short_name": "StackFlow",
+	"name": "Stackr",
+	"short_name": "Stackr",
 	"description": "Micro-habit tracker built on habit stacking",
 	"start_url": "/",
 	"display": "standalone",
