@@ -160,8 +160,7 @@
 		<div class="space-y-4">
 			{#each checklist as stack (stack.id)}
 				<div class="rounded-xl border {colorClasses(stack.color)} overflow-hidden">
-					<!-- Stack header -->
-					<div class="px-4 py-3 flex items-center justify-between">
+					<a href="/stacks/{stack.id}" class="block px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
 						<div class="flex items-center gap-2">
 							<span class="text-xl">{stack.icon}</span>
 							<div>
@@ -175,13 +174,11 @@
 							{:else}
 								<span class="text-xs text-slate-400">{stack.completedCount}/{stack.totalCount}</span>
 							{/if}
-							<a href="/stacks/{stack.id}" class="text-slate-400 hover:text-white" aria-label="View {stack.name} details">
-								<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-								</svg>
-							</a>
+							<svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+							</svg>
 						</div>
-					</div>
+						</a>
 
 					<!-- Habits checklist -->
 					{#if stack.habits.length > 0}
@@ -191,15 +188,15 @@
 								{@const streak = getHabitStreak(habit.id)}
 								<button
 									onclick={() => handleToggle(habit.id)}
-									class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all {completed
+									class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all {completed
 										? 'bg-slate-800/50'
 										: 'bg-slate-900/50 hover:bg-slate-800/50'}"
 								>
-									<div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all {completed
+									<div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all {completed
 										? completedBg(stack.color) + ' border-transparent'
 										: 'border-slate-600'}">
 										{#if completed}
-											<svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+											<svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 											</svg>
 										{/if}
@@ -233,7 +230,7 @@
 					{:else}
 						<button
 							onclick={() => newHabitStackId = stack.id}
-							class="w-full px-4 py-2 text-xs text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors"
+							class="w-full px-4 py-2.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors border-t border-slate-700/30"
 						>
 							+ Add habit
 						</button>
