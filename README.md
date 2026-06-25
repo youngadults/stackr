@@ -39,8 +39,8 @@ A **Stack** has a trigger ("After I make coffee") and a set of micro-habits atta
 ### Install
 
 ```bash
-git clone https://github.com/youngadults/habitstack.git
-cd habitstack
+git clone https://github.com/youngadults/stackr.git
+cd stackr
 npm install
 ```
 
