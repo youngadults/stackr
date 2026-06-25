@@ -10,7 +10,7 @@ import { generateId } from '$lib/utils/helpers';
 const SUPABASE_URL = typeof window !== 'undefined'
 	? (import.meta as any).env?.VITE_SUPABASE_URL ?? ''
 	: '';
-const hasSupabase = SUPABASE_URL && SUPABASE_URL !== '';
+const hasSupabase = typeof window !== 'undefined' && !!(SUPABASE_URL);
 
 let isSyncing = false;
 

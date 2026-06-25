@@ -15,11 +15,8 @@
 	let error = $state('');
 	let loading = $state(false);
 
-	// Check if Supabase is configured
-	const SUPABASE_URL = typeof window !== 'undefined'
-		? (import.meta as any).env?.VITE_SUPABASE_URL ?? ''
-		: '';
-	const hasSupabase = SUPABASE_URL && SUPABASE_URL !== '';
+	// Check if Supabase is configured (moved to onMount for safe browser access)
+	let hasSupabase = $state(false);
 
 	function generateLocalUserId(): string {
 		let id = localStorage.getItem('stackr_local_user_id');
@@ -39,24 +36,31 @@
 	let { children } = $props();
 
 	onMount(async () => {
-		if (!hasSupabase) {
-			// No Supabase configured — go straight to local mode
-			await handleLocalMode();
-			ready = true;
-			return;
-		}
+		// Check Supabase config in browser context
+		const url = (import.meta as any).env?.VITE_SUPABASE_URL ?? '';
+		const key = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ?? '';
+		hasSupabase = !!(url && key);
 
 		try {
-			const { getSession } = await import('$lib/services/auth');
-			const session = await getSession();
-			if (session?.user) {
-				await initializeState(session.user.id);
+			if (!hasSupabase) {
+				// No Supabase configured — go straight to local mode
+				await handleLocalMode();
 			} else {
-				authMode = 'login';
+				const { getSession } = await import('$lib/services/auth');
+				const session = await getSession();
+				if (session?.user) {
+					await initializeState(session.user.id);
+				} else {
+					authMode = 'login';
+				}
 			}
 		} catch (e) {
-			console.error('Session check failed:', e);
-			authMode = 'login';
+			console.error('Initialization failed, falling back to local mode:', e);
+			try {
+				await handleLocalMode();
+			} catch (e2) {
+				console.error('Local mode also failed:', e2);
+			}
 		}
 		ready = true;
 	});

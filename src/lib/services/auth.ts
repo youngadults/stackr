@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = typeof window !== 'undefined'
 	? (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ?? ''
 	: '';
 
-export const hasSupabase = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+export const hasSupabase = typeof window !== 'undefined' && !!(SUPABASE_URL && SUPABASE_ANON_KEY);
 
 let supabaseInstance: SupabaseClient | null = null;
 
