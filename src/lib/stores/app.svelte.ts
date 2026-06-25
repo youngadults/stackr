@@ -163,7 +163,7 @@ export async function toggleCompletion(habitId: string, date?: string): Promise<
 		await sync.pushToSyncQueue('completions', 'delete', { id: existing.id });
 		completions = completions.filter(c => c.id !== existing.id);
 		if (profile) {
-			profile = await doUpdateProfileUncomplete(profile);
+			profile = await doUpdateProfileUncomplete(profile, completions, stacks, habits);
 		}
 		return false;
 	}
