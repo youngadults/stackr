@@ -2,10 +2,14 @@
 	import { getAppState, toggleCompletion, createStack, createHabit } from '$lib/stores/app.svelte';
 	import { today, formatDate, randomColor, randomIcon, colorClasses, completedBg } from '$lib/utils/helpers';
 	import { calculateStreak, xpProgressInLevel } from '$lib/utils/gamification';
+	import { calculateCompletionXP } from '$lib/stores/profile';
 	import NewStackModal from '$lib/components/NewStackModal.svelte';
+	import DateNav from '$lib/components/DateNav.svelte';
+	import { showToast } from '$lib/stores/toast';
 
 	const appState = getAppState();
 
+	let selectedDate = $state(today());
 	let showNewStack = $state(false);
 	let newStackName = $state('');
 	let newStackTrigger = $state('');
@@ -14,19 +18,16 @@
 	let newHabitStackId = $state<string | null>(null);
 	let newHabitName = $state('');
 
-	const todayStr = today();
-	const dateObj = new Date();
-	const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-	const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	const dayName = dayNames[dateObj.getDay()];
-	const monthName = monthNames[dateObj.getMonth()];
-	const dateNum = dateObj.getDate();
+	const dateObj = $derived(new Date(selectedDate + 'T12:00:00'));
+	const dayName = $derived(dateObj.toLocaleDateString('en-US', { weekday: 'long' }));
+	const monthName = $derived(dateObj.toLocaleDateString('en-US', { month: 'long' }));
+	const dateNum = $derived(dateObj.getDate());
 
 	function getStackChecklist() {
 		return appState.stacks.map(stack => {
 			const stackHabits = appState.habits.filter(h => h.stack_id === stack.id);
 			const completedCount = stackHabits.filter(h =>
-				appState.completions.some(c => c.habit_id === h.id && c.completed_at === todayStr)
+				appState.completions.some(c => c.habit_id === h.id && c.completed_at === selectedDate)
 			).length;
 			return {
 				...stack,
@@ -39,13 +40,46 @@
 	}
 
 	async function handleToggle(habitId: string) {
-		await toggleCompletion(habitId);
+		// Haptic feedback
+		if (navigator.vibrate) navigator.vibrate(10);
+
+		const wasCompleted = appState.completions.some(c => c.habit_id === habitId && c.completed_at === selectedDate);
+		const oldProfile = appState.profile;
+
+		await toggleCompletion(habitId, selectedDate);
+
+		const nowCompleted = appState.completions.some(c => c.habit_id === habitId && c.completed_at === selectedDate);
+
+		if (nowCompleted && !wasCompleted && oldProfile) {
+			// Completed
+			const xpGain = calculateCompletionXP(appState.completions, appState.stacks, appState.habits, oldProfile.streak_days + 1);
+			showToast('xp', `+${xpGain.total} XP`, undefined, '✨');
+
+			// Check for level up
+			if (appState.profile && appState.profile.level > oldProfile.level) {
+				setTimeout(() => {
+					showToast('levelup', `Level ${appState.profile!.level}!`, undefined, '🎉');
+				}, 800);
+			}
+
+			// Check for full stack
+			const checklist = getStackChecklist();
+			const justCompletedStack = checklist.find(s => s.allComplete && s.completedCount === s.totalCount);
+			if (justCompletedStack) {
+				setTimeout(() => {
+					showToast('success', 'Stack complete!', `+25 bonus XP`, '✅');
+				}, 400);
+			}
+		} else if (!nowCompleted && wasCompleted) {
+			showToast('info', 'Unmarked', undefined, '↩️');
+		}
 	}
 
 	async function handleCreateStack() {
 		if (!newStackName.trim() || !newStackTrigger.trim()) return;
 		await createStack(newStackName.trim(), newStackTrigger.trim(), newStackColor, newStackIcon);
 		resetNewStack();
+		showToast('success', 'Stack created!', undefined, '🏗️');
 	}
 
 	function resetNewStack() {
@@ -61,6 +95,7 @@
 		await createHabit(newHabitStackId, newHabitName.trim());
 		newHabitName = '';
 		newHabitStackId = null;
+		showToast('success', 'Habit added!', undefined, '✅');
 	}
 
 	function getHabitStreak(habitId: string): number {
@@ -70,24 +105,32 @@
 		return calculateStreak(dates);
 	}
 
-	function isHabitCompletedToday(habitId: string): boolean {
-		return appState.completions.some(c => c.habit_id === habitId && c.completed_at === todayStr);
+	function isHabitCompletedOnDate(habitId: string): boolean {
+		return appState.completions.some(c => c.habit_id === habitId && c.completed_at === selectedDate);
 	}
 
 	let checklist = $derived(getStackChecklist());
 	let progress = $derived(appState.profile ? xpProgressInLevel(appState.profile.xp) : null);
 
-	// Streak nudge: habits with streaks >= 3 that haven't been completed today
+	// Streak nudge: habits with streaks >= 3 that haven't been completed today (only on today's view)
 	let streakAtRisk = $derived(
-		appState.habits
-			.filter(h => !isHabitCompletedToday(h.id) && getHabitStreak(h.id) >= 3)
-			.map(h => ({ name: h.name, streak: getHabitStreak(h.id) }))
+		selectedDate === today()
+			? appState.habits
+				.filter(h => !isHabitCompletedOnDate(h.id) && getHabitStreak(h.id) >= 3)
+				.map(h => ({ name: h.name, streak: getHabitStreak(h.id) }))
+			: []
 	);
+
+	// Check if date is in the past (no adding habits on past days)
+	let isPastDate = $derived(selectedDate < today());
 </script>
 
 <div class="animate-fade-in">
-	<!-- Header -->
-	<div class="flex items-center justify-between mb-6">
+	<!-- Date Navigation -->
+	<DateNav bind:selectedDate={selectedDate} />
+
+	<!-- Header with date -->
+	<div class="flex items-center justify-between mb-4">
 		<div>
 			<p class="text-slate-400 text-sm">{dayName}</p>
 			<h1 class="text-2xl font-bold text-white">{monthName} {dateNum}</h1>
@@ -122,7 +165,7 @@
 		</div>
 	{/if}
 
-	<!-- Streak Nudge -->
+	<!-- Streak Nudge (only today) -->
 	{#if streakAtRisk.length > 0}
 		{#if streakAtRisk.length === 1}
 			<div class="mb-4 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3">
@@ -149,12 +192,14 @@
 			<div class="text-6xl mb-4">🏗️</div>
 			<h2 class="text-xl font-semibold text-white mb-2">No stacks yet</h2>
 			<p class="text-slate-400 mb-6">Create your first habit stack to get started</p>
-			<button
-				onclick={() => showNewStack = true}
-				class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium text-white"
-			>
-				Create Your First Stack
-			</button>
+			{#if !isPastDate}
+				<button
+					onclick={() => showNewStack = true}
+					class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium text-white"
+				>
+					Create Your First Stack
+				</button>
+			{/if}
 		</div>
 	{:else}
 		<div class="space-y-4">
@@ -178,13 +223,13 @@
 								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 							</svg>
 						</div>
-						</a>
+					</a>
 
 					<!-- Habits checklist -->
 					{#if stack.habits.length > 0}
 						<div class="px-2 pb-2 space-y-0.5">
 							{#each stack.habits as habit (habit.id)}
-								{@const completed = isHabitCompletedToday(habit.id)}
+								{@const completed = isHabitCompletedOnDate(habit.id)}
 								{@const streak = getHabitStreak(habit.id)}
 								<button
 									onclick={() => handleToggle(habit.id)}
@@ -212,8 +257,8 @@
 						</div>
 					{/if}
 
-					<!-- Add habit inline -->
-					{#if newHabitStackId === stack.id}
+					<!-- Add habit inline (only for today) -->
+					{#if !isPastDate && newHabitStackId === stack.id}
 						<div class="px-4 pb-3">
 							<div class="flex gap-2">
 								<input
@@ -227,7 +272,7 @@
 								<button onclick={() => { newHabitStackId = null; newHabitName = ''; }} class="px-3 py-2 bg-slate-700 rounded-lg text-sm text-white">✕</button>
 							</div>
 						</div>
-					{:else}
+					{:else if !isPastDate}
 						<button
 							onclick={() => newHabitStackId = stack.id}
 							class="w-full px-4 py-2.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/30 transition-colors border-t border-slate-700/30"
@@ -239,12 +284,14 @@
 			{/each}
 		</div>
 
-		<button
-			onclick={() => showNewStack = true}
-			class="w-full mt-4 py-3 border border-dashed border-slate-700 rounded-xl text-slate-400 hover:text-white hover:border-indigo-500 transition-colors"
-		>
-			+ New Stack
-		</button>
+		{#if !isPastDate}
+			<button
+				onclick={() => showNewStack = true}
+				class="w-full mt-4 py-3 border border-dashed border-slate-700 rounded-xl text-slate-400 hover:text-white hover:border-indigo-500 transition-colors"
+			>
+				+ New Stack
+			</button>
+		{/if}
 	{/if}
 </div>
 
