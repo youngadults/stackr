@@ -121,6 +121,43 @@ export async function removeStack(id: string): Promise<void> {
 	habits = habits.filter(h => h.stack_id !== id);
 }
 
+// ============ REORDER OPERATIONS ============
+
+export async function reorderStacks(stackIds: string[]): Promise<void> {
+	if (!userId) throw new Error('Not authenticated');
+	const reordered = stackIds
+		.map((id, index) => {
+			const stack = stacks.find(s => s.id === id);
+			if (!stack) return null;
+			return { ...stack, sort_order: index };
+		})
+		.filter((s): s is Stack => s !== null);
+	for (const stack of reordered) {
+		await db.saveStack(stack);
+		await sync.pushToSyncQueue('stacks', 'update', stack as unknown as Record<string, unknown>);
+	}
+	stacks = reordered;
+}
+
+export async function reorderHabits(stackId: string, habitIds: string[]): Promise<void> {
+	if (!userId) throw new Error('Not authenticated');
+	const reordered = habitIds
+		.map((id, index) => {
+			const habit = habits.find(h => h.id === id && h.stack_id === stackId);
+			if (!habit) return null;
+			return { ...habit, sort_order: index };
+		})
+		.filter((h): h is Habit => h !== null);
+	for (const habit of reordered) {
+		await db.saveHabit(habit);
+		await sync.pushToSyncQueue('habits', 'update', habit as unknown as Record<string, unknown>);
+	}
+	habits = habits.map(h => {
+		const updated = reordered.find(r => r.id === h.id);
+		return updated ?? h;
+	});
+}
+
 // ============ HABIT OPERATIONS ============
 
 export async function createHabit(stackId: string, name: string, description?: string): Promise<Habit> {
