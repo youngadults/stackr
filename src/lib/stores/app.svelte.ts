@@ -46,12 +46,16 @@ function getLocalUserId(): string {
 }
 
 // Initialize app state — always local mode
+// Migrates any existing data from old auth user IDs to local user ID
 export async function initializeState(): Promise<void> {
 	const uid = getLocalUserId();
 	userId = uid;
 	isLoading = true;
 
 	try {
+		// One-time migration: re-key any data from Supabase auth user to local user
+		await db.migrateFromOldUserId(uid);
+
 		const [dbStacks, dbHabits, dbCompletions, dbProfile, dbAchievements] = await Promise.all([
 			db.getAllStacks(uid),
 			db.getAllHabitsByUser(uid),

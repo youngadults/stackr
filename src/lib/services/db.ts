@@ -81,6 +81,65 @@ async function deleteDB(): Promise<void> {
 	}
 }
 
+// ============ MIGRATION ============
+
+// Migrate data from an old user ID (e.g. Supabase auth user) to the local user ID.
+// Called on first launch after removing auth — finds any orphaned data and re-keys it.
+export async function migrateFromOldUserId(newUserId: string): Promise<boolean> {
+	const database = await getDB();
+	let migrated = false;
+
+	// Check if new user already has data
+	const existingStacks = await database.getAllFromIndex('stacks', 'user_id', newUserId);
+	if (existingStacks.length > 0) return false; // Already has data, skip migration
+
+	// Find any existing profile (there should be at most one)
+	const allProfiles = await database.getAll('profile');
+	const oldProfile = allProfiles.find(p => p.id !== newUserId);
+
+	if (!oldProfile) {
+		// No existing data at all — fresh start
+		return false;
+	}
+
+	const oldUserId = oldProfile.id;
+
+	// Re-key profile
+	const newProfile: Profile = { ...oldProfile, id: newUserId };
+	await database.put('profile', newProfile);
+	await database.delete('profile', oldUserId);
+
+	// Migrate stacks
+	const oldStacks = await database.getAllFromIndex('stacks', 'user_id', oldUserId);
+	for (const stack of oldStacks) {
+		stack.user_id = newUserId;
+		await database.put('stacks', stack); // same id, updated user_id
+	}
+
+	// Migrate habits
+	const oldHabits = await database.getAllFromIndex('habits', 'user_id', oldUserId);
+	for (const habit of oldHabits) {
+		habit.user_id = newUserId;
+		await database.put('habits', habit);
+	}
+
+	// Migrate completions
+	const oldCompletions = await database.getAllFromIndex('completions', 'user_id', oldUserId);
+	for (const completion of oldCompletions) {
+		completion.user_id = newUserId;
+		await database.put('completions', completion);
+	}
+
+	// Migrate achievements
+	const oldAchievements = await database.getAllFromIndex('achievements', 'user_id', oldUserId);
+	for (const achievement of oldAchievements) {
+		achievement.user_id = newUserId;
+		await database.put('achievements', achievement);
+	}
+
+	return true;
+}
+
 // ============ STACK OPERATIONS ============
 
 export async function getAllStacks(userId: string): Promise<Stack[]> {
