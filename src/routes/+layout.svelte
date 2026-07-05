@@ -268,15 +268,12 @@
 	</div>
 {:else}
 	<div class="min-h-screen flex flex-col bg-slate-950">
-		<main class="flex-1 px-4 pb-16 pt-2 max-w-lg mx-auto w-full">
+		<main class="flex-1 px-4 pb-16 pt-6 max-w-lg mx-auto w-full">
 			{@render children()}
 		</main>
 
 		<nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 z-40">
-			<div class="max-w-lg mx-auto flex items-center justify-around px-4 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] relative">
-				{#if appState.profile}
-					<span class="absolute left-4 top-0.5 text-[10px] text-slate-500 font-medium">Lv.{appState.profile.level}</span>
-				{/if}
+			<div class="max-w-lg mx-auto flex items-center justify-around px-4 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
 				{#each NAV_ITEMS as item}
 					<a
 						href={item.href}

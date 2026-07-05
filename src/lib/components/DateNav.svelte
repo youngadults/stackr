@@ -30,7 +30,7 @@
 	let canGoForward = $derived(selectedDate < today());
 </script>
 
-<div class="flex items-center justify-between mb-4">
+<div class="flex items-center justify-between py-1.5 px-2">
 	<button
 		onclick={goBack}
 		class="p-2 -ml-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"

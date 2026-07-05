@@ -125,12 +125,16 @@
 	let isPastDate = $derived(selectedDate < today());
 </script>
 
-<div class="animate-fade-in">
-	<!-- Date Navigation -->
-	<DateNav bind:selectedDate={selectedDate} />
+<div class="animate-fade-in pb-12">
+	<!-- Date Navigation (fixed above bottom nav) -->
+	<div class="fixed bottom-[52px] left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800/50">
+		<div class="max-w-lg mx-auto">
+			<DateNav bind:selectedDate={selectedDate} />
+		</div>
+	</div>
 
 	<!-- Header with date -->
-	<div class="flex items-center justify-between mb-4">
+	<div class="flex items-center justify-between mb-4 mt-2">
 		<div>
 			<p class="text-slate-400 text-sm">{dayName}</p>
 			<h1 class="text-2xl font-bold text-white">{monthName} {dateNum}</h1>
