@@ -1,9 +1,9 @@
 // Svelte stores for app state management
 // Uses runes ($state) for Svelte 5 reactivity
+// Local-only mode — all data in IndexedDB, no auth/sync
 
-import type { Stack, Habit, Completion, Achievement, Profile, StackChecklist, HabitWithCompletions } from '$lib/types';
+import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 import * as db from '$lib/services/db';
-import * as sync from '$lib/services/sync';
 import { calculateStreak } from '$lib/utils/gamification';
 import { generateId, today } from '$lib/utils/helpers';
 import {
@@ -12,6 +12,8 @@ import {
 	checkAndUnlockAchievements as doCheckAchievements,
 	checkIfFullStackToday
 } from './profile';
+
+const LOCAL_USER_ID_KEY = 'stackr_local_user_id';
 
 // App state using Svelte 5 runes
 let stacks = $state<Stack[]>([]);
@@ -34,8 +36,18 @@ export function getAppState() {
 	};
 }
 
-// Initialize app state for a user
-export async function initializeState(uid: string): Promise<void> {
+function getLocalUserId(): string {
+	let id = localStorage.getItem(LOCAL_USER_ID_KEY);
+	if (!id) {
+		id = 'local_' + generateId();
+		localStorage.setItem(LOCAL_USER_ID_KEY, id);
+	}
+	return id;
+}
+
+// Initialize app state — always local mode
+export async function initializeState(): Promise<void> {
+	const uid = getLocalUserId();
 	userId = uid;
 	isLoading = true;
 
@@ -64,25 +76,13 @@ export async function initializeState(uid: string): Promise<void> {
 			await db.saveProfile(newProfile);
 			profile = newProfile;
 		}
-
-		await sync.fullSync(uid);
-
-		const [sStacks, sHabits, sCompletions, sProfile, sAchievements] = await Promise.all([
-			db.getAllStacks(uid), db.getAllHabitsByUser(uid),
-			db.getCompletionsByUser(uid), db.getProfile(uid), db.getAchievementsByUser(uid)
-		]);
-
-		stacks = sStacks;
-		habits = sHabits;
-		completions = sCompletions;
-		if (sProfile) profile = sProfile;
-		achievements = sAchievements;
 	} finally {
 		isLoading = false;
 	}
 }
 
 export function resetState(): void {
+	localStorage.removeItem(LOCAL_USER_ID_KEY);
 	stacks = [];
 	habits = [];
 	completions = [];
@@ -96,13 +96,12 @@ export function resetState(): void {
 // ============ STACK OPERATIONS ============
 
 export async function createStack(name: string, trigger: string, color: string, icon: string): Promise<Stack> {
-	if (!userId) throw new Error('Not authenticated');
+	if (!userId) throw new Error('Not initialized');
 	const stack: Stack = {
 		id: generateId(), user_id: userId, name, trigger, color, icon,
 		sort_order: stacks.length, created_at: new Date().toISOString(), updated_at: new Date().toISOString()
 	};
 	await db.saveStack(stack);
-	await sync.pushToSyncQueue('stacks', 'insert', stack as unknown as Record<string, unknown>);
 	stacks = [...stacks, stack];
 	return stack;
 }
@@ -110,13 +109,11 @@ export async function createStack(name: string, trigger: string, color: string, 
 export async function updateStack(stack: Stack): Promise<void> {
 	const updated = { ...stack, updated_at: new Date().toISOString() };
 	await db.saveStack(updated);
-	await sync.pushToSyncQueue('stacks', 'update', updated as unknown as Record<string, unknown>);
 	stacks = stacks.map(s => s.id === updated.id ? updated : s);
 }
 
 export async function removeStack(id: string): Promise<void> {
 	await db.deleteStack(id);
-	await sync.pushToSyncQueue('stacks', 'delete', { id });
 	stacks = stacks.filter(s => s.id !== id);
 	habits = habits.filter(h => h.stack_id !== id);
 }
@@ -124,7 +121,7 @@ export async function removeStack(id: string): Promise<void> {
 // ============ REORDER OPERATIONS ============
 
 export async function reorderStacks(stackIds: string[]): Promise<void> {
-	if (!userId) throw new Error('Not authenticated');
+	if (!userId) throw new Error('Not initialized');
 	const reordered = stackIds
 		.map((id, index) => {
 			const stack = stacks.find(s => s.id === id);
@@ -134,13 +131,12 @@ export async function reorderStacks(stackIds: string[]): Promise<void> {
 		.filter((s): s is Stack => s !== null);
 	for (const stack of reordered) {
 		await db.saveStack(stack);
-		await sync.pushToSyncQueue('stacks', 'update', stack as unknown as Record<string, unknown>);
 	}
 	stacks = reordered;
 }
 
 export async function reorderHabits(stackId: string, habitIds: string[]): Promise<void> {
-	if (!userId) throw new Error('Not authenticated');
+	if (!userId) throw new Error('Not initialized');
 	const reordered = habitIds
 		.map((id, index) => {
 			const habit = habits.find(h => h.id === id && h.stack_id === stackId);
@@ -150,7 +146,6 @@ export async function reorderHabits(stackId: string, habitIds: string[]): Promis
 		.filter((h): h is Habit => h !== null);
 	for (const habit of reordered) {
 		await db.saveHabit(habit);
-		await sync.pushToSyncQueue('habits', 'update', habit as unknown as Record<string, unknown>);
 	}
 	habits = habits.map(h => {
 		const updated = reordered.find(r => r.id === h.id);
@@ -161,14 +156,13 @@ export async function reorderHabits(stackId: string, habitIds: string[]): Promis
 // ============ HABIT OPERATIONS ============
 
 export async function createHabit(stackId: string, name: string, description?: string): Promise<Habit> {
-	if (!userId) throw new Error('Not authenticated');
+	if (!userId) throw new Error('Not initialized');
 	const stackHabits = habits.filter(h => h.stack_id === stackId);
 	const habit: Habit = {
 		id: generateId(), stack_id: stackId, user_id: userId, name, description,
 		sort_order: stackHabits.length, created_at: new Date().toISOString(), updated_at: new Date().toISOString()
 	};
 	await db.saveHabit(habit);
-	await sync.pushToSyncQueue('habits', 'insert', habit as unknown as Record<string, unknown>);
 	habits = [...habits, habit];
 	return habit;
 }
@@ -176,13 +170,11 @@ export async function createHabit(stackId: string, name: string, description?: s
 export async function updateHabit(habit: Habit): Promise<void> {
 	const updated = { ...habit, updated_at: new Date().toISOString() };
 	await db.saveHabit(updated);
-	await sync.pushToSyncQueue('habits', 'update', updated as unknown as Record<string, unknown>);
 	habits = habits.map(h => h.id === updated.id ? updated : h);
 }
 
 export async function removeHabit(id: string): Promise<void> {
 	await db.deleteHabit(id);
-	await sync.pushToSyncQueue('habits', 'delete', { id });
 	habits = habits.filter(h => h.id !== id);
 	completions = completions.filter(c => c.habit_id !== id);
 }
@@ -190,14 +182,13 @@ export async function removeHabit(id: string): Promise<void> {
 // ============ COMPLETION OPERATIONS ============
 
 export async function toggleCompletion(habitId: string, date?: string): Promise<boolean> {
-	if (!userId) throw new Error('Not authenticated');
+	if (!userId) throw new Error('Not initialized');
 
 	const completedDate = date ?? today();
 	const existing = completions.find(c => c.habit_id === habitId && c.completed_at === completedDate);
 
 	if (existing) {
 		await db.deleteCompletion(existing.id);
-		await sync.pushToSyncQueue('completions', 'delete', { id: existing.id });
 		completions = completions.filter(c => c.id !== existing.id);
 		if (profile) {
 			profile = await doUpdateProfileUncomplete(profile, completions, stacks, habits);
@@ -210,7 +201,6 @@ export async function toggleCompletion(habitId: string, date?: string): Promise<
 		completed_at: completedDate, created_at: new Date().toISOString()
 	};
 	await db.saveCompletion(completion);
-	await sync.pushToSyncQueue('completions', 'insert', completion as unknown as Record<string, unknown>);
 	completions = [...completions, completion];
 
 	if (profile) {

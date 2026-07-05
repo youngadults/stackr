@@ -94,12 +94,3 @@ export interface LevelUp {
 	previousLevel: number;
 }
 
-// Sync types
-export interface SyncQueueItem {
-	id: string;
-	table: string;
-	action: 'insert' | 'update' | 'delete';
-	data: Record<string, unknown>;
-	created_at: string;
-	retries: number;
-}

@@ -1,9 +1,9 @@
 // Profile and achievement logic — pure functions that operate on state
 // Called from the main app store which holds all $state variables
+// Local-only mode — no sync queue
 
 import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 import * as db from '$lib/services/db';
-import * as sync from '$lib/services/sync';
 import { calculateStreak, levelFromXp } from '$lib/utils/gamification';
 import { generateId, today } from '$lib/utils/helpers';
 import { checkAllAchievements } from '$lib/utils/badges';
@@ -115,7 +115,6 @@ export async function updateProfileOnComplete(
 	};
 
 	await db.saveProfile(updated);
-	await sync.pushToSyncQueue('profiles', 'update', updated as unknown as Record<string, unknown>);
 	return updated;
 }
 
@@ -145,7 +144,6 @@ export async function updateProfileOnUncomplete(
 	};
 
 	await db.saveProfile(updated);
-	await sync.pushToSyncQueue('profiles', 'update', updated as unknown as Record<string, unknown>);
 	return updated;
 }
 
@@ -178,7 +176,6 @@ export async function checkAndUnlockAchievements(
 					unlocked_at: new Date().toISOString()
 				};
 				await db.saveAchievement(achievement);
-				await sync.pushToSyncQueue('achievements', 'insert', achievement as unknown as Record<string, unknown>);
 				newAchievements.push(achievement);
 				badgeKeys.push(result.badgeKey);
 			}

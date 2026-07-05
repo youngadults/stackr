@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { Stack, Habit, Completion, Profile, Achievement, XPGain, LevelUp, SyncQueueItem, BadgeDefinition, StackChecklist, HeatmapData } from '$lib/types';
+import type { Stack, Habit, Completion, Profile, Achievement, XPGain, LevelUp, BadgeDefinition, StackChecklist, HeatmapData } from '$lib/types';
 
 describe('Type interfaces', () => {
 	it('Stack type accepts valid data', () => {
@@ -98,23 +98,6 @@ describe('Type interfaces', () => {
 			previousLevel: 2
 		};
 		expect(levelUp.newLevel).toBe(3);
-	});
-
-	it('SyncQueueItem type accepts valid data', () => {
-		const item: SyncQueueItem = {
-			id: 'sq1',
-			table: 'stacks',
-			action: 'insert',
-			data: { name: 'Test' },
-			created_at: '2024-01-01T00:00:00Z',
-			retries: 0
-		};
-		expect(item.action).toBe('insert');
-	});
-
-	it('SyncQueueItem accepts all action types', () => {
-		const actions: SyncQueueItem['action'][] = ['insert', 'update', 'delete'];
-		expect(actions).toHaveLength(3);
 	});
 
 	it('BadgeDefinition type accepts valid data', () => {

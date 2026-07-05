@@ -8,23 +8,23 @@ Stackr is a mobile-first PWA that uses the science of **habit stacking**: instea
 
 ### Core Concept
 
-A **Stack** has a trigger ("After I make coffee") and a set of micro-habits attached to it. You check them off throughout the day. The app tracks streaks, awards XP, and shows your progress on a heatmap.
+A **Stack** has a trigger ("After I make coffee") and a set of micro-habits attached to it. You check them off throughout the day. The app tracks streaks, awards XP, and shows your progress.
 
 ## Features
 
 - **Habit Stacks** — Create stacks with custom triggers, colors, and icons
 - **Daily Checklist** — 2-tap logging, organized by stack
 - **Streak Tracking** — Per-habit streaks with fire indicators
-- **Completion Heatmap** — GitHub-style activity visualization
+- **Last 7 Days** — Bar chart showing daily completion activity
 - **XP & Levels** — Earn XP for every completion, bonus for full stacks and streaks
 - **Achievement Badges** — Unlock milestones as you build consistency
-- **Offline-First** — Works without internet, syncs when connected
+- **Offline-First** — All data stored locally in IndexedDB, works without internet
 - **PWA** — Install on iOS/Android homescreen
 
 ## Tech Stack
 
 - **Frontend:** SvelteKit 5 (runes mode), Tailwind CSS 4
-- **Storage:** IndexedDB (offline-first via `idb`), Supabase (auth + sync)
+- **Storage:** IndexedDB (offline-first via `idb`)
 - **Testing:** Vitest
 - **Deploy:** Vercel (or any SvelteKit adapter)
 
@@ -34,7 +34,6 @@ A **Stack** has a trigger ("After I make coffee") and a set of micro-habits atta
 
 - Node.js 20+
 - npm 10+
-- Supabase account (for auth + cloud sync)
 
 ### Install
 
@@ -42,28 +41,6 @@ A **Stack** has a trigger ("After I make coffee") and a set of micro-habits atta
 git clone https://github.com/youngadults/stackr.git
 cd stackr
 npm install
-```
-
-## Local Mode (No Supabase)
-
-Stackr works without Supabase! If `VITE_SUPABASE_URL` is not set, the app runs in **local mode**:
-
-- No login screen — you're dropped straight into the app
-- All data is stored in your browser's IndexedDB
-- No cloud sync, but everything works offline
-- Your data persists across sessions (stored locally)
-
-This is perfect for trying the app out. When you're ready for cloud sync and multi-device support, set up Supabase.
-
-### Configure Supabase (Optional)
-
-1. Create a [Supabase](https://supabase.com) project
-2. Run the schema in `supabase/schema.sql` in the SQL editor
-3. Set environment variables:
-
-```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Development
@@ -79,10 +56,7 @@ npm run build      # Production build
 
 1. Push to GitHub
 2. Import in [Vercel](https://vercel.com)
-3. Add environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-4. Deploy
+3. Deploy
 
 For other platforms, install the appropriate SvelteKit adapter (e.g., `@sveltejs/adapter-node` for Node.js).
 
@@ -92,31 +66,32 @@ For other platforms, install the appropriate SvelteKit adapter (e.g., `@sveltejs
 src/
 ├── lib/
 │   ├── components/
-│   │   └── NewStackModal.svelte  # Stack creation modal
+│   │   ├── DateNav.svelte      # Date navigation
+│   │   ├── NewStackModal.svelte # Stack creation modal
+│   │   └── Toast.svelte         # Toast notifications
 │   ├── services/
-│   │   ├── auth.ts       # Supabase auth client
-│   │   ├── db.ts          # IndexedDB offline storage
-│   │   ├── sync.ts        # Offline-to-online sync
-│   │   └── pwa.ts          # Service worker registration
+│   │   ├── db.ts               # IndexedDB offline storage
+│   │   └── pwa.ts              # Service worker registration
 │   ├── stores/
-│   │   ├── app.ts         # Svelte 5 runes-based state (CRUD)
-│   │   └── profile.ts     # Profile, XP, achievement logic
+│   │   ├── app.svelte.ts       # Svelte 5 runes-based state (CRUD)
+│   │   ├── profile.ts          # Profile, XP, achievement logic
+│   │   └── toast.ts            # Toast notification state
 │   ├── types/
-│   │   └── index.ts       # TypeScript type definitions
+│   │   └── index.ts            # TypeScript type definitions
 │   └── utils/
-│       ├── badges.ts       # Achievement definitions & checks
-│       ├── gamification.ts # XP, levels, streaks, heatmap
-│       └── helpers.ts      # Date, color, ID utilities
+│       ├── badges.ts           # Achievement definitions & checks
+│       ├── gamification.ts     # XP, levels, streaks
+│       └── helpers.ts          # Date, color, ID utilities
 ├── routes/
-│   ├── +layout.svelte     # App shell, auth, bottom nav
-│   ├── +page.svelte       # Today view (checklist)
+│   ├── +layout.svelte          # App shell, bottom nav
+│   ├── +page.svelte            # Today view (checklist)
 │   ├── stacks/
-│   │   ├── +page.svelte   # Stack management
-│   │   └── [id]/          # Individual stack detail
-│   ├── stats/             # Heatmap & statistics
-│   └── achievements/      # Badge gallery
-├── app.css                # Global styles + Tailwind
-└── app.html               # HTML shell
+│   │   ├── +page.svelte        # Stack management
+│   │   └── [id]/+page.svelte  # Individual stack detail
+│   ├── stats/+page.svelte      # Statistics
+│   └── achievements/+page.svelte # Badge gallery
+├── app.css                     # Global styles + Tailwind
+└── app.html                    # HTML shell
 ```
 
 ## Gamification Math
@@ -140,14 +115,9 @@ src/
 
 ## Offline-First Architecture
 
-Stackr uses IndexedDB as the primary data store:
+Stackr uses IndexedDB as the sole data store. All data lives in your browser — no server, no account, no sync. The app works fully offline from the moment you open it.
 
-1. **All reads/writes go to IndexedDB first** — instant, works offline
-2. **Changes are queued in a sync table** — pending mutations
-3. **When online, changes push to Supabase** — then pull remote updates
-4. **Conflict resolution** — last-write-wins with timestamps
-
-This means the app is fully functional offline. When connectivity returns, changes sync automatically.
+A local user ID is generated on first launch and stored in localStorage. All IndexedDB records are keyed to this ID, so data persists across sessions.
 
 ## PWA Setup
 
@@ -165,10 +135,9 @@ The service worker uses a network-first strategy for navigation and cache-first 
 
 ## Security
 
-- Row-level security on all Supabase tables (users can only access their own data)
-- No secrets in client code — only the anon key is public
+- No secrets in client code
 - Input validation on all forms
-- `.env.example` documents required variables
+- `.env.example` documents required variables (none required — app is fully local)
 
 ## License
 

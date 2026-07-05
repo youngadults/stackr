@@ -7,18 +7,12 @@ import {
 } from './profile';
 import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 import * as db from '$lib/services/db';
-import * as sync from '$lib/services/sync';
 import { today, daysAgo } from '$lib/utils/helpers';
 
-// Mock db and sync modules
+// Mock db module
 vi.mock('$lib/services/db', () => ({
 	saveProfile: vi.fn(),
 	saveAchievement: vi.fn(),
-	addToSyncQueue: vi.fn(),
-}));
-
-vi.mock('$lib/services/sync', () => ({
-	pushToSyncQueue: vi.fn(),
 }));
 
 // Helper factories
@@ -148,12 +142,6 @@ describe('updateProfileOnComplete', () => {
 		expect(db.saveProfile).toHaveBeenCalled();
 	});
 
-	it('pushes to sync queue', async () => {
-		const profile = makeProfile();
-		await updateProfileOnComplete(profile, [], [], []);
-		expect(sync.pushToSyncQueue).toHaveBeenCalled();
-	});
-
 	it('updates longest_streak when current streak exceeds it', async () => {
 		const todayStr = today();
 		const d1 = daysAgo(2);
@@ -275,12 +263,6 @@ describe('updateProfileOnUncomplete', () => {
 		expect(db.saveProfile).toHaveBeenCalled();
 	});
 
-	it('pushes to sync queue', async () => {
-		const profile = makeProfile();
-		await updateProfileOnUncomplete(profile, [], [], []);
-		expect(sync.pushToSyncQueue).toHaveBeenCalled();
-	});
-
 	it('deducts stack bonus when uncompleting breaks a full stack', async () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
@@ -297,14 +279,7 @@ describe('updateProfileOnUncomplete', () => {
 	it('does not deduct stack bonus when stack is still complete', async () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const h2 = makeHabit('h2', 's1');
-		const h3 = makeHabit('h3', 's1');
 		const todayStr = today();
-		// After uncompleting h3, h1 and h2 remain → stack still complete (2 of 2 in another stack? No, all 3 in same stack)
-		// Actually with 3 habits, only 2 complete means stack is NOT fully complete
-		// Let's use 2 stacks: uncomplete one in stack2, stack1 still complete
-		const stack2 = makeStack('s2');
-		const h2b = makeHabit('h2', 's2');
 		const remaining = [makeCompletion('h1', todayStr)];
 		const profile = makeProfile({ xp: 120 });
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1]);
@@ -413,12 +388,5 @@ describe('checkAndUnlockAchievements', () => {
 		const stacks = [makeStack('s1')];
 		await checkAndUnlockAchievements(profile, [], stacks, 'user1', false);
 		expect(db.saveAchievement).toHaveBeenCalled();
-	});
-
-	it('pushes new achievements to sync queue', async () => {
-		const profile = makeProfile({ total_completions: 1, streak_days: 0, level: 0 });
-		const stacks = [makeStack('s1')];
-		await checkAndUnlockAchievements(profile, [], stacks, 'user1', false);
-		expect(sync.pushToSyncQueue).toHaveBeenCalled();
 	});
 });
