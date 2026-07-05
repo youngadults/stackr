@@ -1,525 +1,631 @@
 <script lang="ts">
-	// Garden plant stages prototype — visual test
-	import { getAppState, initializeState } from '$lib/stores/app.svelte';
+	// Garden plant stages prototype — 3D-ish version
+	import { getAppState } from '$lib/stores/app.svelte';
 
 	const appState = getAppState();
 
 	const STAGES = [
-		{ key: 'seed', label: 'Seed', emoji: '🌱', desc: 'New stack, no completions' },
-		{ key: 'sprout', label: 'Sprout', emoji: '🌿', desc: '1-2 days partial completion' },
-		{ key: 'growing', label: 'Growing', emoji: '🪴', desc: '3+ day streak, most habits done' },
-		{ key: 'blooming', label: 'Blooming', emoji: '🌸', desc: 'All habits done today, streak thriving' },
-		{ key: 'mature', label: 'Mature', emoji: '🌳', desc: '14+ day streak, fully established' },
-		{ key: 'wilting', label: 'Wilting', emoji: '🥀', desc: 'Streak at risk — not done today' },
+		{ key: 'seed', label: 'Seed', desc: 'New stack' },
+		{ key: 'sprout', label: 'Sprout', desc: '1-2 days' },
+		{ key: 'growing', label: 'Growing', desc: '3+ day streak' },
+		{ key: 'blooming', label: 'Blooming', desc: 'All done today' },
+		{ key: 'mature', label: 'Mature', desc: '14+ day streak' },
+		{ key: 'wilting', label: 'Wilting', desc: 'Streak at risk' },
 	];
 </script>
 
 <svelte:head>
-	<title>Garden Prototype</title>
+	<title>Garden Prototype — 3D</title>
 </svelte:head>
 
 <div class="min-h-screen bg-slate-950 p-4 pt-8 max-w-lg mx-auto">
-	<h1 class="text-2xl font-bold text-white mb-2">Garden Visualization</h1>
-	<p class="text-slate-400 text-sm mb-8">Each stack = one plant. Growth reflects your consistency.</p>
+	<h1 class="text-2xl font-bold text-white mb-1">Garden Visualization</h1>
+	<p class="text-slate-400 text-sm mb-8">3D-ish CSS plants. Each stack = one plant.</p>
 
-	<!-- Individual Stage Previews -->
+	<!-- Stage Reference -->
 	<h2 class="text-lg font-semibold text-white mb-4">Plant Stages</h2>
 	<div class="grid grid-cols-3 gap-4 mb-10">
 		{#each STAGES as stage}
 			<div class="flex flex-col items-center gap-2">
-				<div class="plant-container">
+				<div class="plant-slot">
 					{#if stage.key === 'seed'}
-						<!-- Seed: small mound with a seed -->
-						<div class="seed-stage">
-							<div class="seed-dot"></div>
-							<div class="dirt-mound"></div>
+						<div class="plant seed-plant">
+							<div class="seed-body"></div>
+							<div class="soil-bed">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{:else if stage.key === 'sprout'}
-						<!-- Sprout: tiny stem with 2 small leaves -->
-						<div class="sprout-stage">
+						<div class="plant sprout-plant">
 							<div class="sprout-leaves">
-								<div class="leaf leaf-left"></div>
-								<div class="leaf leaf-right"></div>
+								<div class="s-leaf s-leaf-l"></div>
+								<div class="s-leaf s-leaf-r"></div>
 							</div>
 							<div class="sprout-stem"></div>
-							<div class="dirt-mound"></div>
+							<div class="soil-bed">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{:else if stage.key === 'growing'}
-						<!-- Growing: taller stem, more leaves -->
-						<div class="growing-stage">
-							<div class="growing-top">
-								<div class="leaf leaf-left-md"></div>
-								<div class="bud"></div>
-								<div class="leaf leaf-right-md"></div>
+						<div class="plant growing-plant">
+							<div class="grow-top">
+								<div class="g-leaf g-leaf-l"></div>
+								<div class="g-bud"></div>
+								<div class="g-leaf g-leaf-r"></div>
 							</div>
-							<div class="growing-stem"></div>
-							<div class="leaf leaf-low-left"></div>
-							<div class="dirt-mound"></div>
+							<div class="grow-stem"></div>
+							<div class="g-leaf g-leaf-low"></div>
+							<div class="soil-bed">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{:else if stage.key === 'blooming'}
-						<!-- Blooming: full flower on top -->
-						<div class="blooming-stage">
-							<div class="flower-head">
-								<div class="petal petal-1"></div>
-								<div class="petal petal-2"></div>
-								<div class="petal petal-3"></div>
-								<div class="petal petal-4"></div>
-								<div class="petal petal-5"></div>
-								<div class="flower-center"></div>
+						<div class="plant bloom-plant">
+							<div class="flower">
+								<div class="petal p1"></div>
+								<div class="petal p2"></div>
+								<div class="petal p3"></div>
+								<div class="petal p4"></div>
+								<div class="petal p5"></div>
+								<div class="petal-inner"></div>
+								<div class="pistil"></div>
 							</div>
-							<div class="blooming-stem"></div>
-							<div class="leaf bloom-leaf-l"></div>
-							<div class="leaf bloom-leaf-r"></div>
-							<div class="dirt-mound"></div>
+							<div class="bloom-stem"></div>
+							<div class="b-leaf b-leaf-l"></div>
+							<div class="b-leaf b-leaf-r"></div>
+							<div class="soil-bed">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{:else if stage.key === 'mature'}
-						<!-- Mature: tree trunk, full canopy -->
-						<div class="mature-stage">
+						<div class="plant mature-plant">
 							<div class="canopy">
-								<div class="canopy-blob canopy-b1"></div>
-								<div class="canopy-blob canopy-b2"></div>
-								<div class="canopy-blob canopy-b3"></div>
+								<div class="canopy-layer c-shadow"></div>
+								<div class="canopy-layer c-back"></div>
+								<div class="canopy-layer c-mid"></div>
+								<div class="canopy-layer c-front"></div>
 							</div>
-							<div class="trunk"></div>
-							<div class="dirt-mound"></div>
+							<div class="trunk">
+								<div class="trunk-body"></div>
+								<div class="trunk-shadow"></div>
+							</div>
+							<div class="soil-bed soil-bed-wide">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{:else if stage.key === 'wilting'}
-						<!-- Wilting: drooping stem, faded colors -->
-						<div class="wilting-stage">
-							<div class="wilt-top">
-								<div class="wilt-leaf wilt-leaf-l"></div>
-								<div class="wilt-bud"></div>
+						<div class="plant wilt-plant">
+							<div class="wilt-head">
+								<div class="w-leaf w-leaf-l"></div>
+								<div class="w-bud"></div>
 							</div>
 							<div class="wilt-stem"></div>
-							<div class="dirt-mound dirt-mound-dry"></div>
+							<div class="soil-bed soil-bed-dry">
+								<div class="soil-top"></div>
+								<div class="soil-front"></div>
+							</div>
 						</div>
 					{/if}
 				</div>
 				<div class="text-center">
-					<div class="text-2xl">{stage.emoji}</div>
-					<div class="text-xs font-medium text-white">{stage.label}</div>
+					<div class="text-xs font-semibold text-white">{stage.label}</div>
 					<div class="text-[10px] text-slate-500">{stage.desc}</div>
 				</div>
 			</div>
 		{/each}
 	</div>
 
-	<!-- Full Garden View Preview -->
-	<h2 class="text-lg font-semibold text-white mb-4">Garden View (Stackr)</h2>
+	<!-- Full Garden Mockup -->
+	<h2 class="text-lg font-semibold text-white mb-4">Garden View</h2>
 	<div class="garden-bed">
+		<div class="garden-ground"></div>
 		<div class="garden-row">
-			<div class="garden-plant" title="Morning Routine — Blooming">
-				<div class="blooming-stage plant-visual">
-					<div class="flower-head">
-						<div class="petal petal-1"></div>
-						<div class="petal petal-2"></div>
-						<div class="petal petal-3"></div>
-						<div class="petal petal-4"></div>
-						<div class="petal petal-5"></div>
-						<div class="flower-center"></div>
+			<div class="garden-spot">
+				<div class="plant bloom-plant">
+					<div class="flower">
+						<div class="petal p1"></div>
+						<div class="petal p2"></div>
+						<div class="petal p3"></div>
+						<div class="petal p4"></div>
+						<div class="petal p5"></div>
+						<div class="petal-inner"></div>
+						<div class="pistil"></div>
 					</div>
-					<div class="blooming-stem"></div>
-					<div class="leaf bloom-leaf-l"></div>
-					<div class="leaf bloom-leaf-r"></div>
-					<div class="dirt-mound"></div>
-				</div>
-				<span class="plant-label">Morning Routine</span>
-				<span class="plant-sublabel">🔥 7 days</span>
-			</div>
-
-			<div class="garden-plant" title="Wind Down — Growing">
-				<div class="growing-stage plant-visual">
-					<div class="growing-top">
-						<div class="leaf leaf-left-md"></div>
-						<div class="bud"></div>
-						<div class="leaf leaf-right-md"></div>
+					<div class="bloom-stem"></div>
+					<div class="b-leaf b-leaf-l"></div>
+					<div class="b-leaf b-leaf-r"></div>
+					<div class="soil-bed">
+						<div class="soil-top"></div>
+						<div class="soil-front"></div>
 					</div>
-					<div class="growing-stem"></div>
-					<div class="leaf leaf-low-left"></div>
-					<div class="dirt-mound"></div>
 				</div>
-				<span class="plant-label">Wind Down</span>
-				<span class="plant-sublabel">🔥 3 days</span>
+				<div class="spot-label">
+					<span class="spot-name">Morning Routine</span>
+					<span class="spot-streak">🔥 7 days</span>
+				</div>
 			</div>
-
-			<div class="garden-plant" title="Focus — Seed">
-				<div class="seed-stage plant-visual">
-					<div class="seed-dot"></div>
-					<div class="dirt-mound"></div>
+			<div class="garden-spot">
+				<div class="plant growing-plant">
+					<div class="grow-top">
+						<div class="g-leaf g-leaf-l"></div>
+						<div class="g-bud"></div>
+						<div class="g-leaf g-leaf-r"></div>
+					</div>
+					<div class="grow-stem"></div>
+					<div class="g-leaf g-leaf-low"></div>
+					<div class="soil-bed">
+						<div class="soil-top"></div>
+						<div class="soil-front"></div>
+					</div>
 				</div>
-				<span class="plant-label">Focus</span>
-				<span class="plant-sublabel text-slate-500">New</span>
+				<div class="spot-label">
+					<span class="spot-name">Wind Down</span>
+					<span class="spot-streak">🔥 3 days</span>
+				</div>
+			</div>
+			<div class="garden-spot">
+				<div class="plant seed-plant">
+					<div class="seed-body"></div>
+					<div class="soil-bed">
+						<div class="soil-top"></div>
+						<div class="soil-front"></div>
+					</div>
+				</div>
+				<div class="spot-label">
+					<span class="spot-name">Focus</span>
+					<span class="spot-streak text-slate-500">New</span>
+				</div>
 			</div>
 		</div>
 		<div class="garden-row">
-			<div class="garden-plant" title="Fitness — Mature">
-				<div class="mature-stage plant-visual">
+			<div class="garden-spot">
+				<div class="plant mature-plant">
 					<div class="canopy">
-						<div class="canopy-blob canopy-b1"></div>
-						<div class="canopy-blob canopy-b2"></div>
-						<div class="canopy-blob canopy-b3"></div>
+						<div class="canopy-layer c-shadow"></div>
+						<div class="canopy-layer c-back"></div>
+						<div class="canopy-layer c-mid"></div>
+						<div class="canopy-layer c-front"></div>
 					</div>
-					<div class="trunk"></div>
-					<div class="dirt-mound"></div>
+					<div class="trunk">
+						<div class="trunk-body"></div>
+						<div class="trunk-shadow"></div>
+					</div>
+					<div class="soil-bed soil-bed-wide">
+						<div class="soil-top"></div>
+						<div class="soil-front"></div>
+					</div>
 				</div>
-				<span class="plant-label">Fitness</span>
-				<span class="plant-sublabel">🔥 21 days</span>
+				<div class="spot-label">
+					<span class="spot-name">Fitness</span>
+					<span class="spot-streak">🔥 21 days</span>
+				</div>
 			</div>
-
-			<div class="garden-plant wilt" title="Reading — Wilting">
-				<div class="wilting-stage plant-visual">
-					<div class="wilt-top">
-						<div class="wilt-leaf wilt-leaf-l"></div>
-						<div class="wilt-bud"></div>
+			<div class="garden-spot wilt-spot">
+				<div class="plant wilt-plant">
+					<div class="wilt-head">
+						<div class="w-leaf w-leaf-l"></div>
+						<div class="w-bud"></div>
 					</div>
 					<div class="wilt-stem"></div>
-					<div class="dirt-mound dirt-mound-dry"></div>
+					<div class="soil-bed soil-bed-dry">
+						<div class="soil-top"></div>
+						<div class="soil-front"></div>
+					</div>
 				</div>
-				<span class="plant-label">Reading</span>
-				<span class="plant-sublabel text-amber-400">⚠ At risk</span>
+				<div class="spot-label">
+					<span class="spot-name text-amber-400">Reading</span>
+					<span class="spot-streak text-amber-400">⚠ At risk</span>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	/* === Plant Container === */
-	.plant-container {
-		width: 80px;
-		height: 100px;
-		position: relative;
-	}
-
-	/* === Dirt Mound === */
-	.dirt-mound {
+	/* ===== SHARED: 3D Soil Bed ===== */
+	.soil-bed {
 		position: absolute;
 		bottom: 0;
 		left: 50%;
 		transform: translateX(-50%);
-		width: 40px;
+		width: 48px;
+		height: 18px;
+	}
+	.soil-bed-wide {
+		width: 56px;
+	}
+	.soil-top {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
 		height: 10px;
-		background: #5c4033;
-		border-radius: 50% 50% 0 0;
-	}
-	.dirt-mound-dry {
-		background: #8B7355;
-	}
-
-	/* === Seed Stage === */
-	.seed-stage {
-		position: relative;
-		width: 100%;
-		height: 100%;
-	}
-	.seed-dot {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 10px;
-		height: 8px;
-		background: #92702a;
+		background: linear-gradient(180deg, #6b4423 0%, #5c3d1e 100%);
 		border-radius: 50%;
+		box-shadow: 0 -2px 4px rgba(107, 68, 35, 0.3);
+	}
+	.soil-front {
+		position: absolute;
+		bottom: 0;
+		left: 3px;
+		width: calc(100% - 6px);
+		height: 12px;
+		background: linear-gradient(180deg, #5c3d1e 0%, #3d2810 100%);
+		border-radius: 0 0 40% 40%;
+		box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+	}
+	.soil-bed-dry .soil-top {
+		background: linear-gradient(180deg, #8B7355 0%, #6b5a3e 100%);
+	}
+	.soil-bed-dry .soil-front {
+		background: linear-gradient(180deg, #6b5a3e 0%, #4a3d28 100%);
 	}
 
-	/* === Sprout Stage === */
-	.sprout-stage {
+	/* ===== PLANT CONTAINER ===== */
+	.plant-slot {
+		width: 90px;
+		height: 110px;
 		position: relative;
-		width: 100%;
-		height: 100%;
-	}
-	.sprout-stem {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 2px;
-		height: 25px;
-		background: #4ade80;
-		border-radius: 1px;
-	}
-	.sprout-leaves {
-		position: absolute;
-		bottom: 30px;
-		left: 50%;
-		transform: translateX(-50%);
 		display: flex;
-		gap: 0;
+		align-items: flex-end;
+		justify-content: center;
 	}
-	.leaf-left {
-		width: 10px;
-		height: 8px;
-		background: #4ade80;
-		border-radius: 0 80% 0 80%;
-		transform: rotate(-15deg);
-	}
-	.leaf-right {
-		width: 10px;
-		height: 8px;
-		background: #4ade80;
-		border-radius: 80% 0 80% 0;
-		transform: rotate(15deg);
-	}
-
-	/* === Growing Stage === */
-	.growing-stage {
+	.plant {
 		position: relative;
-		width: 100%;
+		width: 90px;
 		height: 100%;
 	}
-	.growing-stem {
+
+	/* ===== SEED ===== */
+	.seed-plant .seed-body {
 		position: absolute;
-		bottom: 8px;
+		bottom: 12px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 12px;
+		height: 10px;
+		background: radial-gradient(ellipse at 40% 35%, #c9a54e, #8B6914);
+		border-radius: 50%;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 -2px 3px rgba(0,0,0,0.2);
+	}
+
+	/* ===== SPROUT ===== */
+	.sprout-plant .sprout-stem {
+		position: absolute;
+		bottom: 16px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 3px;
-		height: 40px;
-		background: linear-gradient(to top, #22c55e, #4ade80);
-		border-radius: 1px;
+		height: 28px;
+		background: linear-gradient(90deg, #2d8a3e, #4ade80, #2d8a3e);
+		border-radius: 2px;
+		box-shadow: 1px 0 2px rgba(0,0,0,0.15);
 	}
-	.growing-top {
+	.sprout-plant .sprout-leaves {
+		position: absolute;
+		bottom: 40px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	.s-leaf {
+		display: inline-block;
+		width: 14px;
+		height: 10px;
+		border-radius: 0 75% 0 75%;
+	}
+	.s-leaf-l {
+		background: linear-gradient(135deg, #4ade80 40%, #22c55e 100%);
+		box-shadow: -1px 1px 3px rgba(0,0,0,0.15);
+		transform: rotate(-20deg);
+		border-radius: 75% 0 75% 0;
+	}
+	.s-leaf-r {
+		background: linear-gradient(225deg, #4ade80 40%, #22c55e 100%);
+		box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+		transform: rotate(20deg);
+	}
+
+	/* ===== GROWING ===== */
+	.growing-plant .grow-stem {
+		position: absolute;
+		bottom: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 45px;
+		background: linear-gradient(90deg, #22883a, #4ade80, #22883a);
+		border-radius: 2px;
+		box-shadow: 1px 0 3px rgba(0,0,0,0.15);
+	}
+	.growing-plant .grow-top {
+		position: absolute;
+		bottom: 56px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+	}
+	.g-leaf {
+		display: block;
+		width: 16px;
+		height: 11px;
+	}
+	.g-leaf-l {
+		background: linear-gradient(135deg, #4ade80 30%, #22c55e 100%);
+		border-radius: 0 70% 0 70%;
+		transform: rotate(-25deg);
+		box-shadow: -1px 2px 4px rgba(0,0,0,0.15);
+	}
+	.g-leaf-r {
+		background: linear-gradient(225deg, #4ade80 30%, #22c55e 100%);
+		border-radius: 70% 0 70% 0;
+		transform: rotate(25deg);
+		box-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+	}
+	.g-bud {
+		width: 10px;
+		height: 10px;
+		background: radial-gradient(circle at 40% 35%, #f9a8d4, #ec4899);
+		border-radius: 50%;
+		box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
+		margin: 0 2px;
+	}
+	.g-leaf-low {
+		position: absolute;
+		bottom: 36px;
+		left: 22px;
+		width: 13px;
+		height: 9px;
+		background: linear-gradient(135deg, #4ade80 30%, #22c55e 100%);
+		border-radius: 0 70% 0 70%;
+		transform: rotate(-40deg);
+		box-shadow: -1px 1px 3px rgba(0,0,0,0.12);
+	}
+
+	/* ===== BLOOMING ===== */
+	.bloom-plant .bloom-stem {
+		position: absolute;
+		bottom: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 44px;
+		background: linear-gradient(90deg, #1a7a32, #4ade80, #1a7a32);
+		border-radius: 2px;
+		box-shadow: 1px 0 3px rgba(0,0,0,0.15);
+	}
+	.bloom-plant .flower {
+		position: absolute;
+		bottom: 56px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 32px;
+		height: 32px;
+	}
+	.petal {
+		position: absolute;
+		width: 13px;
+		height: 13px;
+		border-radius: 50%;
+		background: linear-gradient(135deg, #f9a8d4 20%, #ec4899 100%);
+		box-shadow: 0 2px 4px rgba(236, 72, 153, 0.25);
+	}
+	.p1 { top: 0; left: 9px; }
+	.p2 { top: 10px; right: 0; }
+	.p3 { bottom: 0; left: 9px; }
+	.p4 { top: 10px; left: 0; }
+	.p5 { top: 4px; left: 4px; width: 22px; height: 22px; background: linear-gradient(135deg, #f472b6, #db2777); opacity: 0.6; }
+	.pistil {
+		position: absolute;
+		top: 9px;
+		left: 9px;
+		width: 14px;
+		height: 14px;
+		background: radial-gradient(circle at 40% 35%, #fde68a, #f59e0b);
+		border-radius: 50%;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+		z-index: 2;
+	}
+	.b-leaf {
+		position: absolute;
+		width: 16px;
+		height: 10px;
+	}
+	.b-leaf-l {
+		bottom: 34px;
+		left: 20px;
+		background: linear-gradient(135deg, #4ade80 30%, #16a34a 100%);
+		border-radius: 0 70% 0 70%;
+		transform: rotate(-40deg);
+		box-shadow: -1px 2px 4px rgba(0,0,0,0.15);
+	}
+	.b-leaf-r {
+		bottom: 34px;
+		right: 20px;
+		background: linear-gradient(225deg, #4ade80 30%, #16a34a 100%);
+		border-radius: 70% 0 70% 0;
+		transform: rotate(40deg);
+		box-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+	}
+
+	/* ===== MATURE (Tree) ===== */
+	.mature-plant .trunk {
+		position: absolute;
+		bottom: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 10px;
+		height: 32px;
+	}
+	.trunk-body {
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, #6b3a1f, #92400e, #6b3a1f);
+		border-radius: 2px 2px 4px 4px;
+	}
+	.trunk-shadow {
+		position: absolute;
+		right: -4px;
+		top: 0;
+		width: 4px;
+		height: 100%;
+		background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
+		border-radius: 0 2px 2px 0;
+	}
+	.mature-plant .canopy {
 		position: absolute;
 		bottom: 44px;
 		left: 50%;
 		transform: translateX(-50%);
-		display: flex;
-		align-items: center;
-		gap: 0;
+		width: 56px;
+		height: 48px;
 	}
-	.leaf-left-md {
-		width: 12px;
-		height: 10px;
-		background: #4ade80;
-		border-radius: 0 70% 0 70%;
-		transform: rotate(-20deg);
-	}
-	.leaf-right-md {
-		width: 12px;
-		height: 10px;
-		background: #4ade80;
-		border-radius: 70% 0 70% 0;
-		transform: rotate(20deg);
-	}
-	.bud {
-		width: 8px;
-		height: 8px;
-		background: #f9a8d4;
+	.canopy-layer {
+		position: absolute;
 		border-radius: 50%;
-		margin: 0 2px;
 	}
-	.leaf-low-left {
-		position: absolute;
-		bottom: 32px;
-		left: 22px;
-		width: 10px;
-		height: 7px;
-		background: #4ade80;
-		border-radius: 0 70% 0 70%;
-		transform: rotate(-30deg);
+	.c-shadow {
+		width: 34px;
+		height: 32px;
+		top: 4px;
+		left: 11px;
+		background: #14532d;
+		z-index: 0;
 	}
-
-	/* === Blooming Stage === */
-	.blooming-stage {
-		position: relative;
-		width: 100%;
-		height: 100%;
-	}
-	.blooming-stem {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 3px;
-		height: 40px;
-		background: linear-gradient(to top, #16a34a, #4ade80);
-		border-radius: 1px;
-	}
-	.flower-head {
-		position: absolute;
-		bottom: 46px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 28px;
+	.c-back {
+		width: 30px;
 		height: 28px;
+		top: 2px;
+		left: 2px;
+		background: linear-gradient(135deg, #15803d 30%, #166534 100%);
+		z-index: 1;
+		box-shadow: -2px 2px 4px rgba(0,0,0,0.2);
 	}
-	.petal {
-		position: absolute;
-		width: 10px;
-		height: 10px;
-		background: #f472b6;
-		border-radius: 50%;
-	}
-	.petal-1 { top: 0; left: 9px; }
-	.petal-2 { top: 9px; right: 0; }
-	.petal-3 { bottom: 0; left: 9px; }
-	.petal-4 { top: 9px; left: 0; }
-	.petal-5 { top: 7px; left: 7px; width: 14px; height: 14px; background: #ec4899; opacity: 0.7; }
-	.flower-center {
-		position: absolute;
-		top: 8px;
-		left: 8px;
-		width: 12px;
-		height: 12px;
-		background: #fbbf24;
-		border-radius: 50%;
+	.c-mid {
+		width: 34px;
+		height: 30px;
+		top: 0;
+		left: 11px;
+		background: linear-gradient(135deg, #22c55e 20%, #16a34a 100%);
 		z-index: 2;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 	}
-	.bloom-leaf-l {
-		position: absolute;
-		bottom: 30px;
-		left: 20px;
-		width: 14px;
-		height: 9px;
-		background: #4ade80;
-		border-radius: 0 70% 0 70%;
-		transform: rotate(-35deg);
-	}
-	.bloom-leaf-r {
-		position: absolute;
-		bottom: 30px;
-		right: 20px;
-		width: 14px;
-		height: 9px;
-		background: #4ade80;
-		border-radius: 70% 0 70% 0;
-		transform: rotate(35deg);
+	.c-front {
+		width: 28px;
+		height: 24px;
+		top: 6px;
+		left: 26px;
+		background: linear-gradient(135deg, #4ade80 20%, #22c55e 100%);
+		z-index: 3;
+		box-shadow: 2px 1px 3px rgba(0,0,0,0.1);
 	}
 
-	/* === Mature Stage (Tree) === */
-	.mature-stage {
-		position: relative;
-		width: 100%;
-		height: 100%;
-	}
-	.trunk {
+	/* ===== WILTING ===== */
+	.wilt-plant .wilt-stem {
 		position: absolute;
-		bottom: 8px;
+		bottom: 16px;
 		left: 50%;
-		transform: translateX(-50%);
-		width: 8px;
-		height: 30px;
-		background: linear-gradient(to top, #92400e, #a16207);
+		transform: translateX(-50%) rotate(18deg);
+		transform-origin: bottom center;
+		width: 3px;
+		height: 38px;
+		background: linear-gradient(90deg, #8B7355, #a3a03a, #8B7355);
 		border-radius: 2px;
 	}
-	.canopy {
+	.wilt-plant .wilt-head {
 		position: absolute;
-		bottom: 35px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 50px;
-		height: 45px;
-	}
-	.canopy-blob {
-		position: absolute;
-		border-radius: 50%;
-		background: #22c55e;
-	}
-	.canopy-b1 {
-		width: 30px; height: 28px; top: 0; left: 10px; background: #22c55e;
-	}
-	.canopy-b2 {
-		width: 26px; height: 24px; top: 12px; left: 0; background: #16a34a;
-	}
-	.canopy-b3 {
-		width: 26px; height: 24px; top: 10px; right: 0; left: 24px; background: #15803d;
-	}
-
-	/* === Wilting Stage === */
-	.wilting-stage {
-		position: relative;
-		width: 100%;
-		height: 100%;
-	}
-	.wilt-stem {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%) rotate(15deg);
-		transform-origin: bottom center;
-		width: 2px;
-		height: 35px;
-		background: #a3a03a;
-		border-radius: 1px;
-	}
-	.wilt-top {
-		position: absolute;
-		bottom: 40px;
-		left: 55%;
-		transform: translateX(-50%) rotate(20deg);
+		bottom: 50px;
+		left: 56%;
+		transform: rotate(22deg);
 		display: flex;
 		align-items: center;
 	}
-	.wilt-leaf-l {
-		width: 10px;
-		height: 7px;
-		background: #a3a03a;
+	.w-leaf {
+		width: 12px;
+		height: 8px;
+		background: linear-gradient(135deg, #a3a03a, #8B7355);
 		border-radius: 0 60% 0 60%;
-		transform: rotate(-10deg);
+		box-shadow: -1px 1px 2px rgba(0,0,0,0.1);
 	}
-	.wilt-bud {
-		width: 6px;
-		height: 6px;
-		background: #92702a;
+	.w-leaf-l {
+		transform: rotate(-15deg);
+	}
+	.w-bud {
+		width: 8px;
+		height: 8px;
+		background: radial-gradient(circle at 40% 35%, #92702a, #6b5a3e);
 		border-radius: 50%;
 		margin-left: 2px;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 	}
 
-	/* === Garden Bed === */
+	/* ===== GARDEN BED ===== */
 	.garden-bed {
-		background: linear-gradient(180deg, #1a2e1a 0%, #0f1f0f 100%);
+		background:
+			radial-gradient(ellipse at 50% 100%, #2d1f0e 0%, transparent 60%),
+			linear-gradient(180deg, #1a2e1a 0%, #0f1f0f 100%);
 		border: 1px solid #2d4a2d;
 		border-radius: 16px;
-		padding: 20px 16px;
+		padding: 24px 16px 20px;
 		position: relative;
 		overflow: hidden;
+		box-shadow: inset 0 -20px 30px rgba(45,31,14,0.3), 0 4px 12px rgba(0,0,0,0.3);
 	}
-	.garden-bed::before {
-		content: '';
+	.garden-ground {
 		position: absolute;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		height: 40%;
-		background: linear-gradient(to top, #2d1f0e, transparent);
-		opacity: 0.3;
-		border-radius: 0 0 16px 16px;
+		height: 30%;
+		background: linear-gradient(to top, rgba(45,31,14,0.4), transparent);
+		pointer-events: none;
 	}
 	.garden-row {
 		display: flex;
 		justify-content: space-around;
-		gap: 12px;
-		margin-bottom: 16px;
+		gap: 8px;
+		margin-bottom: 20px;
+		position: relative;
+		z-index: 1;
 	}
 	.garden-row:last-child {
 		margin-bottom: 0;
 	}
-	.garden-plant {
+	.garden-spot {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 4px;
+		gap: 6px;
+		flex: 1;
 		cursor: pointer;
 		transition: transform 0.2s;
-		flex: 1;
 	}
-	.garden-plant:active {
+	.garden-spot:active {
 		transform: scale(0.95);
 	}
-	.plant-visual {
-		transform-origin: bottom center;
+	.spot-label {
+		text-align: center;
 	}
-	.plant-label {
+	.spot-name {
+		display: block;
 		font-size: 12px;
 		font-weight: 600;
 		color: #e2e8f0;
-		text-align: center;
 	}
-	.plant-sublabel {
+	.spot-streak {
+		display: block;
 		font-size: 10px;
 		color: #94a3b8;
-		text-align: center;
 	}
-	.garden-plant.wilt .plant-label {
-		color: #d97706;
+	.wilt-spot .spot-name {
+		color: #f59e0b;
+	}
+	.wilt-spot .spot-streak {
+		color: #f59e0b;
 	}
 </style>
