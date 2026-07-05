@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Garden prototype — Ghibli-inspired watercolor style
+	// Garden prototype — Stardew Valley pixel-art style, inline SVG
 	const STAGES = [
 		{ key: 'seed', label: 'Seed', desc: 'New stack' },
 		{ key: 'sprout', label: 'Sprout', desc: '1-2 days' },
@@ -11,83 +11,160 @@
 </script>
 
 <svelte:head>
-	<title>Garden — Ghibli Style</title>
+	<title>Garden — Stardew Style</title>
 </svelte:head>
 
 <div class="scene">
-	<div class="scene-content">
+	<div class="content">
 		<h1 class="title">Garden</h1>
-		<p class="subtitle">Studio Ghibli-inspired plants</p>
+		<p class="subtitle">Stardew Valley-inspired pixel plants</p>
 
 		<!-- Stage Reference -->
 		<div class="stages-grid">
 			{#each STAGES as stage}
 				<div class="stage-card">
-					<div class="plant-stage {stage.key}">
+					<div class="stage-plant">
 						{#if stage.key === 'seed'}
-							<div class="ghibli-soil">
-								<div class="soil-highlight"></div>
-							</div>
-							<div class="seed-grain"></div>
+							<svg viewBox="0 0 32 40" class="plant-svg">
+								<!-- Soil mound (isometric) -->
+								<ellipse cx="16" cy="34" rx="14" ry="4" fill="#5c3d1e"/>
+								<rect x="2" y="30" width="28" height="4" fill="#5c3d1e"/>
+								<ellipse cx="16" cy="30" rx="14" ry="5" fill="#7a5230"/>
+								<ellipse cx="16" cy="30" rx="14" ry="5" fill="url(#soilSheen)"/>
+								<!-- Seed -->
+								<ellipse cx="16" cy="28" rx="4" ry="3" fill="#c9a54e"/>
+								<ellipse cx="15" cy="27" rx="2" ry="1.5" fill="#e0c36a" opacity="0.6"/>
+							</svg>
 						{:else if stage.key === 'sprout'}
-							<div class="sprout-stem-ghibli"></div>
-							<div class="sprout-leaf-pair">
-								<div class="ghibli-leaf leaf-l"></div>
-								<div class="ghibli-leaf leaf-r"></div>
-							</div>
-							<div class="ghibli-soil">
-								<div class="soil-highlight"></div>
-							</div>
+							<svg viewBox="0 0 32 48" class="plant-svg">
+								<defs>
+									<linearGradient id="stemG" x1="0" y1="0" x2="1" y2="0">
+										<stop offset="0%" stop-color="#2d8a3e"/>
+										<stop offset="50%" stop-color="#5cb870"/>
+										<stop offset="100%" stop-color="#2d8a3e"/>
+									</linearGradient>
+								</defs>
+								<!-- Soil -->
+								<ellipse cx="16" cy="42" rx="14" ry="4" fill="#5c3d1e"/>
+								<rect x="2" y="38" width="28" height="4" fill="#5c3d1e"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="#7a5230"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="url(#soilSheen)"/>
+								<!-- Stem -->
+								<rect x="14.5" y="22" width="3" height="16" rx="1" fill="url(#stemG)"/>
+								<!-- Leaves -->
+								<path d="M15.5,24 Q10,22 8,18 Q12,20 15.5,22Z" fill="#5cb870"/>
+								<path d="M15.5,24 Q10,22 8,18 Q10,20 13,22Z" fill="#8dd89a" opacity="0.6"/>
+								<path d="M16.5,24 Q22,22 24,18 Q20,20 16.5,22Z" fill="#4a9e5c"/>
+								<path d="M16.5,24 Q22,22 24,18 Q22,20 19,22Z" fill="#6dcc7e" opacity="0.5"/>
+							</svg>
 						{:else if stage.key === 'growing'}
-							<div class="grow-stem-ghibli"></div>
-							<div class="grow-leaf-pair-top">
-								<div class="ghibli-leaf-md leaf-l"></div>
-								<div class="ghibli-bud-ghibli"></div>
-								<div class="ghibli-leaf-md leaf-r"></div>
-							</div>
-							<div class="ghibli-leaf-sm leaf-low"></div>
-							<div class="ghibli-soil">
-								<div class="soil-highlight"></div>
-							</div>
+							<svg viewBox="0 0 32 52" class="plant-svg">
+								<defs>
+									<linearGradient id="stemG2" x1="0" y1="0" x2="1" y2="0">
+										<stop offset="0%" stop-color="#2d8a3e"/>
+										<stop offset="50%" stop-color="#5cb870"/>
+										<stop offset="100%" stop-color="#2d8a3e"/>
+									</linearGradient>
+								</defs>
+								<!-- Soil -->
+								<ellipse cx="16" cy="46" rx="14" ry="4" fill="#5c3d1e"/>
+								<rect x="2" y="42" width="28" height="4" fill="#5c3d1e"/>
+								<ellipse cx="16" cy="42" rx="14" ry="5" fill="#7a5230"/>
+								<ellipse cx="16" cy="42" rx="14" ry="5" fill="url(#soilSheen)"/>
+								<!-- Stem -->
+								<rect x="14" y="18" width="4" height="24" rx="1.5" fill="url(#stemG2)"/>
+								<!-- Side leaf -->
+								<path d="M14,32 Q8,30 6,26 Q10,28 14,30Z" fill="#5cb870"/>
+								<path d="M14,32 Q8,30 6,26 Q9,28 12,30Z" fill="#8dd89a" opacity="0.5"/>
+								<!-- Top leaves -->
+								<path d="M15,20 Q8,18 6,13 Q10,16 15,18Z" fill="#5cb870"/>
+								<path d="M15,20 Q8,18 6,13 Q9,16 12,18Z" fill="#8dd89a" opacity="0.5"/>
+								<path d="M17,20 Q24,18 26,13 Q22,16 17,18Z" fill="#4a9e5c"/>
+								<path d="M17,20 Q24,18 26,13 Q23,16 20,18Z" fill="#6dcc7e" opacity="0.5"/>
+								<!-- Bud -->
+								<circle cx="16" cy="16" r="3.5" fill="#f4a0c0"/>
+								<circle cx="15" cy="15" r="1.5" fill="#f8c8d8" opacity="0.5"/>
+							</svg>
 						{:else if stage.key === 'blooming'}
-							<div class="bloom-stem-ghibli"></div>
-							<div class="bloom-leaf-l ghibli-leaf-lg"></div>
-							<div class="bloom-leaf-r ghibli-leaf-lg"></div>
-							<div class="ghibli-flower">
-								<div class="petal-gh p1"></div>
-								<div class="petal-gh p2"></div>
-								<div class="petal-gh p3"></div>
-								<div class="petal-gh p4"></div>
-								<div class="petal-gh p5"></div>
-								<div class="petal-gh p6"></div>
-								<div class="flower-glow"></div>
-								<div class="pistil-gh"></div>
-							</div>
-							<div class="ghibli-soil">
-								<div class="soil-highlight"></div>
-							</div>
+							<svg viewBox="0 0 40 56" class="plant-svg">
+								<defs>
+									<linearGradient id="stemG3" x1="0" y1="0" x2="1" y2="0">
+										<stop offset="0%" stop-color="#2d8a3e"/>
+										<stop offset="50%" stop-color="#5cb870"/>
+										<stop offset="100%" stop-color="#2d8a3e"/>
+									</linearGradient>
+									<radialGradient id="petalG">
+										<stop offset="0%" stop-color="#f8c8d8"/>
+										<stop offset="100%" stop-color="#e8609a"/>
+									</radialGradient>
+									<radialGradient id="pistilG">
+										<stop offset="0%" stop-color="#ffec99"/>
+										<stop offset="100%" stop-color="#e6a800"/>
+									</radialGradient>
+								</defs>
+								<!-- Soil -->
+								<ellipse cx="20" cy="50" rx="16" ry="4" fill="#5c3d1e"/>
+								<rect x="4" y="46" width="32" height="4" fill="#5c3d1e"/>
+								<ellipse cx="20" cy="46" rx="16" ry="5" fill="#7a5230"/>
+								<ellipse cx="20" cy="46" rx="16" ry="5" fill="url(#soilSheen)"/>
+								<!-- Stem -->
+								<rect x="18" y="22" width="4" height="24" rx="1.5" fill="url(#stemG3)"/>
+								<!-- Leaves -->
+								<path d="M18,34 Q10,32 7,27 Q12,30 18,32Z" fill="#5cb870"/>
+								<path d="M18,34 Q10,32 7,27 Q11,30 15,32Z" fill="#8dd89a" opacity="0.5"/>
+								<path d="M22,34 Q30,32 33,27 Q28,30 22,32Z" fill="#4a9e5c"/>
+								<path d="M22,34 Q30,32 33,27 Q29,30 25,32Z" fill="#6dcc7e" opacity="0.5"/>
+								<!-- Petals -->
+								<ellipse cx="20" cy="12" rx="5" ry="4" fill="url(#petalG)"/>
+								<ellipse cx="12" cy="16" rx="5" ry="3.5" fill="url(#petalG)" transform="rotate(-30 12 16)"/>
+								<ellipse cx="28" cy="16" rx="5" ry="3.5" fill="url(#petalG)" transform="rotate(30 28 16)"/>
+								<ellipse cx="13" cy="22" rx="4.5" ry="3.5" fill="url(#petalG)" transform="rotate(-70 13 22)"/>
+								<ellipse cx="27" cy="22" rx="4.5" ry="3.5" fill="url(#petalG)" transform="rotate(70 27 22)"/>
+								<ellipse cx="20" cy="24" rx="4.5" ry="3" fill="url(#petalG)"/>
+								<!-- Glow -->
+								<circle cx="20" cy="18" r="10" fill="url(#flowerGlow)"/>
+								<!-- Pistil -->
+								<circle cx="20" cy="18" r="5" fill="url(#pistilG)"/>
+								<circle cx="19" cy="17" r="2" fill="#ffec99" opacity="0.6"/>
+							</svg>
 						{:else if stage.key === 'mature'}
-							<div class="tree-trunk-ghibli"></div>
-							<div class="tree-canopy-ghibli">
-								<div class="canopy-blob cb1"></div>
-								<div class="canopy-blob cb2"></div>
-								<div class="canopy-blob cb3"></div>
-								<div class="canopy-blob cb4"></div>
-								<div class="canopy-blob cb5"></div>
-								<div class="canopy-highlight"></div>
-							</div>
-							<div class="ghibli-soil soil-wide">
-								<div class="soil-highlight"></div>
-							</div>
+							<svg viewBox="0 0 48 60" class="plant-svg">
+								<!-- Soil -->
+								<ellipse cx="24" cy="54" rx="18" ry="4" fill="#5c3d1e"/>
+								<rect x="6" y="50" width="36" height="4" fill="#5c3d1e"/>
+								<ellipse cx="24" cy="50" rx="18" ry="5" fill="#7a5230"/>
+								<ellipse cx="24" cy="50" rx="18" ry="5" fill="url(#soilSheen)"/>
+								<!-- Trunk -->
+								<rect x="20" y="30" width="8" height="20" rx="2" fill="#7a4a2a"/>
+								<rect x="24" y="30" width="4" height="20" rx="1" fill="#9a6a42" opacity="0.5"/>
+								<!-- Canopy blobs -->
+								<circle cx="24" cy="18" r="12" fill="#2d8a3e"/>
+								<circle cx="14" cy="22" r="9" fill="#1e6e32"/>
+								<circle cx="34" cy="22" r="9" fill="#1e6e32"/>
+								<circle cx="20" cy="14" r="8" fill="#3da052"/>
+								<circle cx="30" cy="16" r="7" fill="#3da052"/>
+								<circle cx="24" cy="10" r="6" fill="#4aba62"/>
+								<!-- Highlight patches -->
+								<ellipse cx="20" cy="14" rx="5" ry="4" fill="#6dcc7e" opacity="0.4"/>
+								<ellipse cx="30" cy="16" rx="4" ry="3" fill="#8dd89a" opacity="0.3"/>
+								<circle cx="24" cy="12" r="3" fill="#8dd89a" opacity="0.3"/>
+							</svg>
 						{:else if stage.key === 'wilting'}
-							<div class="wilt-stem-ghibli"></div>
-							<div class="wilt-head-ghibli">
-								<div class="wilt-leaf-gh"></div>
-								<div class="wilt-bud-gh"></div>
-							</div>
-							<div class="ghibli-soil soil-dry">
-								<div class="soil-highlight soil-highlight-dry"></div>
-							</div>
+							<svg viewBox="0 0 32 48" class="plant-svg">
+								<!-- Dry soil -->
+								<ellipse cx="16" cy="42" rx="14" ry="4" fill="#5a4a32"/>
+								<rect x="2" y="38" width="28" height="4" fill="#5a4a32"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="#8a7355"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="#a89070" opacity="0.3"/>
+								<!-- Drooping stem -->
+								<path d="M16,38 Q17,28 20,24" stroke="#8a7a3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+								<!-- Wilting leaves -->
+								<path d="M20,24 Q24,22 26,19 Q22,21 20,23Z" fill="#a89840"/>
+								<path d="M20,24 Q24,22 26,19 Q23,21 21,23Z" fill="#b8a850" opacity="0.5"/>
+								<!-- Bud -->
+								<circle cx="21" cy="22" r="3" fill="#8b6914"/>
+								<circle cx="20" cy="21" r="1.5" fill="#a88030" opacity="0.4"/>
+							</svg>
 						{/if}
 					</div>
 					<div class="stage-label">{stage.label}</div>
@@ -96,130 +173,163 @@
 			{/each}
 		</div>
 
+		<!-- Shared SVG defs -->
+		<svg style="position:absolute;width:0;height:0;">
+			<defs>
+				<radialGradient id="soilSheen">
+					<stop offset="50%" stop-color="transparent"/>
+					<stop offset="100%" stop-color="rgba(168,125,82,0.15)"/>
+				</radialGradient>
+				<radialGradient id="flowerGlow">
+					<stop offset="0%" stop-color="rgba(244,160,192,0.3)"/>
+					<stop offset="100%" stop-color="transparent"/>
+				</radialGradient>
+			</defs>
+		</svg>
+
 		<!-- Full Garden Mockup -->
 		<h2 class="section-title">Your Garden</h2>
-		<div class="garden-bed-ghibli">
-			<div class="garden-grass"></div>
-			<div class="garden-plots">
-				<div class="garden-plot">
-					<div class="plant-stage blooming">
-						<div class="bloom-stem-ghibli"></div>
-						<div class="bloom-leaf-l ghibli-leaf-lg"></div>
-						<div class="bloom-leaf-r ghibli-leaf-lg"></div>
-						<div class="ghibli-flower">
-							<div class="petal-gh p1"></div>
-							<div class="petal-gh p2"></div>
-							<div class="petal-gh p3"></div>
-							<div class="petal-gh p4"></div>
-							<div class="petal-gh p5"></div>
-							<div class="petal-gh p6"></div>
-							<div class="flower-glow"></div>
-							<div class="pistil-gh"></div>
+		<div class="garden-bed">
+			<!-- Wooden border -->
+			<div class="bed-border">
+				<div class="bed-corner bed-tl"></div>
+				<div class="bed-top"></div>
+				<div class="bed-corner bed-tr"></div>
+				<div class="bed-side bed-left"></div>
+				<div class="bed-inner">
+					<!-- Grass tufts along edges -->
+					<div class="grass-tuft" style="left:8%;top:5%"><svg viewBox="0 0 12 14" width="12" height="14"><path d="M3,14 L4,6 L5,14" fill="#3a6e2a"/><path d="M5,14 L6,4 L7,14" fill="#4a8e3a"/><path d="M7,14 L8,7 L9,14" fill="#3a6e2a"/></svg></div>
+					<div class="grass-tuft" style="right:10%;top:8%"><svg viewBox="0 0 12 14" width="12" height="14"><path d="M3,14 L4,5 L5,14" fill="#4a8e3a"/><path d="M5,14 L6,3 L7,14" fill="#5aae4a"/><path d="M7,14 L8,6 L9,14" fill="#4a8e3a"/></svg></div>
+					<div class="grass-tuft" style="left:5%;bottom:12%"><svg viewBox="0 0 12 14" width="12" height="14"><path d="M3,14 L4,7 L5,14" fill="#3a6e2a"/><path d="M5,14 L6,5 L7,14" fill="#4a8e3a"/></svg></div>
+					<div class="grass-tuft" style="right:8%;bottom:15%"><svg viewBox="0 0 12 14" width="12" height="14"><path d="M3,14 L4,6 L5,14" fill="#5aae4a"/><path d="M5,14 L6,4 L7,14" fill="#4a8e3a"/><path d="M7,14 L8,7 L9,14" fill="#3a6e2a"/></svg></div>
+
+					<div class="garden-row">
+						<!-- Morning Routine - Blooming -->
+						<div class="garden-spot">
+							<svg viewBox="0 0 40 56" class="plant-svg">
+								<ellipse cx="20" cy="50" rx="16" ry="4" fill="#5c3d1e"/>
+								<rect x="4" y="46" width="32" height="4" fill="#5c3d1e"/>
+								<ellipse cx="20" cy="46" rx="16" ry="5" fill="#7a5230"/>
+								<ellipse cx="20" cy="46" rx="16" ry="5" fill="url(#soilSheen)"/>
+								<rect x="18" y="22" width="4" height="24" rx="1.5" fill="url(#stemG3)"/>
+								<path d="M18,34 Q10,32 7,27 Q12,30 18,32Z" fill="#5cb870"/>
+								<path d="M18,34 Q10,32 7,27 Q11,30 15,32Z" fill="#8dd89a" opacity="0.5"/>
+								<path d="M22,34 Q30,32 33,27 Q28,30 22,32Z" fill="#4a9e5c"/>
+								<path d="M22,34 Q30,32 33,27 Q29,30 25,32Z" fill="#6dcc7e" opacity="0.5"/>
+								<ellipse cx="20" cy="12" rx="5" ry="4" fill="url(#petalG)"/>
+								<ellipse cx="12" cy="16" rx="5" ry="3.5" fill="url(#petalG)" transform="rotate(-30 12 16)"/>
+								<ellipse cx="28" cy="16" rx="5" ry="3.5" fill="url(#petalG)" transform="rotate(30 28 16)"/>
+								<ellipse cx="13" cy="22" rx="4.5" ry="3.5" fill="url(#petalG)" transform="rotate(-70 13 22)"/>
+								<ellipse cx="27" cy="22" rx="4.5" ry="3.5" fill="url(#petalG)" transform="rotate(70 27 22)"/>
+								<ellipse cx="20" cy="24" rx="4.5" ry="3" fill="url(#petalG)"/>
+								<circle cx="20" cy="18" r="10" fill="url(#flowerGlow)"/>
+								<circle cx="20" cy="18" r="5" fill="url(#pistilG)"/>
+								<circle cx="19" cy="17" r="2" fill="#ffec99" opacity="0.6"/>
+							</svg>
+							<span class="spot-name">Morning Routine</span>
+							<span class="spot-streak">🔥 7 days</span>
 						</div>
-						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
-					</div>
-					<span class="plot-name">Morning Routine</span>
-					<span class="plot-streak">🔥 7 days</span>
-				</div>
-				<div class="garden-plot">
-					<div class="plant-stage growing">
-						<div class="grow-stem-ghibli"></div>
-						<div class="grow-leaf-pair-top">
-							<div class="ghibli-leaf-md leaf-l"></div>
-							<div class="ghibli-bud-ghibli"></div>
-							<div class="ghibli-leaf-md leaf-r"></div>
+						<!-- Wind Down - Growing -->
+						<div class="garden-spot">
+							<svg viewBox="0 0 32 52" class="plant-svg">
+								<ellipse cx="16" cy="46" rx="14" ry="4" fill="#5c3d1e"/>
+								<rect x="2" y="42" width="28" height="4" fill="#5c3d1e"/>
+								<ellipse cx="16" cy="42" rx="14" ry="5" fill="#7a5230"/>
+								<ellipse cx="16" cy="42" rx="14" ry="5" fill="url(#soilSheen)"/>
+								<rect x="14" y="18" width="4" height="24" rx="1.5" fill="url(#stemG2)"/>
+								<path d="M14,32 Q8,30 6,26 Q10,28 14,30Z" fill="#5cb870"/>
+								<path d="M14,32 Q8,30 6,26 Q9,28 12,30Z" fill="#8dd89a" opacity="0.5"/>
+								<path d="M15,20 Q8,18 6,13 Q10,16 15,18Z" fill="#5cb870"/>
+								<path d="M15,20 Q8,18 6,13 Q9,16 12,18Z" fill="#8dd89a" opacity="0.5"/>
+								<path d="M17,20 Q24,18 26,13 Q22,16 17,18Z" fill="#4a9e5c"/>
+								<path d="M17,20 Q24,18 26,13 Q23,16 20,18Z" fill="#6dcc7e" opacity="0.5"/>
+								<circle cx="16" cy="16" r="3.5" fill="#f4a0c0"/>
+								<circle cx="15" cy="15" r="1.5" fill="#f8c8d8" opacity="0.5"/>
+							</svg>
+							<span class="spot-name">Wind Down</span>
+							<span class="spot-streak">🔥 3 days</span>
 						</div>
-						<div class="ghibli-leaf-sm leaf-low"></div>
-						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
-					</div>
-					<span class="plot-name">Wind Down</span>
-					<span class="plot-streak">🔥 3 days</span>
-				</div>
-				<div class="garden-plot">
-					<div class="plant-stage seed">
-						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
-						<div class="seed-grain"></div>
-					</div>
-					<span class="plot-name">Focus</span>
-					<span class="plot-streak plot-new">New</span>
-				</div>
-			</div>
-			<div class="garden-plots">
-				<div class="garden-plot">
-					<div class="plant-stage mature">
-						<div class="tree-trunk-ghibli"></div>
-						<div class="tree-canopy-ghibli">
-							<div class="canopy-blob cb1"></div>
-							<div class="canopy-blob cb2"></div>
-							<div class="canopy-blob cb3"></div>
-							<div class="canopy-blob cb4"></div>
-							<div class="canopy-blob cb5"></div>
-							<div class="canopy-highlight"></div>
+						<!-- Focus - Seed -->
+						<div class="garden-spot">
+							<svg viewBox="0 0 32 40" class="plant-svg">
+								<ellipse cx="16" cy="34" rx="14" ry="4" fill="#5c3d1e"/>
+								<rect x="2" y="30" width="28" height="4" fill="#5c3d1e"/>
+								<ellipse cx="16" cy="30" rx="14" ry="5" fill="#7a5230"/>
+								<ellipse cx="16" cy="30" rx="14" ry="5" fill="url(#soilSheen)"/>
+								<ellipse cx="16" cy="28" rx="4" ry="3" fill="#c9a54e"/>
+								<ellipse cx="15" cy="27" rx="2" ry="1.5" fill="#e0c36a" opacity="0.6"/>
+							</svg>
+							<span class="spot-name">Focus</span>
+							<span class="spot-streak new">New</span>
 						</div>
-						<div class="ghibli-soil soil-wide"><div class="soil-highlight"></div></div>
 					</div>
-					<span class="plot-name">Fitness</span>
-					<span class="plot-streak">🔥 21 days</span>
-				</div>
-				<div class="garden-plot wilt-plot">
-					<div class="plant-stage wilting">
-						<div class="wilt-stem-ghibli"></div>
-						<div class="wilt-head-ghibli">
-							<div class="wilt-leaf-gh"></div>
-							<div class="wilt-bud-gh"></div>
+					<div class="garden-row">
+						<!-- Fitness - Mature -->
+						<div class="garden-spot">
+							<svg viewBox="0 0 48 60" class="plant-svg-lg">
+								<ellipse cx="24" cy="54" rx="18" ry="4" fill="#5c3d1e"/>
+								<rect x="6" y="50" width="36" height="4" fill="#5c3d1e"/>
+								<ellipse cx="24" cy="50" rx="18" ry="5" fill="#7a5230"/>
+								<ellipse cx="24" cy="50" rx="18" ry="5" fill="url(#soilSheen)"/>
+								<rect x="20" y="30" width="8" height="20" rx="2" fill="#7a4a2a"/>
+								<rect x="24" y="30" width="4" height="20" rx="1" fill="#9a6a42" opacity="0.5"/>
+								<circle cx="24" cy="18" r="12" fill="#2d8a3e"/>
+								<circle cx="14" cy="22" r="9" fill="#1e6e32"/>
+								<circle cx="34" cy="22" r="9" fill="#1e6e32"/>
+								<circle cx="20" cy="14" r="8" fill="#3da052"/>
+								<circle cx="30" cy="16" r="7" fill="#3da052"/>
+								<circle cx="24" cy="10" r="6" fill="#4aba62"/>
+								<ellipse cx="20" cy="14" rx="5" ry="4" fill="#6dcc7e" opacity="0.4"/>
+								<ellipse cx="30" cy="16" rx="4" ry="3" fill="#8dd89a" opacity="0.3"/>
+								<circle cx="24" cy="12" r="3" fill="#8dd89a" opacity="0.3"/>
+							</svg>
+							<span class="spot-name">Fitness</span>
+							<span class="spot-streak">🔥 21 days</span>
 						</div>
-						<div class="ghibli-soil soil-dry"><div class="soil-highlight soil-highlight-dry"></div></div>
+						<!-- Reading - Wilting -->
+						<div class="garden-spot wilt">
+							<svg viewBox="0 0 32 48" class="plant-svg">
+								<ellipse cx="16" cy="42" rx="14" ry="4" fill="#5a4a32"/>
+								<rect x="2" y="38" width="28" height="4" fill="#5a4a32"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="#8a7355"/>
+								<ellipse cx="16" cy="38" rx="14" ry="5" fill="#a89070" opacity="0.3"/>
+								<path d="M16,38 Q17,28 20,24" stroke="#8a7a3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+								<path d="M20,24 Q24,22 26,19 Q22,21 20,23Z" fill="#a89840"/>
+								<path d="M20,24 Q24,22 26,19 Q23,21 21,23Z" fill="#b8a850" opacity="0.5"/>
+								<circle cx="21" cy="22" r="3" fill="#8b6914"/>
+								<circle cx="20" cy="21" r="1.5" fill="#a88030" opacity="0.4"/>
+							</svg>
+							<span class="spot-name wilt-name">Reading</span>
+							<span class="spot-streak wilt-streak">⚠ At risk</span>
+						</div>
 					</div>
-					<span class="plot-name plot-name-wilt">Reading</span>
-					<span class="plot-streak plot-streak-wilt">⚠ At risk</span>
 				</div>
+				<div class="bed-side bed-right"></div>
+				<div class="bed-corner bed-bl"></div>
+				<div class="bed-bottom"></div>
+				<div class="bed-corner bed-br"></div>
 			</div>
 		</div>
+
+		<!-- Sparkle key -->
+		<p class="footnote">✨ Blooming & Mature plants shimmer gently</p>
 	</div>
 </div>
 
 <style>
-	/* === Ghibli Color Palette === */
-	:root {
-		--gh-soil: #6b4423;
-		--gh-soil-light: #8b6341;
-		--gh-soil-highlight: #a87d52;
-		--gh-stem: #4a9e5c;
-		--gh-leaf: #5cb870;
-		--gh-leaf-light: #8dd89a;
-		--gh-leaf-dark: #2d7a3e;
-		--gh-petal: #f4a0c0;
-		--gh-petal-light: #f8c8d8;
-		--gh-petal-dark: #d4608a;
-		--gh-pistil: #ffd966;
-		--gh-pistil-light: #ffec99;
-		--gh-trunk: #7a4a2a;
-		--gh-trunk-light: #9a6a42;
-		--gh-canopy: #3da052;
-		--gh-canopy-light: #6dcc7e;
-		--gh-canopy-dark: #1e6e32;
-		--gh-wilt-leaf: #a89840;
-		--gh-wilt-stem: #8a7a3a;
-		--gh-wilt-bud: #8b6914;
-		--gh-dry-soil: #8a7355;
-		--gh-bg: #0d1a0d;
-		--gh-bed: #142814;
-	}
-
-	/* === Scene === */
 	.scene {
 		min-height: 100vh;
-		background: linear-gradient(180deg, #0a1a2e 0%, #0d2818 30%, var(--gh-bg) 100%);
-		padding: 2rem 1rem;
+		background: linear-gradient(180deg, #1a2a4a 0%, #2a3a5a 15%, #1a3a2a 40%, #0d1f0d 100%);
+		padding: 1.5rem 1rem;
 	}
-	.scene-content {
+	.content {
 		max-width: 28rem;
 		margin: 0 auto;
 	}
 	.title {
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: #e8e4d8;
+		color: #e8dcc8;
 		margin-bottom: 0.25rem;
 	}
 	.subtitle {
@@ -230,11 +340,17 @@
 	.section-title {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: #e8e4d8;
+		color: #e8dcc8;
 		margin-bottom: 1rem;
 	}
+	.footnote {
+		font-size: 0.7rem;
+		color: #5a7a5a;
+		text-align: center;
+		margin-top: 1rem;
+	}
 
-	/* === Stages Grid === */
+	/* Stages grid */
 	.stages-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -245,378 +361,95 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.375rem;
+		gap: 0.25rem;
+	}
+	.stage-plant {
+		height: 100px;
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+	}
+	.plant-svg {
+		width: 48px;
+		height: auto;
+		max-height: 90px;
+		filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+	}
+	.plant-svg-lg {
+		width: 56px;
+		height: auto;
+		max-height: 100px;
+		filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
 	}
 	.stage-label {
 		font-size: 0.75rem;
 		font-weight: 600;
-		color: #e8e4d8;
+		color: #e8dcc8;
 	}
 	.stage-desc {
 		font-size: 0.625rem;
 		color: #7a8a6a;
 	}
 
-	/* === Plant Stage Container === */
-	.plant-stage {
-		position: relative;
-		width: 90px;
-		height: 110px;
+	/* Garden bed */
+	.garden-bed {
+		padding: 0;
 	}
-
-	/* === Ghibli Soil (Raised Mound) === */
-	.ghibli-soil {
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 50px;
-		height: 18px;
-	}
-	.soil-wide {
-		width: 60px;
-	}
-	.soil-dry {
-		--gh-soil: var(--gh-dry-soil);
-		--gh-soil-light: #9a8a6a;
-		--gh-soil-highlight: #b09a7a;
-	}
-	.ghibli-soil::before {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 2px;
-		right: 2px;
-		height: 12px;
-		background: linear-gradient(180deg, var(--gh-soil-light), var(--gh-soil));
-		border-radius: 0 0 45% 45%;
-		box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-	}
-	.soil-highlight {
-		position: absolute;
-		top: 0;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 80%;
-		height: 10px;
-		background: linear-gradient(180deg, var(--gh-soil-highlight), var(--gh-soil-light));
-		border-radius: 50%;
-		box-shadow: 0 -1px 4px rgba(168,125,82,0.3);
-	}
-	.soil-highlight-dry {
-		background: linear-gradient(180deg, #b09a7a, #9a8a6a);
-	}
-
-	/* === Seed === */
-	.seed-grain {
-		position: absolute;
-		bottom: 14px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 12px;
-		height: 10px;
-		background: radial-gradient(ellipse at 35% 30%, #d4a843, #8B6914);
-		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.15);
-	}
-
-	/* === Sprout === */
-	.sprout-stem-ghibli {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 3px;
-		height: 26px;
-		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
-		border-radius: 2px;
-	}
-	.sprout-leaf-pair {
-		position: absolute;
-		bottom: 38px;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		align-items: center;
-	}
-	.ghibli-leaf {
-		width: 14px;
-		height: 10px;
-		border-radius: 0 70% 0 70%;
-		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
-		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-	}
-	.leaf-l {
-		border-radius: 70% 0 70% 0;
-		transform: rotate(-18deg);
-	}
-	.leaf-r {
-		border-radius: 0 70% 0 70%;
-		transform: rotate(18deg);
-	}
-
-	/* === Growing === */
-	.grow-stem-ghibli {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 4px;
-		height: 42px;
-		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
-		border-radius: 2px;
-	}
-	.grow-leaf-pair-top {
-		position: absolute;
-		bottom: 54px;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		align-items: center;
-	}
-	.ghibli-leaf-md {
-		width: 16px;
-		height: 12px;
-		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
-		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-	}
-	.ghibli-bud-ghibli {
-		width: 10px;
-		height: 10px;
-		background: radial-gradient(circle at 40% 35%, var(--gh-petal-light), var(--gh-petal), var(--gh-petal-dark));
-		border-radius: 50%;
-		box-shadow: 0 1px 4px rgba(244,160,192,0.3);
-		margin: 0 1px;
-	}
-	.ghibli-leaf-sm {
-		width: 12px;
-		height: 8px;
-		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
-		box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-	}
-	.leaf-low {
-		position: absolute;
-		bottom: 36px;
-		left: 22px;
-		border-radius: 70% 0 70% 0;
-		transform: rotate(-40deg);
-	}
-
-	/* === Blooming === */
-	.bloom-stem-ghibli {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 4px;
-		height: 40px;
-		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
-		border-radius: 2px;
-	}
-	.bloom-leaf-l {
-		position: absolute;
-		bottom: 32px;
-		left: 18px;
-		transform: rotate(-40deg);
-	}
-	.bloom-leaf-r {
-		position: absolute;
-		bottom: 32px;
-		right: 18px;
-		border-radius: 0 70% 0 70%;
-		transform: rotate(40deg);
-	}
-	.ghibli-leaf-lg {
-		width: 18px;
-		height: 12px;
-		border-radius: 70% 0 70% 0;
-		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
-		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-	}
-	.ghibli-flower {
-		position: absolute;
-		bottom: 52px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 34px;
-		height: 34px;
-	}
-	.petal-gh {
-		position: absolute;
-		width: 14px;
-		height: 14px;
-		border-radius: 50%;
-		background: radial-gradient(circle at 35% 30%, var(--gh-petal-light), var(--gh-petal));
-		box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-	}
-	.p1 { top: 0; left: 10px; }
-	.p2 { top: 8px; right: 0; background: radial-gradient(circle at 60% 30%, var(--gh-petal-light), var(--gh-petal)); }
-	.p3 { bottom: 2px; left: 4px; background: radial-gradient(circle at 35% 60%, var(--gh-petal), var(--gh-petal-dark)); }
-	.p4 { top: 8px; left: 0; background: radial-gradient(circle at 40% 50%, var(--gh-petal-light), var(--gh-petal)); }
-	.p5 { top: 2px; left: 18px; background: radial-gradient(circle at 50% 40%, var(--gh-petal), var(--gh-petal-dark)); }
-	.p6 { bottom: 2px; right: 6px; background: radial-gradient(circle at 55% 55%, var(--gh-petal), var(--gh-petal-dark)); }
-	.flower-glow {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 26px;
-		height: 26px;
-		background: radial-gradient(circle, rgba(244,160,192,0.3) 0%, transparent 70%);
-		border-radius: 50%;
-		z-index: 1;
-	}
-	.pistil-gh {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 12px;
-		height: 12px;
-		background: radial-gradient(circle at 40% 35%, var(--gh-pistil-light), var(--gh-pistil), #e6a800);
-		border-radius: 50%;
-		box-shadow: 0 0 6px rgba(255,217,102,0.4);
-		z-index: 2;
-	}
-
-	/* === Mature (Tree) === */
-	.tree-trunk-ghibli {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 10px;
-		height: 30px;
-		background: linear-gradient(90deg, var(--gh-trunk), var(--gh-trunk-light), var(--gh-trunk));
-		border-radius: 3px 3px 5px 5px;
-		box-shadow: 2px 0 4px rgba(0,0,0,0.2);
-	}
-	.tree-canopy-ghibli {
-		position: absolute;
-		bottom: 42px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 64px;
-		height: 52px;
-	}
-	.canopy-blob {
-		position: absolute;
-		border-radius: 50%;
-	}
-	.cb1 {
-		width: 36px; height: 32px;
-		top: 0; left: 14px;
-		background: radial-gradient(ellipse at 40% 35%, var(--gh-canopy-light), var(--gh-canopy));
-		box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-		z-index: 3;
-	}
-	.cb2 {
-		width: 30px; height: 28px;
-		top: 10px; left: 0;
-		background: radial-gradient(ellipse at 50% 40%, var(--gh-canopy), var(--gh-canopy-dark));
-		box-shadow: -2px 2px 4px rgba(0,0,0,0.15);
-		z-index: 2;
-	}
-	.cb3 {
-		width: 30px; height: 26px;
-		top: 8px; right: 0; left: 34px;
-		background: radial-gradient(ellipse at 35% 40%, var(--gh-canopy-light), var(--gh-canopy));
-		box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-		z-index: 2;
-	}
-	.cb4 {
-		width: 24px; height: 22px;
-		top: 20px; left: 6px;
-		background: radial-gradient(ellipse at 45% 35%, var(--gh-canopy), var(--gh-canopy-dark));
-		z-index: 1;
-	}
-	.cb5 {
-		width: 26px; height: 24px;
-		top: 18px; left: 28px;
-		background: radial-gradient(ellipse at 40% 40%, var(--gh-canopy), var(--gh-canopy-dark));
-		z-index: 1;
-	}
-	.canopy-highlight {
-		position: absolute;
-		top: 6px;
-		left: 18px;
-		width: 20px;
-		height: 14px;
-		background: radial-gradient(ellipse at 50% 50%, rgba(141,216,154,0.4), transparent);
-		border-radius: 50%;
-		z-index: 4;
-	}
-
-	/* === Wilting === */
-	.wilt-stem-ghibli {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%) rotate(16deg);
-		transform-origin: bottom center;
-		width: 3px;
-		height: 36px;
-		background: linear-gradient(90deg, #6b5a2e, var(--gh-wilt-stem), #6b5a2e);
-		border-radius: 2px;
-	}
-	.wilt-head-ghibli {
-		position: absolute;
-		bottom: 48px;
-		left: 56%;
-		transform: rotate(20deg);
-		display: flex;
-		align-items: center;
-	}
-	.wilt-leaf-gh {
-		width: 13px;
-		height: 9px;
-		background: radial-gradient(ellipse at 30% 40%, #c4b44a, var(--gh-wilt-leaf));
-		border-radius: 70% 0 70% 0;
-		transform: rotate(-12deg);
-		box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-	}
-	.wilt-bud-gh {
-		width: 8px;
-		height: 8px;
-		background: radial-gradient(circle at 40% 35%, #b08a2a, var(--gh-wilt-bud));
-		border-radius: 50%;
-		margin-left: 2px;
-		box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-	}
-
-	/* === Garden Bed === */
-	.garden-bed-ghibli {
-		background:
-			radial-gradient(ellipse at 50% 110%, rgba(74,50,20,0.6) 0%, transparent 60%),
-			linear-gradient(180deg, #142814 0%, #0d1a0d 100%);
-		border: 1px solid #2a4a2a;
-		border-radius: 20px;
-		padding: 28px 16px 24px;
-		position: relative;
+	.bed-border {
+		display: grid;
+		grid-template-columns: 12px 1fr 12px;
+		grid-template-rows: 12px 1fr 12px;
+		border-radius: 16px;
 		overflow: hidden;
-		box-shadow: inset 0 -24px 36px rgba(45,31,14,0.25), 0 6px 16px rgba(0,0,0,0.3);
+		background: #3a2810;
 	}
-	.garden-grass {
+	.bed-corner {
+		background: #5a4020;
+	}
+	.bed-tl { border-radius: 16px 0 0 0; }
+	.bed-tr { border-radius: 0 16px 0 0; }
+	.bed-bl { border-radius: 0 0 0 16px; }
+	.bed-br { border-radius: 0 0 16px 0; }
+	.bed-top {
+		background: linear-gradient(180deg, #6a5030, #5a4020);
+	}
+	.bed-bottom {
+		background: linear-gradient(180deg, #5a4020, #4a3018);
+	}
+	.bed-left {
+		background: linear-gradient(90deg, #5a4020, #4a3018);
+	}
+	.bed-right {
+		background: linear-gradient(90deg, #4a3018, #5a4020);
+	}
+	.bed-inner {
+		background:
+			radial-gradient(ellipse at 50% 90%, rgba(74,50,20,0.5) 0%, transparent 60%),
+			linear-gradient(180deg, #1a3a1a 0%, #142814 40%, #1a2a10 100%);
+		padding: 20px 12px;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	/* Grass tufts */
+	.grass-tuft {
 		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 40%;
-		background: linear-gradient(to top, rgba(30,80,40,0.15), transparent);
+		opacity: 0.6;
+		z-index: 1;
 		pointer-events: none;
 	}
-	.garden-plots {
+
+	.garden-row {
 		display: flex;
 		justify-content: space-around;
+		align-items: flex-end;
 		gap: 8px;
-		margin-bottom: 20px;
 		position: relative;
-		z-index: 1;
+		z-index: 2;
 	}
-	.garden-plots:last-child {
-		margin-bottom: 0;
-	}
-	.garden-plot {
+	.garden-spot {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -625,30 +458,33 @@
 		cursor: pointer;
 		transition: transform 0.2s;
 	}
-	.garden-plot:active {
+	.garden-spot:active {
 		transform: scale(0.95);
 	}
-	.plot-name {
+	.spot-name {
 		font-size: 0.75rem;
 		font-weight: 600;
-		color: #e8e4d8;
+		color: #e8dcc8;
 		text-align: center;
 	}
-	.plot-streak {
+	.spot-streak {
 		font-size: 0.625rem;
 		color: #7a9a6a;
 		text-align: center;
 	}
-	.plot-new {
+	.spot-streak.new {
 		color: #5a7a4a;
 	}
-	.plot-name-wilt {
+	.wilt-name {
 		color: #d4a040;
 	}
-	.plot-streak-wilt {
-		color: #d4a040;
+	.wilt-streak {
+		color: #d4a040 !important;
 	}
-	.wilt-plot .plant-stage {
+
+	/* Wilting dimmer */
+	.wilt .plant-svg {
 		opacity: 0.85;
+		filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)) saturate(0.7);
 	}
 </style>
