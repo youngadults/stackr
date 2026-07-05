@@ -268,30 +268,15 @@
 	</div>
 {:else}
 	<div class="min-h-screen flex flex-col bg-slate-950">
-		<header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-sm border-b border-slate-800/50 px-4">
-			<div class="max-w-lg mx-auto flex items-center justify-between py-3">
-				<div class="flex items-center gap-2">
-					<span class="text-lg font-bold text-indigo-400">🏗️ Stackr</span>
-				</div>
-				<div class="flex items-center gap-3">
-					{#if appState.profile}
-						<span class="text-xs text-slate-400">Lv.{appState.profile.level}</span>
-					{/if}
-					<button onclick={handleSignOut} class="text-slate-500 hover:text-slate-300 text-xs" aria-label="Sign out">
-						<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-						</svg>
-					</button>
-				</div>
-			</div>
-		</header>
-
-		<main class="flex-1 px-4 pb-20 pt-4 max-w-lg mx-auto w-full">
+		<main class="flex-1 px-4 pb-16 pt-2 max-w-lg mx-auto w-full">
 			{@render children()}
 		</main>
 
 		<nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 z-40">
-			<div class="max-w-lg mx-auto flex items-center justify-around px-4 py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+			<div class="max-w-lg mx-auto flex items-center justify-around px-4 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] relative">
+				{#if appState.profile}
+					<span class="absolute left-4 top-0.5 text-[10px] text-slate-500 font-medium">Lv.{appState.profile.level}</span>
+				{/if}
 				{#each NAV_ITEMS as item}
 					<a
 						href={item.href}
