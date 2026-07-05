@@ -396,6 +396,16 @@
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;
+		perspective: 600px;
+	}
+	.stage-plant .plant-svg,
+	.stage-plant .plant-svg-lg {
+		transform: rotateX(25deg);
+		transform-origin: bottom center;
+	}
+	.stage-plant-lg .plant-svg-lg {
+		transform: rotateX(25deg);
+		transform-origin: bottom center;
 	}
 	.stage-plant-lg {
 		height: 110px;
@@ -481,6 +491,11 @@
 		flex: 1;
 		cursor: pointer;
 		transition: transform 0.2s;
+		perspective: 600px;
+	}
+	.garden-spot :global(svg) {
+		transform: rotateX(25deg);
+		transform-origin: bottom center;
 	}
 	.garden-spot:active {
 		transform: scale(0.95);
