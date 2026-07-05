@@ -1,85 +1,36 @@
 <script lang="ts">
 	import { getAppState } from '$lib/stores/app.svelte';
-	import { calculateStreak, xpProgressInLevel, completionHeatmapData, heatmapLevel } from '$lib/utils/gamification';
-	import { today, generateDateRange, formatDate } from '$lib/utils/helpers';
+	import { calculateStreak, xpProgressInLevel } from '$lib/utils/gamification';
+	import { today, daysAgo } from '$lib/utils/helpers';
 
 	const appState = getAppState();
 
-	// Generate last 365 days of data
-	const dateRange = generateDateRange(365);
-	const heatmapData = $derived(completionHeatmapData(appState.completions));
-	const maxCompletions = $derived(Math.max(...heatmapData.values(), 0));
+	const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-	// Get weekly grid (52 weeks x 7 days, like GitHub)
-	function getHeatmapGrid(): { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] {
-		const weeks: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] = [];
-		const todayDate = new Date();
-		todayDate.setHours(0, 0, 0, 0);
-		const todayDay = todayDate.getDay();
-
-		// Go back ~52 weeks from today
-		const startDate = new Date(todayDate);
-		startDate.setDate(startDate.getDate() - (52 * 7 + todayDay) - 1);
-
-		let currentWeek: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[] = [];
-		let currentDate = new Date(startDate);
-
-		while (currentDate <= todayDate) {
-			const dateStr = currentDate.toISOString().slice(0, 10);
-			const count = heatmapData.get(dateStr) ?? 0;
-			const dayOfWeek = currentDate.getDay();
-
-			currentWeek.push({
-				date: dateStr,
-				count,
-				level: heatmapLevel(count, maxCompletions)
-			});
-
-			if (dayOfWeek === 6 || currentDate.getTime() === todayDate.getTime()) {
-				weeks.push(currentWeek);
-				currentWeek = [];
-			}
-
-			currentDate.setDate(currentDate.getDate() + 1);
+	// Last 7 days data
+	const last7Days = $derived.by(() => {
+		const days = [];
+		for (let i = 6; i >= 0; i--) {
+			const dateStr = daysAgo(i);
+			const dateObj = new Date(dateStr + 'T12:00:00');
+			const dayName = DAY_NAMES[dateObj.getDay()];
+			const count = appState.completions.filter(c => c.completed_at === dateStr).length;
+			days.push({ date: dateStr, dayName, count, isToday: dateStr === today() });
 		}
+		return days;
+	});
 
-		if (currentWeek.length > 0) {
-			weeks.push(currentWeek);
-		}
-
-		return weeks;
-	}
-
-	const heatmapGrid = $derived(getHeatmapGrid());
-
-	function levelColor(level: number): string {
-		const colors: Record<number, string> = {
-			0: 'bg-slate-800',
-			1: 'bg-indigo-900',
-			2: 'bg-indigo-700',
-			3: 'bg-indigo-500',
-			4: 'bg-indigo-400',
-		};
-		return colors[level] ?? colors[0];
-	}
+	const maxCount = $derived(Math.max(...last7Days.map(d => d.count), 1));
 
 	// Streak per habit
-	function getStreaks(): { name: string; streak: number; habitId: string }[] {
+	const streaks = $derived.by(() => {
 		return appState.habits.map(h => {
 			const dates = appState.completions
 				.filter(c => c.habit_id === h.id)
 				.map(c => c.completed_at);
 			return { name: h.name, streak: calculateStreak(dates), habitId: h.id };
 		}).sort((a, b) => b.streak - a.streak);
-	}
-
-	const streaks = $derived(getStreaks());
-
-	// Total completions per day for last 7 days
-	const last7Days = $derived(dateRange.slice(-7).map(date => ({
-		date,
-		count: appState.completions.filter(c => c.completed_at === date).length
-	})));
+	});
 
 	const progress = $derived(appState.profile ? xpProgressInLevel(appState.profile.xp) : null);
 </script>
@@ -128,47 +79,25 @@
 		{/if}
 	{/if}
 
-	<!-- Heatmap -->
+	<!-- Last 7 Days Bar Chart -->
 	<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
-		<h2 class="text-sm font-semibold text-white mb-3">Completion Heatmap</h2>
-		<div class="overflow-x-auto -mx-2">
-			<div class="inline-flex gap-0.5 min-w-full">
-				{#each heatmapGrid as week}
-					<div class="flex flex-col gap-0.5">
-						{#each week as day}
-							<div
-								class="w-2.5 h-2.5 rounded-sm {levelColor(day.level)}"
-								title="{day.date}: {day.count} completed"
-							></div>
-						{/each}
-					</div>
-				{/each}
-			</div>
-		</div>
-		<div class="flex items-center justify-end gap-1 mt-2 text-xs text-slate-500">
-			<span>Less</span>
-			<div class="w-2.5 h-2.5 rounded-sm bg-slate-800"></div>
-			<div class="w-2.5 h-2.5 rounded-sm bg-indigo-900"></div>
-			<div class="w-2.5 h-2.5 rounded-sm bg-indigo-700"></div>
-			<div class="w-2.5 h-2.5 rounded-sm bg-indigo-500"></div>
-			<div class="w-2.5 h-2.5 rounded-sm bg-indigo-400"></div>
-			<span>More</span>
-		</div>
-	</div>
-
-	<!-- Last 7 Days -->
-	<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
-		<h2 class="text-sm font-semibold text-white mb-3">Last 7 Days</h2>
-		<div class="flex items-end justify-between gap-2 h-32">
+		<h2 class="text-sm font-semibold text-white mb-4">Last 7 Days</h2>
+		<div class="flex items-end justify-between gap-3" style="height: 140px;">
 			{#each last7Days as day}
-				<div class="flex-1 flex flex-col items-center gap-1">
-					<div class="w-full bg-slate-800 rounded-t relative" style="height: 100%">
+				<div class="flex-1 flex flex-col items-center gap-1 h-full">
+					<div class="flex-1 w-full relative">
+						<div class="absolute inset-0 bg-slate-800 rounded-t"></div>
 						<div
-							class="absolute bottom-0 left-0 right-0 bg-indigo-500 rounded-t transition-all"
-							style="height: {Math.min(100, (day.count / Math.max(...last7Days.map(d => d.count), 1)) * 100)}%"
+							class="absolute bottom-0 left-0 right-0 rounded-t transition-all duration-300 {day.isToday ? 'bg-indigo-400' : 'bg-indigo-600'}"
+							style="height: {day.count > 0 ? Math.max(8, (day.count / maxCount) * 100) : 0}%"
 						></div>
+						{#if day.count > 0}
+							<div class="absolute top-0 left-0 right-0 text-center">
+								<span class="text-[10px] font-medium text-white">{day.count}</span>
+							</div>
+						{/if}
 					</div>
-					<span class="text-xs text-slate-400">{formatDate(day.date)}</span>
+					<span class="text-xs {day.isToday ? 'text-indigo-400 font-semibold' : 'text-slate-400'}">{day.dayName}</span>
 				</div>
 			{/each}
 		</div>

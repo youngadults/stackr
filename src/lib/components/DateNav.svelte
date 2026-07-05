@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { today, formatDate, formatDateLong, daysAgo, daysBetween, isToday, isYesterday } from '$lib/utils/helpers';
+	import { today, isToday, isYesterday, formatDateLong } from '$lib/utils/helpers';
 
 	let { selectedDate = $bindable(today()) }: { selectedDate?: string } = $props();
 
 	function goBack() {
-		const d = new Date(selectedDate + 'T12:00:00');
-		d.setDate(d.getDate() - 1);
-		selectedDate = d.toISOString().slice(0, 10);
+		const [y, m, d] = selectedDate.split('-').map(Number);
+		const prev = new Date(y, m - 1, d - 1);
+		selectedDate = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}-${String(prev.getDate()).padStart(2, '0')}`;
 	}
 
 	function goForward() {
-		const d = new Date(selectedDate + 'T12:00:00');
-		d.setDate(d.getDate() + 1);
-		const tomorrow = new Date();
-		tomorrow.setHours(23, 59, 59, 999);
-		if (d <= tomorrow) {
-			selectedDate = d.toISOString().slice(0, 10);
-		}
+		if (selectedDate >= today()) return;
+		const [y, m, d] = selectedDate.split('-').map(Number);
+		const next = new Date(y, m - 1, d + 1);
+		selectedDate = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`;
 	}
 
 	function goToday() {

@@ -174,9 +174,7 @@ describe('calculateStreak', () => {
 	});
 
 	it('returns 0 if most recent is more than 1 day ago', () => {
-		const twoDaysAgo = new Date();
-		twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-		const dates = [twoDaysAgo.toISOString().slice(0, 10)];
+		const dates = [daysAgo(2)];
 		expect(calculateStreak(dates)).toBe(0);
 	});
 

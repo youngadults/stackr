@@ -177,8 +177,11 @@
 									</div>
 								{/each}
 							</div>
-							<a href="/stacks/{stack.id}" class="block mt-2 text-xs text-indigo-400 hover:text-indigo-300">
-								Manage habits →
+							<a href="/stacks/{stack.id}" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-500/50 transition-colors">
+								Manage habits
+								<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+								</svg>
 							</a>
 						{/if}
 
@@ -194,7 +197,7 @@
 						{:else if !reorderMode}
 							<button
 								onclick={() => showDeleteConfirm = stack.id}
-								class="mt-2 text-xs text-red-400/60 hover:text-red-400"
+								class="mt-2 px-3 py-1.5 rounded-lg text-xs font-medium text-red-400/80 hover:text-red-400 border border-red-500/20 hover:border-red-500/40 transition-colors"
 							>Delete stack</button>
 						{/if}
 					{/if}

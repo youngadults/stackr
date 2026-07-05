@@ -286,7 +286,7 @@
 			</div>
 		</header>
 
-		<main class="flex-1 px-4 pb-24 pt-4 max-w-lg mx-auto w-full">
+		<main class="flex-1 px-4 pb-20 pt-4 max-w-lg mx-auto w-full">
 			{@render children()}
 		</main>
 

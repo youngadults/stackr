@@ -8,6 +8,7 @@ import {
 import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 import * as db from '$lib/services/db';
 import * as sync from '$lib/services/sync';
+import { today, daysAgo } from '$lib/utils/helpers';
 
 // Mock db and sync modules
 vi.mock('$lib/services/db', () => ({
@@ -65,9 +66,7 @@ describe('checkIfFullStackToday', () => {
 	it('returns false when habits exist but none completed today', () => {
 		const stack = makeStack('s1');
 		const habit = makeHabit('h1', 's1');
-		const yesterday = new Date();
-		yesterday.setDate(yesterday.getDate() - 1);
-		const completion = makeCompletion('h1', yesterday.toISOString().slice(0, 10));
+		const completion = makeCompletion('h1', daysAgo(1));
 
 		expect(checkIfFullStackToday([stack], [habit], [completion])).toBe(false);
 	});
@@ -76,9 +75,9 @@ describe('checkIfFullStackToday', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const c1 = makeCompletion('h1', today);
-		const c2 = makeCompletion('h2', today);
+		const todayStr = today();
+		const c1 = makeCompletion('h1', todayStr);
+		const c2 = makeCompletion('h2', todayStr);
 
 		expect(checkIfFullStackToday([stack], [h1, h2], [c1, c2])).toBe(true);
 	});
@@ -87,8 +86,8 @@ describe('checkIfFullStackToday', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const c1 = makeCompletion('h1', today);
+		const todayStr = today();
+		const c1 = makeCompletion('h1', todayStr);
 
 		expect(checkIfFullStackToday([stack], [h1, h2], [c1])).toBe(false);
 	});
@@ -98,8 +97,8 @@ describe('checkIfFullStackToday', () => {
 		const s2 = makeStack('s2');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's2');
-		const today = new Date().toISOString().slice(0, 10);
-		const c2 = makeCompletion('h2', today);
+		const todayStr = today();
+		const c2 = makeCompletion('h2', todayStr);
 
 		expect(checkIfFullStackToday([s1, s2], [h1, h2], [c2])).toBe(true);
 	});
@@ -107,8 +106,8 @@ describe('checkIfFullStackToday', () => {
 	it('ignores completions from other habits not in the stack', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const wrongCompletion = makeCompletion('h_other', today);
+		const todayStr = today();
+		const wrongCompletion = makeCompletion('h_other', todayStr);
 
 		expect(checkIfFullStackToday([stack], [h1], [wrongCompletion])).toBe(false);
 	});
@@ -118,9 +117,9 @@ describe('checkIfFullStackToday', () => {
 		const s2 = makeStack('s2');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's2');
-		const today = new Date().toISOString().slice(0, 10);
-		const c1 = makeCompletion('h1', today);
-		const c2 = makeCompletion('h2', today);
+		const todayStr = today();
+		const c1 = makeCompletion('h1', todayStr);
+		const c2 = makeCompletion('h2', todayStr);
 
 		expect(checkIfFullStackToday([s1, s2], [h1, h2], [c1, c2])).toBe(true);
 	});
@@ -156,13 +155,13 @@ describe('updateProfileOnComplete', () => {
 	});
 
 	it('updates longest_streak when current streak exceeds it', async () => {
-		const today = new Date().toISOString().slice(0, 10);
-		const d1 = new Date(new Date().setDate(new Date().getDate() - 2)).toISOString().slice(0, 10);
-		const d2 = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().slice(0, 10);
+		const todayStr = today();
+		const d1 = daysAgo(2);
+		const d2 = daysAgo(1);
 		const completions = [
 			makeCompletion('h1', d1),
 			makeCompletion('h1', d2),
-			makeCompletion('h1', today)
+			makeCompletion('h1', todayStr)
 		];
 		const profile = makeProfile({ longest_streak: 2, streak_days: 3 });
 		const result = await updateProfileOnComplete(profile, completions, [], []);
@@ -173,8 +172,8 @@ describe('updateProfileOnComplete', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const completions = [makeCompletion('h1', today), makeCompletion('h2', today)];
+		const todayStr = today();
+		const completions = [makeCompletion('h1', todayStr), makeCompletion('h2', todayStr)];
 		const profile = makeProfile({ xp: 100 });
 		const result = await updateProfileOnComplete(profile, completions, [stack], [h1, h2]);
 		// 10 base + 25 stack bonus = 35
@@ -185,8 +184,8 @@ describe('updateProfileOnComplete', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const completions = [makeCompletion('h1', today)]; // only 1 of 2 habits
+		const todayStr = today();
+		const completions = [makeCompletion('h1', todayStr)]; // only 1 of 2 habits
 		const profile = makeProfile({ xp: 100 });
 		const result = await updateProfileOnComplete(profile, completions, [stack], [h1, h2]);
 		// 10 base + 5 streak (1-day streak from today) = 15, no stack bonus
@@ -194,8 +193,8 @@ describe('updateProfileOnComplete', () => {
 	});
 
 	it('awards streak bonus on first completion of the day', async () => {
-		const today = new Date().toISOString().slice(0, 10);
-		const completions = [makeCompletion('h1', today)];
+		const todayStr = today();
+		const completions = [makeCompletion('h1', todayStr)];
 		const profile = makeProfile({ xp: 100, streak_days: 3 });
 		const result = await updateProfileOnComplete(profile, completions, [], []);
 		// 10 base + min(1*5, 50) streak (streak is 1 since only today) = 15
@@ -203,8 +202,8 @@ describe('updateProfileOnComplete', () => {
 	});
 
 	it('does not award streak bonus on second completion of the day', async () => {
-		const today = new Date().toISOString().slice(0, 10);
-		const completions = [makeCompletion('h1', today), makeCompletion('h2', today)];
+		const todayStr = today();
+		const completions = [makeCompletion('h1', todayStr), makeCompletion('h2', todayStr)];
 		const profile = makeProfile({ xp: 100, streak_days: 3 });
 		// Second completion: no streak bonus, just base 10
 		const result = await updateProfileOnComplete(profile, completions, [], []);
@@ -227,8 +226,8 @@ describe('updateProfileOnUncomplete', () => {
 	it('deducts 10 XP base with no bonuses', async () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const remaining = [makeCompletion('h1', today)]; // stack still complete
+		const todayStr = today();
+		const remaining = [makeCompletion('h1', todayStr)]; // stack still complete
 		const profile = makeProfile({ xp: 100, streak_days: 0 });
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1]);
 		// -10 base only (stack still complete, still has today completion)
@@ -251,8 +250,8 @@ describe('updateProfileOnUncomplete', () => {
 		// level 1 threshold is 50 XP
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const remaining = [makeCompletion('h1', today)]; // stack still complete
+		const todayStr = today();
+		const remaining = [makeCompletion('h1', todayStr)]; // stack still complete
 		const profile = makeProfile({ xp: 60, level: 1, streak_days: 0 });
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1]);
 		expect(result.xp).toBe(50);
@@ -262,8 +261,8 @@ describe('updateProfileOnUncomplete', () => {
 	it('can derank if XP drops below threshold', async () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const today = new Date().toISOString().slice(0, 10);
-		const remaining = [makeCompletion('h1', today)]; // stack still complete
+		const todayStr = today();
+		const remaining = [makeCompletion('h1', todayStr)]; // stack still complete
 		const profile = makeProfile({ xp: 55, level: 1, streak_days: 0 });
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1]);
 		expect(result.xp).toBe(45);
@@ -286,9 +285,9 @@ describe('updateProfileOnUncomplete', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
+		const todayStr = today();
 		// After uncompleting h2, only h1 remains → stack not complete
-		const remaining = [makeCompletion('h1', today)];
+		const remaining = [makeCompletion('h1', todayStr)];
 		const profile = makeProfile({ xp: 145 }); // was awarded 10 base + 25 stack = 35
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1, h2]);
 		// 145 - 10 base - 25 stack = 110
@@ -300,13 +299,13 @@ describe('updateProfileOnUncomplete', () => {
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
 		const h3 = makeHabit('h3', 's1');
-		const today = new Date().toISOString().slice(0, 10);
+		const todayStr = today();
 		// After uncompleting h3, h1 and h2 remain → stack still complete (2 of 2 in another stack? No, all 3 in same stack)
 		// Actually with 3 habits, only 2 complete means stack is NOT fully complete
 		// Let's use 2 stacks: uncomplete one in stack2, stack1 still complete
 		const stack2 = makeStack('s2');
 		const h2b = makeHabit('h2', 's2');
-		const remaining = [makeCompletion('h1', today)];
+		const remaining = [makeCompletion('h1', todayStr)];
 		const profile = makeProfile({ xp: 120 });
 		const result = await updateProfileOnUncomplete(profile, remaining, [stack], [h1]);
 		// Only base 10 deducted, no stack bonus deducted (stack wasn't fully complete anyway)
@@ -329,12 +328,12 @@ describe('updateProfileOnUncomplete', () => {
 		// Simulate: complete (gain 10), uncomplete (lose 10) → net 0
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
-		const today = new Date().toISOString().slice(0, 10);
+		const todayStr = today();
 
 		let profile = makeProfile({ xp: 100, streak_days: 0, longest_streak: 0, total_completions: 0 });
 
 		// Complete
-		const completion = makeCompletion('h1', today);
+		const completion = makeCompletion('h1', todayStr);
 		profile = await updateProfileOnComplete(profile, [completion], [stack], [h1]);
 		const xpAfterComplete = profile.xp;
 
@@ -351,13 +350,13 @@ describe('updateProfileOnUncomplete', () => {
 		const stack = makeStack('s1');
 		const h1 = makeHabit('h1', 's1');
 		const h2 = makeHabit('h2', 's1');
-		const today = new Date().toISOString().slice(0, 10);
+		const todayStr = today();
 
 		let profile = makeProfile({ xp: 100, streak_days: 0, longest_streak: 0, total_completions: 0 });
 
 		// Complete both habits → full stack → bonus
-		const c1 = makeCompletion('h1', today);
-		const c2 = makeCompletion('h2', today);
+		const c1 = makeCompletion('h1', todayStr);
+		const c2 = makeCompletion('h2', todayStr);
 
 		profile = await updateProfileOnComplete(profile, [c1], [stack], [h1, h2]);
 		profile = await updateProfileOnComplete(profile, [c1, c2], [stack], [h1, h2]);
