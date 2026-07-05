@@ -1,9 +1,5 @@
 <script lang="ts">
-	// Garden plant stages prototype — 3D-ish version
-	import { getAppState } from '$lib/stores/app.svelte';
-
-	const appState = getAppState();
-
+	// Garden prototype — Ghibli-inspired watercolor style
 	const STAGES = [
 		{ key: 'seed', label: 'Seed', desc: 'New stack' },
 		{ key: 'sprout', label: 'Sprout', desc: '1-2 days' },
@@ -15,211 +11,167 @@
 </script>
 
 <svelte:head>
-	<title>Garden Prototype — 3D</title>
+	<title>Garden — Ghibli Style</title>
 </svelte:head>
 
-<div class="min-h-screen bg-slate-950 p-4 pt-8 max-w-lg mx-auto">
-	<h1 class="text-2xl font-bold text-white mb-1">Garden Visualization</h1>
-	<p class="text-slate-400 text-sm mb-8">3D-ish CSS plants. Each stack = one plant.</p>
+<div class="scene">
+	<div class="scene-content">
+		<h1 class="title">Garden</h1>
+		<p class="subtitle">Studio Ghibli-inspired plants</p>
 
-	<!-- Stage Reference -->
-	<h2 class="text-lg font-semibold text-white mb-4">Plant Stages</h2>
-	<div class="grid grid-cols-3 gap-4 mb-10">
-		{#each STAGES as stage}
-			<div class="flex flex-col items-center gap-2">
-				<div class="plant-slot">
-					{#if stage.key === 'seed'}
-						<div class="plant seed-plant">
-							<div class="seed-body"></div>
-							<div class="soil-bed">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
+		<!-- Stage Reference -->
+		<div class="stages-grid">
+			{#each STAGES as stage}
+				<div class="stage-card">
+					<div class="plant-stage {stage.key}">
+						{#if stage.key === 'seed'}
+							<div class="ghibli-soil">
+								<div class="soil-highlight"></div>
 							</div>
-						</div>
-					{:else if stage.key === 'sprout'}
-						<div class="plant sprout-plant">
-							<div class="sprout-leaves">
-								<div class="s-leaf s-leaf-l"></div>
-								<div class="s-leaf s-leaf-r"></div>
+							<div class="seed-grain"></div>
+						{:else if stage.key === 'sprout'}
+							<div class="sprout-stem-ghibli"></div>
+							<div class="sprout-leaf-pair">
+								<div class="ghibli-leaf leaf-l"></div>
+								<div class="ghibli-leaf leaf-r"></div>
 							</div>
-							<div class="sprout-stem"></div>
-							<div class="soil-bed">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
+							<div class="ghibli-soil">
+								<div class="soil-highlight"></div>
 							</div>
-						</div>
-					{:else if stage.key === 'growing'}
-						<div class="plant growing-plant">
-							<div class="grow-top">
-								<div class="g-leaf g-leaf-l"></div>
-								<div class="g-bud"></div>
-								<div class="g-leaf g-leaf-r"></div>
+						{:else if stage.key === 'growing'}
+							<div class="grow-stem-ghibli"></div>
+							<div class="grow-leaf-pair-top">
+								<div class="ghibli-leaf-md leaf-l"></div>
+								<div class="ghibli-bud-ghibli"></div>
+								<div class="ghibli-leaf-md leaf-r"></div>
 							</div>
-							<div class="grow-stem"></div>
-							<div class="g-leaf g-leaf-low"></div>
-							<div class="soil-bed">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
+							<div class="ghibli-leaf-sm leaf-low"></div>
+							<div class="ghibli-soil">
+								<div class="soil-highlight"></div>
 							</div>
-						</div>
-					{:else if stage.key === 'blooming'}
-						<div class="plant bloom-plant">
-							<div class="flower">
-								<div class="petal p1"></div>
-								<div class="petal p2"></div>
-								<div class="petal p3"></div>
-								<div class="petal p4"></div>
-								<div class="petal p5"></div>
-								<div class="petal-inner"></div>
-								<div class="pistil"></div>
+						{:else if stage.key === 'blooming'}
+							<div class="bloom-stem-ghibli"></div>
+							<div class="bloom-leaf-l ghibli-leaf-lg"></div>
+							<div class="bloom-leaf-r ghibli-leaf-lg"></div>
+							<div class="ghibli-flower">
+								<div class="petal-gh p1"></div>
+								<div class="petal-gh p2"></div>
+								<div class="petal-gh p3"></div>
+								<div class="petal-gh p4"></div>
+								<div class="petal-gh p5"></div>
+								<div class="petal-gh p6"></div>
+								<div class="flower-glow"></div>
+								<div class="pistil-gh"></div>
 							</div>
-							<div class="bloom-stem"></div>
-							<div class="b-leaf b-leaf-l"></div>
-							<div class="b-leaf b-leaf-r"></div>
-							<div class="soil-bed">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
+							<div class="ghibli-soil">
+								<div class="soil-highlight"></div>
 							</div>
-						</div>
-					{:else if stage.key === 'mature'}
-						<div class="plant mature-plant">
-							<div class="canopy">
-								<div class="canopy-layer c-shadow"></div>
-								<div class="canopy-layer c-back"></div>
-								<div class="canopy-layer c-mid"></div>
-								<div class="canopy-layer c-front"></div>
+						{:else if stage.key === 'mature'}
+							<div class="tree-trunk-ghibli"></div>
+							<div class="tree-canopy-ghibli">
+								<div class="canopy-blob cb1"></div>
+								<div class="canopy-blob cb2"></div>
+								<div class="canopy-blob cb3"></div>
+								<div class="canopy-blob cb4"></div>
+								<div class="canopy-blob cb5"></div>
+								<div class="canopy-highlight"></div>
 							</div>
-							<div class="trunk">
-								<div class="trunk-body"></div>
-								<div class="trunk-shadow"></div>
+							<div class="ghibli-soil soil-wide">
+								<div class="soil-highlight"></div>
 							</div>
-							<div class="soil-bed soil-bed-wide">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
+						{:else if stage.key === 'wilting'}
+							<div class="wilt-stem-ghibli"></div>
+							<div class="wilt-head-ghibli">
+								<div class="wilt-leaf-gh"></div>
+								<div class="wilt-bud-gh"></div>
 							</div>
-						</div>
-					{:else if stage.key === 'wilting'}
-						<div class="plant wilt-plant">
-							<div class="wilt-head">
-								<div class="w-leaf w-leaf-l"></div>
-								<div class="w-bud"></div>
+							<div class="ghibli-soil soil-dry">
+								<div class="soil-highlight soil-highlight-dry"></div>
 							</div>
-							<div class="wilt-stem"></div>
-							<div class="soil-bed soil-bed-dry">
-								<div class="soil-top"></div>
-								<div class="soil-front"></div>
-							</div>
-						</div>
-					{/if}
-				</div>
-				<div class="text-center">
-					<div class="text-xs font-semibold text-white">{stage.label}</div>
-					<div class="text-[10px] text-slate-500">{stage.desc}</div>
-				</div>
-			</div>
-		{/each}
-	</div>
-
-	<!-- Full Garden Mockup -->
-	<h2 class="text-lg font-semibold text-white mb-4">Garden View</h2>
-	<div class="garden-bed">
-		<div class="garden-ground"></div>
-		<div class="garden-row">
-			<div class="garden-spot">
-				<div class="plant bloom-plant">
-					<div class="flower">
-						<div class="petal p1"></div>
-						<div class="petal p2"></div>
-						<div class="petal p3"></div>
-						<div class="petal p4"></div>
-						<div class="petal p5"></div>
-						<div class="petal-inner"></div>
-						<div class="pistil"></div>
+						{/if}
 					</div>
-					<div class="bloom-stem"></div>
-					<div class="b-leaf b-leaf-l"></div>
-					<div class="b-leaf b-leaf-r"></div>
-					<div class="soil-bed">
-						<div class="soil-top"></div>
-						<div class="soil-front"></div>
-					</div>
+					<div class="stage-label">{stage.label}</div>
+					<div class="stage-desc">{stage.desc}</div>
 				</div>
-				<div class="spot-label">
-					<span class="spot-name">Morning Routine</span>
-					<span class="spot-streak">🔥 7 days</span>
-				</div>
-			</div>
-			<div class="garden-spot">
-				<div class="plant growing-plant">
-					<div class="grow-top">
-						<div class="g-leaf g-leaf-l"></div>
-						<div class="g-bud"></div>
-						<div class="g-leaf g-leaf-r"></div>
-					</div>
-					<div class="grow-stem"></div>
-					<div class="g-leaf g-leaf-low"></div>
-					<div class="soil-bed">
-						<div class="soil-top"></div>
-						<div class="soil-front"></div>
-					</div>
-				</div>
-				<div class="spot-label">
-					<span class="spot-name">Wind Down</span>
-					<span class="spot-streak">🔥 3 days</span>
-				</div>
-			</div>
-			<div class="garden-spot">
-				<div class="plant seed-plant">
-					<div class="seed-body"></div>
-					<div class="soil-bed">
-						<div class="soil-top"></div>
-						<div class="soil-front"></div>
-					</div>
-				</div>
-				<div class="spot-label">
-					<span class="spot-name">Focus</span>
-					<span class="spot-streak text-slate-500">New</span>
-				</div>
-			</div>
+			{/each}
 		</div>
-		<div class="garden-row">
-			<div class="garden-spot">
-				<div class="plant mature-plant">
-					<div class="canopy">
-						<div class="canopy-layer c-shadow"></div>
-						<div class="canopy-layer c-back"></div>
-						<div class="canopy-layer c-mid"></div>
-						<div class="canopy-layer c-front"></div>
+
+		<!-- Full Garden Mockup -->
+		<h2 class="section-title">Your Garden</h2>
+		<div class="garden-bed-ghibli">
+			<div class="garden-grass"></div>
+			<div class="garden-plots">
+				<div class="garden-plot">
+					<div class="plant-stage blooming">
+						<div class="bloom-stem-ghibli"></div>
+						<div class="bloom-leaf-l ghibli-leaf-lg"></div>
+						<div class="bloom-leaf-r ghibli-leaf-lg"></div>
+						<div class="ghibli-flower">
+							<div class="petal-gh p1"></div>
+							<div class="petal-gh p2"></div>
+							<div class="petal-gh p3"></div>
+							<div class="petal-gh p4"></div>
+							<div class="petal-gh p5"></div>
+							<div class="petal-gh p6"></div>
+							<div class="flower-glow"></div>
+							<div class="pistil-gh"></div>
+						</div>
+						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
 					</div>
-					<div class="trunk">
-						<div class="trunk-body"></div>
-						<div class="trunk-shadow"></div>
-					</div>
-					<div class="soil-bed soil-bed-wide">
-						<div class="soil-top"></div>
-						<div class="soil-front"></div>
-					</div>
+					<span class="plot-name">Morning Routine</span>
+					<span class="plot-streak">🔥 7 days</span>
 				</div>
-				<div class="spot-label">
-					<span class="spot-name">Fitness</span>
-					<span class="spot-streak">🔥 21 days</span>
+				<div class="garden-plot">
+					<div class="plant-stage growing">
+						<div class="grow-stem-ghibli"></div>
+						<div class="grow-leaf-pair-top">
+							<div class="ghibli-leaf-md leaf-l"></div>
+							<div class="ghibli-bud-ghibli"></div>
+							<div class="ghibli-leaf-md leaf-r"></div>
+						</div>
+						<div class="ghibli-leaf-sm leaf-low"></div>
+						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
+					</div>
+					<span class="plot-name">Wind Down</span>
+					<span class="plot-streak">🔥 3 days</span>
+				</div>
+				<div class="garden-plot">
+					<div class="plant-stage seed">
+						<div class="ghibli-soil"><div class="soil-highlight"></div></div>
+						<div class="seed-grain"></div>
+					</div>
+					<span class="plot-name">Focus</span>
+					<span class="plot-streak plot-new">New</span>
 				</div>
 			</div>
-			<div class="garden-spot wilt-spot">
-				<div class="plant wilt-plant">
-					<div class="wilt-head">
-						<div class="w-leaf w-leaf-l"></div>
-						<div class="w-bud"></div>
+			<div class="garden-plots">
+				<div class="garden-plot">
+					<div class="plant-stage mature">
+						<div class="tree-trunk-ghibli"></div>
+						<div class="tree-canopy-ghibli">
+							<div class="canopy-blob cb1"></div>
+							<div class="canopy-blob cb2"></div>
+							<div class="canopy-blob cb3"></div>
+							<div class="canopy-blob cb4"></div>
+							<div class="canopy-blob cb5"></div>
+							<div class="canopy-highlight"></div>
+						</div>
+						<div class="ghibli-soil soil-wide"><div class="soil-highlight"></div></div>
 					</div>
-					<div class="wilt-stem"></div>
-					<div class="soil-bed soil-bed-dry">
-						<div class="soil-top"></div>
-						<div class="soil-front"></div>
-					</div>
+					<span class="plot-name">Fitness</span>
+					<span class="plot-streak">🔥 21 days</span>
 				</div>
-				<div class="spot-label">
-					<span class="spot-name text-amber-400">Reading</span>
-					<span class="spot-streak text-amber-400">⚠ At risk</span>
+				<div class="garden-plot wilt-plot">
+					<div class="plant-stage wilting">
+						<div class="wilt-stem-ghibli"></div>
+						<div class="wilt-head-ghibli">
+							<div class="wilt-leaf-gh"></div>
+							<div class="wilt-bud-gh"></div>
+						</div>
+						<div class="ghibli-soil soil-dry"><div class="soil-highlight soil-highlight-dry"></div></div>
+					</div>
+					<span class="plot-name plot-name-wilt">Reading</span>
+					<span class="plot-streak plot-streak-wilt">⚠ At risk</span>
 				</div>
 			</div>
 		</div>
@@ -227,365 +179,433 @@
 </div>
 
 <style>
-	/* ===== SHARED: 3D Soil Bed ===== */
-	.soil-bed {
+	/* === Ghibli Color Palette === */
+	:root {
+		--gh-soil: #6b4423;
+		--gh-soil-light: #8b6341;
+		--gh-soil-highlight: #a87d52;
+		--gh-stem: #4a9e5c;
+		--gh-leaf: #5cb870;
+		--gh-leaf-light: #8dd89a;
+		--gh-leaf-dark: #2d7a3e;
+		--gh-petal: #f4a0c0;
+		--gh-petal-light: #f8c8d8;
+		--gh-petal-dark: #d4608a;
+		--gh-pistil: #ffd966;
+		--gh-pistil-light: #ffec99;
+		--gh-trunk: #7a4a2a;
+		--gh-trunk-light: #9a6a42;
+		--gh-canopy: #3da052;
+		--gh-canopy-light: #6dcc7e;
+		--gh-canopy-dark: #1e6e32;
+		--gh-wilt-leaf: #a89840;
+		--gh-wilt-stem: #8a7a3a;
+		--gh-wilt-bud: #8b6914;
+		--gh-dry-soil: #8a7355;
+		--gh-bg: #0d1a0d;
+		--gh-bed: #142814;
+	}
+
+	/* === Scene === */
+	.scene {
+		min-height: 100vh;
+		background: linear-gradient(180deg, #0a1a2e 0%, #0d2818 30%, var(--gh-bg) 100%);
+		padding: 2rem 1rem;
+	}
+	.scene-content {
+		max-width: 28rem;
+		margin: 0 auto;
+	}
+	.title {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #e8e4d8;
+		margin-bottom: 0.25rem;
+	}
+	.subtitle {
+		font-size: 0.75rem;
+		color: #7a8a6a;
+		margin-bottom: 2rem;
+	}
+	.section-title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: #e8e4d8;
+		margin-bottom: 1rem;
+	}
+
+	/* === Stages Grid === */
+	.stages-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+		margin-bottom: 2.5rem;
+	}
+	.stage-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.375rem;
+	}
+	.stage-label {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #e8e4d8;
+	}
+	.stage-desc {
+		font-size: 0.625rem;
+		color: #7a8a6a;
+	}
+
+	/* === Plant Stage Container === */
+	.plant-stage {
+		position: relative;
+		width: 90px;
+		height: 110px;
+	}
+
+	/* === Ghibli Soil (Raised Mound) === */
+	.ghibli-soil {
 		position: absolute;
 		bottom: 0;
 		left: 50%;
 		transform: translateX(-50%);
-		width: 48px;
+		width: 50px;
 		height: 18px;
 	}
-	.soil-bed-wide {
-		width: 56px;
+	.soil-wide {
+		width: 60px;
 	}
-	.soil-top {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 10px;
-		background: linear-gradient(180deg, #6b4423 0%, #5c3d1e 100%);
-		border-radius: 50%;
-		box-shadow: 0 -2px 4px rgba(107, 68, 35, 0.3);
+	.soil-dry {
+		--gh-soil: var(--gh-dry-soil);
+		--gh-soil-light: #9a8a6a;
+		--gh-soil-highlight: #b09a7a;
 	}
-	.soil-front {
+	.ghibli-soil::before {
+		content: '';
 		position: absolute;
 		bottom: 0;
-		left: 3px;
-		width: calc(100% - 6px);
+		left: 2px;
+		right: 2px;
 		height: 12px;
-		background: linear-gradient(180deg, #5c3d1e 0%, #3d2810 100%);
-		border-radius: 0 0 40% 40%;
-		box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+		background: linear-gradient(180deg, var(--gh-soil-light), var(--gh-soil));
+		border-radius: 0 0 45% 45%;
+		box-shadow: 0 3px 8px rgba(0,0,0,0.4);
 	}
-	.soil-bed-dry .soil-top {
-		background: linear-gradient(180deg, #8B7355 0%, #6b5a3e 100%);
-	}
-	.soil-bed-dry .soil-front {
-		background: linear-gradient(180deg, #6b5a3e 0%, #4a3d28 100%);
-	}
-
-	/* ===== PLANT CONTAINER ===== */
-	.plant-slot {
-		width: 90px;
-		height: 110px;
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		justify-content: center;
-	}
-	.plant {
-		position: relative;
-		width: 90px;
-		height: 100%;
-	}
-
-	/* ===== SEED ===== */
-	.seed-plant .seed-body {
+	.soil-highlight {
 		position: absolute;
-		bottom: 12px;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 80%;
+		height: 10px;
+		background: linear-gradient(180deg, var(--gh-soil-highlight), var(--gh-soil-light));
+		border-radius: 50%;
+		box-shadow: 0 -1px 4px rgba(168,125,82,0.3);
+	}
+	.soil-highlight-dry {
+		background: linear-gradient(180deg, #b09a7a, #9a8a6a);
+	}
+
+	/* === Seed === */
+	.seed-grain {
+		position: absolute;
+		bottom: 14px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 12px;
 		height: 10px;
-		background: radial-gradient(ellipse at 40% 35%, #c9a54e, #8B6914);
+		background: radial-gradient(ellipse at 35% 30%, #d4a843, #8B6914);
 		border-radius: 50%;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 -2px 3px rgba(0,0,0,0.2);
+		box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.15);
 	}
 
-	/* ===== SPROUT ===== */
-	.sprout-plant .sprout-stem {
+	/* === Sprout === */
+	.sprout-stem-ghibli {
 		position: absolute;
 		bottom: 16px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 3px;
-		height: 28px;
-		background: linear-gradient(90deg, #2d8a3e, #4ade80, #2d8a3e);
+		height: 26px;
+		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
 		border-radius: 2px;
-		box-shadow: 1px 0 2px rgba(0,0,0,0.15);
 	}
-	.sprout-plant .sprout-leaves {
+	.sprout-leaf-pair {
 		position: absolute;
-		bottom: 40px;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-	.s-leaf {
-		display: inline-block;
-		width: 14px;
-		height: 10px;
-		border-radius: 0 75% 0 75%;
-	}
-	.s-leaf-l {
-		background: linear-gradient(135deg, #4ade80 40%, #22c55e 100%);
-		box-shadow: -1px 1px 3px rgba(0,0,0,0.15);
-		transform: rotate(-20deg);
-		border-radius: 75% 0 75% 0;
-	}
-	.s-leaf-r {
-		background: linear-gradient(225deg, #4ade80 40%, #22c55e 100%);
-		box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-		transform: rotate(20deg);
-	}
-
-	/* ===== GROWING ===== */
-	.growing-plant .grow-stem {
-		position: absolute;
-		bottom: 16px;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 4px;
-		height: 45px;
-		background: linear-gradient(90deg, #22883a, #4ade80, #22883a);
-		border-radius: 2px;
-		box-shadow: 1px 0 3px rgba(0,0,0,0.15);
-	}
-	.growing-plant .grow-top {
-		position: absolute;
-		bottom: 56px;
+		bottom: 38px;
 		left: 50%;
 		transform: translateX(-50%);
 		display: flex;
 		align-items: center;
 	}
-	.g-leaf {
-		display: block;
-		width: 16px;
-		height: 11px;
-	}
-	.g-leaf-l {
-		background: linear-gradient(135deg, #4ade80 30%, #22c55e 100%);
+	.ghibli-leaf {
+		width: 14px;
+		height: 10px;
 		border-radius: 0 70% 0 70%;
-		transform: rotate(-25deg);
-		box-shadow: -1px 2px 4px rgba(0,0,0,0.15);
+		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
+		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 	}
-	.g-leaf-r {
-		background: linear-gradient(225deg, #4ade80 30%, #22c55e 100%);
+	.leaf-l {
 		border-radius: 70% 0 70% 0;
-		transform: rotate(25deg);
-		box-shadow: 1px 2px 4px rgba(0,0,0,0.15);
+		transform: rotate(-18deg);
 	}
-	.g-bud {
+	.leaf-r {
+		border-radius: 0 70% 0 70%;
+		transform: rotate(18deg);
+	}
+
+	/* === Growing === */
+	.grow-stem-ghibli {
+		position: absolute;
+		bottom: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 42px;
+		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
+		border-radius: 2px;
+	}
+	.grow-leaf-pair-top {
+		position: absolute;
+		bottom: 54px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+	}
+	.ghibli-leaf-md {
+		width: 16px;
+		height: 12px;
+		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
+		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+	}
+	.ghibli-bud-ghibli {
 		width: 10px;
 		height: 10px;
-		background: radial-gradient(circle at 40% 35%, #f9a8d4, #ec4899);
+		background: radial-gradient(circle at 40% 35%, var(--gh-petal-light), var(--gh-petal), var(--gh-petal-dark));
 		border-radius: 50%;
-		box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
-		margin: 0 2px;
+		box-shadow: 0 1px 4px rgba(244,160,192,0.3);
+		margin: 0 1px;
 	}
-	.g-leaf-low {
+	.ghibli-leaf-sm {
+		width: 12px;
+		height: 8px;
+		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
+		box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	}
+	.leaf-low {
 		position: absolute;
 		bottom: 36px;
 		left: 22px;
-		width: 13px;
-		height: 9px;
-		background: linear-gradient(135deg, #4ade80 30%, #22c55e 100%);
-		border-radius: 0 70% 0 70%;
+		border-radius: 70% 0 70% 0;
 		transform: rotate(-40deg);
-		box-shadow: -1px 1px 3px rgba(0,0,0,0.12);
 	}
 
-	/* ===== BLOOMING ===== */
-	.bloom-plant .bloom-stem {
+	/* === Blooming === */
+	.bloom-stem-ghibli {
 		position: absolute;
 		bottom: 16px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 4px;
-		height: 44px;
-		background: linear-gradient(90deg, #1a7a32, #4ade80, #1a7a32);
+		height: 40px;
+		background: linear-gradient(90deg, var(--gh-leaf-dark), var(--gh-stem), var(--gh-leaf-dark));
 		border-radius: 2px;
-		box-shadow: 1px 0 3px rgba(0,0,0,0.15);
 	}
-	.bloom-plant .flower {
+	.bloom-leaf-l {
 		position: absolute;
-		bottom: 56px;
+		bottom: 32px;
+		left: 18px;
+		transform: rotate(-40deg);
+	}
+	.bloom-leaf-r {
+		position: absolute;
+		bottom: 32px;
+		right: 18px;
+		border-radius: 0 70% 0 70%;
+		transform: rotate(40deg);
+	}
+	.ghibli-leaf-lg {
+		width: 18px;
+		height: 12px;
+		border-radius: 70% 0 70% 0;
+		background: radial-gradient(ellipse at 30% 40%, var(--gh-leaf-light), var(--gh-leaf), var(--gh-leaf-dark));
+		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+	}
+	.ghibli-flower {
+		position: absolute;
+		bottom: 52px;
 		left: 50%;
 		transform: translateX(-50%);
-		width: 32px;
-		height: 32px;
+		width: 34px;
+		height: 34px;
 	}
-	.petal {
+	.petal-gh {
 		position: absolute;
-		width: 13px;
-		height: 13px;
-		border-radius: 50%;
-		background: linear-gradient(135deg, #f9a8d4 20%, #ec4899 100%);
-		box-shadow: 0 2px 4px rgba(236, 72, 153, 0.25);
-	}
-	.p1 { top: 0; left: 9px; }
-	.p2 { top: 10px; right: 0; }
-	.p3 { bottom: 0; left: 9px; }
-	.p4 { top: 10px; left: 0; }
-	.p5 { top: 4px; left: 4px; width: 22px; height: 22px; background: linear-gradient(135deg, #f472b6, #db2777); opacity: 0.6; }
-	.pistil {
-		position: absolute;
-		top: 9px;
-		left: 9px;
 		width: 14px;
 		height: 14px;
-		background: radial-gradient(circle at 40% 35%, #fde68a, #f59e0b);
 		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+		background: radial-gradient(circle at 35% 30%, var(--gh-petal-light), var(--gh-petal));
+		box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+	}
+	.p1 { top: 0; left: 10px; }
+	.p2 { top: 8px; right: 0; background: radial-gradient(circle at 60% 30%, var(--gh-petal-light), var(--gh-petal)); }
+	.p3 { bottom: 2px; left: 4px; background: radial-gradient(circle at 35% 60%, var(--gh-petal), var(--gh-petal-dark)); }
+	.p4 { top: 8px; left: 0; background: radial-gradient(circle at 40% 50%, var(--gh-petal-light), var(--gh-petal)); }
+	.p5 { top: 2px; left: 18px; background: radial-gradient(circle at 50% 40%, var(--gh-petal), var(--gh-petal-dark)); }
+	.p6 { bottom: 2px; right: 6px; background: radial-gradient(circle at 55% 55%, var(--gh-petal), var(--gh-petal-dark)); }
+	.flower-glow {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 26px;
+		height: 26px;
+		background: radial-gradient(circle, rgba(244,160,192,0.3) 0%, transparent 70%);
+		border-radius: 50%;
+		z-index: 1;
+	}
+	.pistil-gh {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 12px;
+		height: 12px;
+		background: radial-gradient(circle at 40% 35%, var(--gh-pistil-light), var(--gh-pistil), #e6a800);
+		border-radius: 50%;
+		box-shadow: 0 0 6px rgba(255,217,102,0.4);
 		z-index: 2;
 	}
-	.b-leaf {
-		position: absolute;
-		width: 16px;
-		height: 10px;
-	}
-	.b-leaf-l {
-		bottom: 34px;
-		left: 20px;
-		background: linear-gradient(135deg, #4ade80 30%, #16a34a 100%);
-		border-radius: 0 70% 0 70%;
-		transform: rotate(-40deg);
-		box-shadow: -1px 2px 4px rgba(0,0,0,0.15);
-	}
-	.b-leaf-r {
-		bottom: 34px;
-		right: 20px;
-		background: linear-gradient(225deg, #4ade80 30%, #16a34a 100%);
-		border-radius: 70% 0 70% 0;
-		transform: rotate(40deg);
-		box-shadow: 1px 2px 4px rgba(0,0,0,0.15);
-	}
 
-	/* ===== MATURE (Tree) ===== */
-	.mature-plant .trunk {
+	/* === Mature (Tree) === */
+	.tree-trunk-ghibli {
 		position: absolute;
 		bottom: 16px;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 10px;
-		height: 32px;
+		height: 30px;
+		background: linear-gradient(90deg, var(--gh-trunk), var(--gh-trunk-light), var(--gh-trunk));
+		border-radius: 3px 3px 5px 5px;
+		box-shadow: 2px 0 4px rgba(0,0,0,0.2);
 	}
-	.trunk-body {
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(90deg, #6b3a1f, #92400e, #6b3a1f);
-		border-radius: 2px 2px 4px 4px;
-	}
-	.trunk-shadow {
+	.tree-canopy-ghibli {
 		position: absolute;
-		right: -4px;
-		top: 0;
-		width: 4px;
-		height: 100%;
-		background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
-		border-radius: 0 2px 2px 0;
-	}
-	.mature-plant .canopy {
-		position: absolute;
-		bottom: 44px;
+		bottom: 42px;
 		left: 50%;
 		transform: translateX(-50%);
-		width: 56px;
-		height: 48px;
+		width: 64px;
+		height: 52px;
 	}
-	.canopy-layer {
+	.canopy-blob {
 		position: absolute;
 		border-radius: 50%;
 	}
-	.c-shadow {
-		width: 34px;
-		height: 32px;
-		top: 4px;
-		left: 11px;
-		background: #14532d;
-		z-index: 0;
-	}
-	.c-back {
-		width: 30px;
-		height: 28px;
-		top: 2px;
-		left: 2px;
-		background: linear-gradient(135deg, #15803d 30%, #166534 100%);
-		z-index: 1;
-		box-shadow: -2px 2px 4px rgba(0,0,0,0.2);
-	}
-	.c-mid {
-		width: 34px;
-		height: 30px;
-		top: 0;
-		left: 11px;
-		background: linear-gradient(135deg, #22c55e 20%, #16a34a 100%);
-		z-index: 2;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-	}
-	.c-front {
-		width: 28px;
-		height: 24px;
-		top: 6px;
-		left: 26px;
-		background: linear-gradient(135deg, #4ade80 20%, #22c55e 100%);
+	.cb1 {
+		width: 36px; height: 32px;
+		top: 0; left: 14px;
+		background: radial-gradient(ellipse at 40% 35%, var(--gh-canopy-light), var(--gh-canopy));
+		box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 		z-index: 3;
-		box-shadow: 2px 1px 3px rgba(0,0,0,0.1);
+	}
+	.cb2 {
+		width: 30px; height: 28px;
+		top: 10px; left: 0;
+		background: radial-gradient(ellipse at 50% 40%, var(--gh-canopy), var(--gh-canopy-dark));
+		box-shadow: -2px 2px 4px rgba(0,0,0,0.15);
+		z-index: 2;
+	}
+	.cb3 {
+		width: 30px; height: 26px;
+		top: 8px; right: 0; left: 34px;
+		background: radial-gradient(ellipse at 35% 40%, var(--gh-canopy-light), var(--gh-canopy));
+		box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+		z-index: 2;
+	}
+	.cb4 {
+		width: 24px; height: 22px;
+		top: 20px; left: 6px;
+		background: radial-gradient(ellipse at 45% 35%, var(--gh-canopy), var(--gh-canopy-dark));
+		z-index: 1;
+	}
+	.cb5 {
+		width: 26px; height: 24px;
+		top: 18px; left: 28px;
+		background: radial-gradient(ellipse at 40% 40%, var(--gh-canopy), var(--gh-canopy-dark));
+		z-index: 1;
+	}
+	.canopy-highlight {
+		position: absolute;
+		top: 6px;
+		left: 18px;
+		width: 20px;
+		height: 14px;
+		background: radial-gradient(ellipse at 50% 50%, rgba(141,216,154,0.4), transparent);
+		border-radius: 50%;
+		z-index: 4;
 	}
 
-	/* ===== WILTING ===== */
-	.wilt-plant .wilt-stem {
+	/* === Wilting === */
+	.wilt-stem-ghibli {
 		position: absolute;
 		bottom: 16px;
 		left: 50%;
-		transform: translateX(-50%) rotate(18deg);
+		transform: translateX(-50%) rotate(16deg);
 		transform-origin: bottom center;
 		width: 3px;
-		height: 38px;
-		background: linear-gradient(90deg, #8B7355, #a3a03a, #8B7355);
+		height: 36px;
+		background: linear-gradient(90deg, #6b5a2e, var(--gh-wilt-stem), #6b5a2e);
 		border-radius: 2px;
 	}
-	.wilt-plant .wilt-head {
+	.wilt-head-ghibli {
 		position: absolute;
-		bottom: 50px;
+		bottom: 48px;
 		left: 56%;
-		transform: rotate(22deg);
+		transform: rotate(20deg);
 		display: flex;
 		align-items: center;
 	}
-	.w-leaf {
-		width: 12px;
-		height: 8px;
-		background: linear-gradient(135deg, #a3a03a, #8B7355);
-		border-radius: 0 60% 0 60%;
-		box-shadow: -1px 1px 2px rgba(0,0,0,0.1);
+	.wilt-leaf-gh {
+		width: 13px;
+		height: 9px;
+		background: radial-gradient(ellipse at 30% 40%, #c4b44a, var(--gh-wilt-leaf));
+		border-radius: 70% 0 70% 0;
+		transform: rotate(-12deg);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 	}
-	.w-leaf-l {
-		transform: rotate(-15deg);
-	}
-	.w-bud {
+	.wilt-bud-gh {
 		width: 8px;
 		height: 8px;
-		background: radial-gradient(circle at 40% 35%, #92702a, #6b5a3e);
+		background: radial-gradient(circle at 40% 35%, #b08a2a, var(--gh-wilt-bud));
 		border-radius: 50%;
 		margin-left: 2px;
-		box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+		box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 	}
 
-	/* ===== GARDEN BED ===== */
-	.garden-bed {
+	/* === Garden Bed === */
+	.garden-bed-ghibli {
 		background:
-			radial-gradient(ellipse at 50% 100%, #2d1f0e 0%, transparent 60%),
-			linear-gradient(180deg, #1a2e1a 0%, #0f1f0f 100%);
-		border: 1px solid #2d4a2d;
-		border-radius: 16px;
-		padding: 24px 16px 20px;
+			radial-gradient(ellipse at 50% 110%, rgba(74,50,20,0.6) 0%, transparent 60%),
+			linear-gradient(180deg, #142814 0%, #0d1a0d 100%);
+		border: 1px solid #2a4a2a;
+		border-radius: 20px;
+		padding: 28px 16px 24px;
 		position: relative;
 		overflow: hidden;
-		box-shadow: inset 0 -20px 30px rgba(45,31,14,0.3), 0 4px 12px rgba(0,0,0,0.3);
+		box-shadow: inset 0 -24px 36px rgba(45,31,14,0.25), 0 6px 16px rgba(0,0,0,0.3);
 	}
-	.garden-ground {
+	.garden-grass {
 		position: absolute;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		height: 30%;
-		background: linear-gradient(to top, rgba(45,31,14,0.4), transparent);
+		height: 40%;
+		background: linear-gradient(to top, rgba(30,80,40,0.15), transparent);
 		pointer-events: none;
 	}
-	.garden-row {
+	.garden-plots {
 		display: flex;
 		justify-content: space-around;
 		gap: 8px;
@@ -593,39 +613,42 @@
 		position: relative;
 		z-index: 1;
 	}
-	.garden-row:last-child {
+	.garden-plots:last-child {
 		margin-bottom: 0;
 	}
-	.garden-spot {
+	.garden-plot {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 6px;
+		gap: 4px;
 		flex: 1;
 		cursor: pointer;
 		transition: transform 0.2s;
 	}
-	.garden-spot:active {
+	.garden-plot:active {
 		transform: scale(0.95);
 	}
-	.spot-label {
+	.plot-name {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #e8e4d8;
 		text-align: center;
 	}
-	.spot-name {
-		display: block;
-		font-size: 12px;
-		font-weight: 600;
-		color: #e2e8f0;
+	.plot-streak {
+		font-size: 0.625rem;
+		color: #7a9a6a;
+		text-align: center;
 	}
-	.spot-streak {
-		display: block;
-		font-size: 10px;
-		color: #94a3b8;
+	.plot-new {
+		color: #5a7a4a;
 	}
-	.wilt-spot .spot-name {
-		color: #f59e0b;
+	.plot-name-wilt {
+		color: #d4a040;
 	}
-	.wilt-spot .spot-streak {
-		color: #f59e0b;
+	.plot-streak-wilt {
+		color: #d4a040;
+	}
+	.wilt-plot .plant-stage {
+		opacity: 0.85;
 	}
 </style>
