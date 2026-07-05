@@ -6,7 +6,7 @@ import { openDB, type IDBPDatabase } from 'idb';
 import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 
 const DB_NAME = 'stackr';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 interface StackrDB {
 	stacks: Stack;
@@ -22,7 +22,7 @@ async function getDB(): Promise<IDBPDatabase<StackrDB>> {
 	if (dbInstance) return dbInstance;
 
 	dbInstance = await openDB<StackrDB>(DB_NAME, DB_VERSION, {
-		upgrade(db, oldVersion) {
+		upgrade(db, oldVersion, _newVersion, transaction) {
 			if (oldVersion < 1) {
 				const stackStore = db.createObjectStore('stacks', { keyPath: 'id' });
 				stackStore.createIndex('user_id', 'user_id');
@@ -50,6 +50,14 @@ async function getDB(): Promise<IDBPDatabase<StackrDB>> {
 			if (oldVersion < 2) {
 				if (!db.objectStoreNames.contains('achievements')) {
 					db.createObjectStore('achievements', { keyPath: 'id' });
+				}
+			}
+
+			// v3: add user_id index to achievements (was missing in v2)
+			if (oldVersion > 0 && oldVersion < 3 && transaction) {
+				const store = transaction.objectStore('achievements');
+				if (!store.indexNames.contains('user_id')) {
+					store.createIndex('user_id', 'user_id');
 				}
 			}
 		},
@@ -87,14 +95,13 @@ async function deleteDB(): Promise<void> {
 // Called on first launch after removing auth — finds any orphaned data and re-keys it.
 export async function migrateFromOldUserId(newUserId: string): Promise<boolean> {
 	const database = await getDB();
-	let migrated = false;
 
 	// Check if new user already has data
 	const existingStacks = await database.getAllFromIndex('stacks', 'user_id', newUserId);
 	if (existingStacks.length > 0) return false; // Already has data, skip migration
 
 	// Find any existing profile (there should be at most one)
-	const allProfiles = await database.getAll('profile');
+	const allProfiles: Profile[] = await database.getAll('profile');
 	const oldProfile = allProfiles.find(p => p.id !== newUserId);
 
 	if (!oldProfile) {
@@ -110,28 +117,29 @@ export async function migrateFromOldUserId(newUserId: string): Promise<boolean> 
 	await database.delete('profile', oldUserId);
 
 	// Migrate stacks
-	const oldStacks = await database.getAllFromIndex('stacks', 'user_id', oldUserId);
+	const oldStacks: Stack[] = await database.getAllFromIndex('stacks', 'user_id', oldUserId);
 	for (const stack of oldStacks) {
 		stack.user_id = newUserId;
-		await database.put('stacks', stack); // same id, updated user_id
+		await database.put('stacks', stack);
 	}
 
 	// Migrate habits
-	const oldHabits = await database.getAllFromIndex('habits', 'user_id', oldUserId);
+	const oldHabits: Habit[] = await database.getAllFromIndex('habits', 'user_id', oldUserId);
 	for (const habit of oldHabits) {
 		habit.user_id = newUserId;
 		await database.put('habits', habit);
 	}
 
 	// Migrate completions
-	const oldCompletions = await database.getAllFromIndex('completions', 'user_id', oldUserId);
+	const oldCompletions: Completion[] = await database.getAllFromIndex('completions', 'user_id', oldUserId);
 	for (const completion of oldCompletions) {
 		completion.user_id = newUserId;
 		await database.put('completions', completion);
 	}
 
-	// Migrate achievements
-	const oldAchievements = await database.getAllFromIndex('achievements', 'user_id', oldUserId);
+	// Migrate achievements — use getAll() since user_id index may not exist yet on v2 DBs
+	const allAchievements: Achievement[] = await database.getAll('achievements');
+	const oldAchievements = allAchievements.filter(a => a.user_id === oldUserId);
 	for (const achievement of oldAchievements) {
 		achievement.user_id = newUserId;
 		await database.put('achievements', achievement);
@@ -237,7 +245,9 @@ export async function saveProfile(profile: Profile): Promise<void> {
 
 export async function getAchievementsByUser(userId: string): Promise<Achievement[]> {
 	const db = await getDB();
-	return db.getAllFromIndex('achievements', 'user_id', userId);
+	// Use getAll + filter since user_id index may not exist on v2 DBs
+	const all: Achievement[] = await db.getAll('achievements');
+	return all.filter(a => a.user_id === userId);
 }
 
 export async function saveAchievement(achievement: Achievement): Promise<void> {
