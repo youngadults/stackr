@@ -1,6 +1,6 @@
 <script lang="ts">
-	// Garden prototype — True Isometric v9
-	// Plants grow from the CENTER of the diamond top face, not the top vertex
+	// Garden prototype — True Isometric v10
+	// All SVGs same viewBox (0 0 64 96) so scaling is identical — plants centered on diamond
 	const STAGES = [
 		{ key: 'seed', label: 'Seed', desc: 'New stack' },
 		{ key: 'sprout', label: 'Sprout', desc: '1-2 days' },
@@ -67,125 +67,95 @@
 		<div class="stages-grid">
 			{#each STAGES as stage}
 				<div class="stage-card">
-					<div class="stage-plant" class:stage-plant-lg={stage.key === 'mature'}>
+					<div class="stage-plant">
 						{#if stage.key === 'seed'}
-							<!-- Seed: diamond center at (32,24), seed grain on center of top face -->
-							<svg viewBox="0 0 64 48" class="plant-svg">
-								<!-- Diamond: top=(32,12), right=(52,24), bottom=(32,36), left=(12,24) -->
-								<!-- Center of top face = (32,24) -->
-								<polygon points="32,12 52,24 32,36 12,24" fill="url(#soilTop)"/>
-								<polygon points="32,36 52,24 52,30 32,42" fill="url(#soilFront)"/>
-								<polygon points="32,36 12,24 12,30 32,42" fill="url(#soilSide)"/>
-								<!-- Seed grain centered at (32,22) — on top face -->
-								<rect x="28" y="20" width="8" height="4" rx="0" fill="#c9a54e"/>
-								<rect x="29" y="21" width="4" height="2" rx="0" fill="#e0c36a" opacity="0.6"/>
+							<!-- Seed: diamond center at (32,78), seed on center of top face -->
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<!-- Seed grain at center of top face (32,78) -->
+								<rect x="28" y="76" width="8" height="4" rx="0" fill="#c9a54e"/>
+								<rect x="29" y="77" width="4" height="2" rx="0" fill="#e0c36a" opacity="0.6"/>
 							</svg>
 						{:else if stage.key === 'sprout'}
-							<!-- Sprout: stem base at center of diamond top face -->
-							<svg viewBox="0 0 64 80" class="plant-svg">
-								<!-- Diamond: top=(32,48), right=(52,60), bottom=(32,72), left=(12,60) -->
-								<!-- Center of top face = (32,60) -->
-								<polygon points="32,48 52,60 32,72 12,60" fill="url(#soilTop)"/>
-								<polygon points="32,72 52,60 52,66 32,78" fill="url(#soilFront)"/>
-								<polygon points="32,72 12,60 12,66 32,78" fill="url(#soilSide)"/>
-								<!-- Stem from center of top face upward -->
-								<rect x="30" y="28" width="4" height="32" rx="0" fill="url(#stemG)"/>
-								<!-- Left leaf -->
-								<polygon points="32,32 18,24 14,22 30,34" fill="#5cb870"/>
-								<polygon points="32,32 18,24 14,22 24,32" fill="#8dd89a" opacity="0.4"/>
-								<!-- Right leaf -->
-								<polygon points="32,32 46,24 50,22 34,34" fill="#4a9e5c"/>
-								<polygon points="32,32 46,24 50,22 40,32" fill="#6dcc7e" opacity="0.4"/>
+							<!-- Sprout: stem base at center (32,78) -->
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="30" y="46" width="4" height="32" rx="0" fill="url(#stemG)"/>
+								<polygon points="32,50 18,42 14,40 30,52" fill="#5cb870"/>
+								<polygon points="32,50 18,42 14,40 24,50" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="32,50 46,42 50,40 34,52" fill="#4a9e5c"/>
+								<polygon points="32,50 46,42 50,40 40,50" fill="#6dcc7e" opacity="0.4"/>
 							</svg>
 						{:else if stage.key === 'growing'}
-							<!-- Growing: stem base at center of diamond -->
-							<svg viewBox="0 0 64 88" class="plant-svg">
-								<!-- Diamond: top=(32,56), right=(52,68), bottom=(32,80), left=(12,68) -->
-								<!-- Center = (32,68) -->
-								<polygon points="32,56 52,68 32,80 12,68" fill="url(#soilTop)"/>
-								<polygon points="32,80 52,68 52,74 32,86" fill="url(#soilFront)"/>
-								<polygon points="32,80 12,68 12,74 32,86" fill="url(#soilSide)"/>
-								<!-- Stem from center -->
-								<rect x="30" y="28" width="4" height="40" rx="0" fill="url(#stemG)"/>
-								<!-- Side leaf -->
-								<polygon points="30,48 18,42 14,40 28,50" fill="#5cb870"/>
-								<polygon points="30,48 18,42 14,40 22,48" fill="#8dd89a" opacity="0.4"/>
-								<!-- Top left leaf -->
-								<polygon points="32,34 18,24 14,22 30,36" fill="#5cb870"/>
-								<polygon points="32,34 18,24 14,22 24,34" fill="#8dd89a" opacity="0.4"/>
-								<!-- Top right leaf -->
-								<polygon points="32,34 46,24 50,22 34,36" fill="#4a9e5c"/>
-								<polygon points="32,34 46,24 50,22 40,34" fill="#6dcc7e" opacity="0.4"/>
-								<!-- Bud -->
-								<rect x="28" y="26" width="8" height="8" rx="0" fill="#f4a0c0"/>
-								<rect x="30" y="28" width="4" height="4" rx="0" fill="#f8c8d8" opacity="0.5"/>
+							<!-- Growing: taller stem from center -->
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="30" y="28" width="4" height="50" rx="0" fill="url(#stemG)"/>
+								<polygon points="30,58 18,52 14,50 28,60" fill="#5cb870"/>
+								<polygon points="30,58 18,52 14,50 22,58" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="32,36 18,26 14,24 30,38" fill="#5cb870"/>
+								<polygon points="32,36 18,26 14,24 24,36" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="32,36 46,26 50,24 34,38" fill="#4a9e5c"/>
+								<polygon points="32,36 46,26 50,24 40,36" fill="#6dcc7e" opacity="0.4"/>
+								<rect x="28" y="28" width="8" height="8" rx="0" fill="#f4a0c0"/>
+								<rect x="30" y="30" width="4" height="4" rx="0" fill="#f8c8d8" opacity="0.5"/>
 							</svg>
 						{:else if stage.key === 'blooming'}
 							<!-- Blooming: flower centered above diamond -->
 							<svg viewBox="0 0 64 96" class="plant-svg">
-								<!-- Diamond: top=(32,64), right=(52,76), bottom=(32,88), left=(12,76) -->
-								<!-- Center = (32,76) -->
-								<polygon points="32,64 52,76 32,88 12,76" fill="url(#soilTop)"/>
-								<polygon points="32,88 52,76 52,82 32,94" fill="url(#soilFront)"/>
-								<polygon points="32,88 12,76 12,82 32,94" fill="url(#soilSide)"/>
-								<!-- Stem from center -->
-								<rect x="30" y="36" width="4" height="40" rx="0" fill="url(#stemG)"/>
-								<!-- Side leaves -->
-								<polygon points="30,56 16,50 12,48 28,58" fill="#5cb870"/>
-								<polygon points="30,56 16,50 12,48 20,56" fill="#8dd89a" opacity="0.4"/>
-								<polygon points="34,56 48,50 52,48 36,58" fill="#4a9e5c"/>
-								<polygon points="34,56 48,50 52,48 44,56" fill="#6dcc7e" opacity="0.4"/>
-								<!-- Flower petals centered at X=32 -->
-								<rect x="26" y="16" width="12" height="6" rx="0" fill="#f4a0c0"/>
-								<rect x="14" y="20" width="14" height="6" rx="0" fill="#f4a0c0"/>
-								<rect x="36" y="20" width="14" height="6" rx="0" fill="#e8609a"/>
-								<rect x="16" y="25" width="10" height="6" rx="0" fill="#e8609a"/>
-								<rect x="38" y="25" width="10" height="6" rx="0" fill="#d84890"/>
-								<rect x="26" y="28" width="12" height="6" rx="0" fill="#f4a0c0"/>
-								<!-- Pistil -->
-								<rect x="26" y="18" width="12" height="10" rx="0" fill="#ffd966"/>
-								<rect x="28" y="20" width="6" height="4" rx="0" fill="#ffec99" opacity="0.6"/>
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="30" y="40" width="4" height="38" rx="0" fill="url(#stemG)"/>
+								<polygon points="30,58 16,52 12,50 28,60" fill="#5cb870"/>
+								<polygon points="30,58 16,52 12,50 20,58" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="34,58 48,52 52,50 36,60" fill="#4a9e5c"/>
+								<polygon points="34,58 48,52 52,50 44,58" fill="#6dcc7e" opacity="0.4"/>
+								<rect x="26" y="18" width="12" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="14" y="22" width="14" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="36" y="22" width="14" height="6" rx="0" fill="#e8609a"/>
+								<rect x="16" y="27" width="10" height="6" rx="0" fill="#e8609a"/>
+								<rect x="38" y="27" width="10" height="6" rx="0" fill="#d84890"/>
+								<rect x="26" y="30" width="12" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="26" y="20" width="12" height="10" rx="0" fill="#ffd966"/>
+								<rect x="28" y="22" width="6" height="4" rx="0" fill="#ffec99" opacity="0.6"/>
 							</svg>
 						{:else if stage.key === 'mature'}
-							<!-- Mature: tree centered above diamond -->
-							<svg viewBox="0 0 64 112" class="plant-svg-lg">
-								<!-- Diamond: top=(32,80), right=(52,92), bottom=(32,104), left=(12,92) -->
-								<!-- Center = (32,92) -->
-								<polygon points="32,80 52,92 32,104 12,92" fill="url(#soilTop)"/>
-								<polygon points="32,104 52,92 52,98 32,110" fill="url(#soilFront)"/>
-								<polygon points="32,104 12,92 12,98 32,110" fill="url(#soilSide)"/>
-								<!-- Trunk from center -->
-								<rect x="28" y="32" width="8" height="52" rx="0" fill="url(#trunkG)"/>
-								<rect x="32" y="32" width="4" height="52" rx="0" fill="#b07a52" opacity="0.3"/>
-								<!-- Canopy centered at (32, ~24) -->
-								<ellipse cx="32" cy="30" rx="28" ry="12" fill="#14532d"/>
-								<ellipse cx="22" cy="26" rx="14" ry="7" fill="#1e6e32"/>
-								<ellipse cx="42" cy="26" rx="12" ry="6" fill="#1e6e32"/>
-								<ellipse cx="32" cy="22" rx="20" ry="9" fill="#2d8a3e"/>
-								<ellipse cx="26" cy="18" rx="12" ry="6" fill="#3da052"/>
-								<ellipse cx="40" cy="20" rx="10" ry="5" fill="#3da052"/>
-								<ellipse cx="32" cy="14" rx="8" ry="4" fill="#4aba62"/>
-								<!-- Highlights -->
-								<ellipse cx="24" cy="22" rx="6" ry="3" fill="#6dcc7e" opacity="0.35"/>
-								<ellipse cx="38" cy="23" rx="5" ry="2.5" fill="#8dd89a" opacity="0.25"/>
+							<!-- Mature: tree centered above diamond, same viewBox -->
+							<svg viewBox="0 0 64 96" class="plant-svg-lg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="28" y="26" width="8" height="52" rx="0" fill="url(#trunkG)"/>
+								<rect x="32" y="26" width="4" height="52" rx="0" fill="#b07a52" opacity="0.3"/>
+								<ellipse cx="32" cy="24" rx="28" ry="12" fill="#14532d"/>
+								<ellipse cx="22" cy="20" rx="14" ry="7" fill="#1e6e32"/>
+								<ellipse cx="42" cy="20" rx="12" ry="6" fill="#1e6e32"/>
+								<ellipse cx="32" cy="16" rx="20" ry="9" fill="#2d8a3e"/>
+								<ellipse cx="26" cy="12" rx="12" ry="6" fill="#3da052"/>
+								<ellipse cx="40" cy="14" rx="10" ry="5" fill="#3da052"/>
+								<ellipse cx="32" cy="8" rx="8" ry="4" fill="#4aba62"/>
+								<ellipse cx="24" cy="16" rx="6" ry="3" fill="#6dcc7e" opacity="0.35"/>
+								<ellipse cx="38" cy="17" rx="5" ry="2.5" fill="#8dd89a" opacity="0.25"/>
 							</svg>
 						{:else if stage.key === 'wilting'}
-							<!-- Wilting: stem droops from center of diamond -->
-							<svg viewBox="0 0 64 80" class="plant-svg">
-								<!-- Diamond: top=(32,48), right=(52,60), bottom=(32,72), left=(12,60) -->
-								<!-- Center = (32,60) -->
-								<polygon points="32,48 52,60 32,72 12,60" fill="url(#drySoilTop)"/>
-								<polygon points="32,72 52,60 52,66 32,78" fill="url(#drySoilFront)"/>
-								<polygon points="32,72 12,60 12,66 32,78" fill="#5a4a32"/>
-								<!-- Stem starts at center (32,60) and droops right -->
-								<polygon points="32,62 32,60 42,46 44,44 42,50 34,62" fill="#8a7a3a"/>
-								<polygon points="32,62 32,60 42,46 44,44 40,50 33,62" fill="#a89040" opacity="0.4"/>
-								<!-- Wilting leaf -->
-								<polygon points="42,44 44,44 52,36 50,34 42,42" fill="#a89840"/>
-								<polygon points="42,44 44,44 52,36 50,34 43,42" fill="#b8a850" opacity="0.4"/>
-								<!-- Bud -->
-								<rect x="40" y="40" width="6" height="5" rx="0" fill="#8b6914"/>
-								<rect x="41" y="41" width="3" height="3" rx="0" fill="#a88030" opacity="0.4"/>
+							<!-- Wilting: stem droops from center -->
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#drySoilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#drySoilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="#5a4a32"/>
+								<polygon points="32,80 32,78 42,64 44,62 42,68 34,80" fill="#8a7a3a"/>
+								<polygon points="32,80 32,78 42,64 44,62 40,68 33,80" fill="#a89040" opacity="0.4"/>
+								<polygon points="42,62 44,62 52,54 50,52 42,60" fill="#a89840"/>
+								<polygon points="42,62 44,62 52,54 50,52 43,60" fill="#b8a850" opacity="0.4"/>
+								<rect x="40" y="58" width="6" height="5" rx="0" fill="#8b6914"/>
+								<rect x="41" y="59" width="3" height="3" rx="0" fill="#a88030" opacity="0.4"/>
 							</svg>
 						{/if}
 					</div>
@@ -218,53 +188,53 @@
 						<!-- Morning Routine - Blooming -->
 						<div class="garden-spot">
 							<svg viewBox="0 0 64 96" class="plant-svg">
-								<polygon points="32,64 52,76 32,88 12,76" fill="url(#soilTop)"/>
-								<polygon points="32,88 52,76 52,82 32,94" fill="url(#soilFront)"/>
-								<polygon points="32,88 12,76 12,82 32,94" fill="url(#soilSide)"/>
-								<rect x="30" y="36" width="4" height="40" rx="0" fill="url(#stemG)"/>
-								<polygon points="30,56 16,50 12,48 28,58" fill="#5cb870"/>
-								<polygon points="30,56 16,50 12,48 20,56" fill="#8dd89a" opacity="0.4"/>
-								<polygon points="34,56 48,50 52,48 36,58" fill="#4a9e5c"/>
-								<polygon points="34,56 48,50 52,48 44,56" fill="#6dcc7e" opacity="0.4"/>
-								<rect x="26" y="16" width="12" height="6" rx="0" fill="#f4a0c0"/>
-								<rect x="14" y="20" width="14" height="6" rx="0" fill="#f4a0c0"/>
-								<rect x="36" y="20" width="14" height="6" rx="0" fill="#e8609a"/>
-								<rect x="16" y="25" width="10" height="6" rx="0" fill="#e8609a"/>
-								<rect x="38" y="25" width="10" height="6" rx="0" fill="#d84890"/>
-								<rect x="26" y="28" width="12" height="6" rx="0" fill="#f4a0c0"/>
-								<rect x="26" y="18" width="12" height="10" rx="0" fill="#ffd966"/>
-								<rect x="28" y="20" width="6" height="4" rx="0" fill="#ffec99" opacity="0.6"/>
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="30" y="40" width="4" height="38" rx="0" fill="url(#stemG)"/>
+								<polygon points="30,58 16,52 12,50 28,60" fill="#5cb870"/>
+								<polygon points="30,58 16,52 12,50 20,58" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="34,58 48,52 52,50 36,60" fill="#4a9e5c"/>
+								<polygon points="34,58 48,52 52,50 44,58" fill="#6dcc7e" opacity="0.4"/>
+								<rect x="26" y="18" width="12" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="14" y="22" width="14" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="36" y="22" width="14" height="6" rx="0" fill="#e8609a"/>
+								<rect x="16" y="27" width="10" height="6" rx="0" fill="#e8609a"/>
+								<rect x="38" y="27" width="10" height="6" rx="0" fill="#d84890"/>
+								<rect x="26" y="30" width="12" height="6" rx="0" fill="#f4a0c0"/>
+								<rect x="26" y="20" width="12" height="10" rx="0" fill="#ffd966"/>
+								<rect x="28" y="22" width="6" height="4" rx="0" fill="#ffec99" opacity="0.6"/>
 							</svg>
 							<span class="spot-name">Morning Routine</span>
 							<span class="spot-streak">🔥 7 days</span>
 						</div>
 						<!-- Wind Down - Growing -->
 						<div class="garden-spot">
-							<svg viewBox="0 0 64 88" class="plant-svg">
-								<polygon points="32,56 52,68 32,80 12,68" fill="url(#soilTop)"/>
-								<polygon points="32,80 52,68 52,74 32,86" fill="url(#soilFront)"/>
-								<polygon points="32,80 12,68 12,74 32,86" fill="url(#soilSide)"/>
-								<rect x="30" y="28" width="4" height="40" rx="0" fill="url(#stemG)"/>
-								<polygon points="30,48 18,42 14,40 28,50" fill="#5cb870"/>
-								<polygon points="30,48 18,42 14,40 22,48" fill="#8dd89a" opacity="0.4"/>
-								<polygon points="32,34 18,24 14,22 30,36" fill="#5cb870"/>
-								<polygon points="32,34 18,24 14,22 24,34" fill="#8dd89a" opacity="0.4"/>
-								<polygon points="32,34 46,24 50,22 34,36" fill="#4a9e5c"/>
-								<polygon points="32,34 46,24 50,22 40,34" fill="#6dcc7e" opacity="0.4"/>
-								<rect x="28" y="26" width="8" height="8" rx="0" fill="#f4a0c0"/>
-								<rect x="30" y="28" width="4" height="4" rx="0" fill="#f8c8d8" opacity="0.5"/>
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="30" y="28" width="4" height="50" rx="0" fill="url(#stemG)"/>
+								<polygon points="30,58 18,52 14,50 28,60" fill="#5cb870"/>
+								<polygon points="30,58 18,52 14,50 22,58" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="32,36 18,26 14,24 30,38" fill="#5cb870"/>
+								<polygon points="32,36 18,26 14,24 24,36" fill="#8dd89a" opacity="0.4"/>
+								<polygon points="32,36 46,26 50,24 34,38" fill="#4a9e5c"/>
+								<polygon points="32,36 46,26 50,24 40,36" fill="#6dcc7e" opacity="0.4"/>
+								<rect x="28" y="28" width="8" height="8" rx="0" fill="#f4a0c0"/>
+								<rect x="30" y="30" width="4" height="4" rx="0" fill="#f8c8d8" opacity="0.5"/>
 							</svg>
 							<span class="spot-name">Wind Down</span>
 							<span class="spot-streak">🔥 3 days</span>
 						</div>
 						<!-- Focus - Seed -->
 						<div class="garden-spot">
-							<svg viewBox="0 0 64 48" class="plant-svg">
-								<polygon points="32,12 52,24 32,36 12,24" fill="url(#soilTop)"/>
-								<polygon points="32,36 52,24 52,30 32,42" fill="url(#soilFront)"/>
-								<polygon points="32,36 12,24 12,30 32,42" fill="url(#soilSide)"/>
-								<rect x="28" y="20" width="8" height="4" rx="0" fill="#c9a54e"/>
-								<rect x="29" y="21" width="4" height="2" rx="0" fill="#e0c36a" opacity="0.6"/>
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="28" y="76" width="8" height="4" rx="0" fill="#c9a54e"/>
+								<rect x="29" y="77" width="4" height="2" rx="0" fill="#e0c36a" opacity="0.6"/>
 							</svg>
 							<span class="spot-name">Focus</span>
 							<span class="spot-streak new">New</span>
@@ -273,37 +243,37 @@
 					<div class="garden-row">
 						<!-- Fitness - Mature -->
 						<div class="garden-spot">
-							<svg viewBox="0 0 64 112" class="plant-svg-lg">
-								<polygon points="32,80 52,92 32,104 12,92" fill="url(#soilTop)"/>
-								<polygon points="32,104 52,92 52,98 32,110" fill="url(#soilFront)"/>
-								<polygon points="32,104 12,92 12,98 32,110" fill="url(#soilSide)"/>
-								<rect x="28" y="32" width="8" height="52" rx="0" fill="url(#trunkG)"/>
-								<rect x="32" y="32" width="4" height="52" rx="0" fill="#b07a52" opacity="0.3"/>
-								<ellipse cx="32" cy="30" rx="28" ry="12" fill="#14532d"/>
-								<ellipse cx="22" cy="26" rx="14" ry="7" fill="#1e6e32"/>
-								<ellipse cx="42" cy="26" rx="12" ry="6" fill="#1e6e32"/>
-								<ellipse cx="32" cy="22" rx="20" ry="9" fill="#2d8a3e"/>
-								<ellipse cx="26" cy="18" rx="12" ry="6" fill="#3da052"/>
-								<ellipse cx="40" cy="20" rx="10" ry="5" fill="#3da052"/>
-								<ellipse cx="32" cy="14" rx="8" ry="4" fill="#4aba62"/>
-								<ellipse cx="24" cy="22" rx="6" ry="3" fill="#6dcc7e" opacity="0.35"/>
-								<ellipse cx="38" cy="23" rx="5" ry="2.5" fill="#8dd89a" opacity="0.25"/>
+							<svg viewBox="0 0 64 96" class="plant-svg-lg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#soilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#soilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="url(#soilSide)"/>
+								<rect x="28" y="26" width="8" height="52" rx="0" fill="url(#trunkG)"/>
+								<rect x="32" y="26" width="4" height="52" rx="0" fill="#b07a52" opacity="0.3"/>
+								<ellipse cx="32" cy="24" rx="28" ry="12" fill="#14532d"/>
+								<ellipse cx="22" cy="20" rx="14" ry="7" fill="#1e6e32"/>
+								<ellipse cx="42" cy="20" rx="12" ry="6" fill="#1e6e32"/>
+								<ellipse cx="32" cy="16" rx="20" ry="9" fill="#2d8a3e"/>
+								<ellipse cx="26" cy="12" rx="12" ry="6" fill="#3da052"/>
+								<ellipse cx="40" cy="14" rx="10" ry="5" fill="#3da052"/>
+								<ellipse cx="32" cy="8" rx="8" ry="4" fill="#4aba62"/>
+								<ellipse cx="24" cy="16" rx="6" ry="3" fill="#6dcc7e" opacity="0.35"/>
+								<ellipse cx="38" cy="17" rx="5" ry="2.5" fill="#8dd89a" opacity="0.25"/>
 							</svg>
 							<span class="spot-name">Fitness</span>
 							<span class="spot-streak">🔥 21 days</span>
 						</div>
 						<!-- Reading - Wilting -->
 						<div class="garden-spot wilt">
-							<svg viewBox="0 0 64 80" class="plant-svg">
-								<polygon points="32,48 52,60 32,72 12,60" fill="url(#drySoilTop)"/>
-								<polygon points="32,72 52,60 52,66 32,78" fill="url(#drySoilFront)"/>
-								<polygon points="32,72 12,60 12,66 32,78" fill="#5a4a32"/>
-								<polygon points="32,62 32,60 42,46 44,44 42,50 34,62" fill="#8a7a3a"/>
-								<polygon points="32,62 32,60 42,46 44,44 40,50 33,62" fill="#a89040" opacity="0.4"/>
-								<polygon points="42,44 44,44 52,36 50,34 42,42" fill="#a89840"/>
-								<polygon points="42,44 44,44 52,36 50,34 43,42" fill="#b8a850" opacity="0.4"/>
-								<rect x="40" y="40" width="6" height="5" rx="0" fill="#8b6914"/>
-								<rect x="41" y="41" width="3" height="3" rx="0" fill="#a88030" opacity="0.4"/>
+							<svg viewBox="0 0 64 96" class="plant-svg">
+								<polygon points="32,66 52,78 32,90 12,78" fill="url(#drySoilTop)"/>
+								<polygon points="32,90 52,78 52,84 32,96" fill="url(#drySoilFront)"/>
+								<polygon points="32,90 12,78 12,84 32,96" fill="#5a4a32"/>
+								<polygon points="32,80 32,78 42,64 44,62 42,68 34,80" fill="#8a7a3a"/>
+								<polygon points="32,80 32,78 42,64 44,62 40,68 33,80" fill="#a89040" opacity="0.4"/>
+								<polygon points="42,62 44,62 52,54 50,52 42,60" fill="#a89840"/>
+								<polygon points="42,62 44,62 52,54 50,52 43,60" fill="#b8a850" opacity="0.4"/>
+								<rect x="40" y="58" width="6" height="5" rx="0" fill="#8b6914"/>
+								<rect x="41" y="59" width="3" height="3" rx="0" fill="#a88030" opacity="0.4"/>
 							</svg>
 							<span class="spot-name wilt-name">Reading</span>
 							<span class="spot-streak wilt-streak">⚠ At risk</span>
@@ -366,20 +336,15 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.stage-plant-lg {
-		height: 160px;
-	}
 	.plant-svg {
 		height: 100%;
 		width: auto;
-		max-width: 80px;
 		filter: drop-shadow(0 3px 4px rgba(0,0,0,0.4));
 		image-rendering: pixelated;
 	}
 	.plant-svg-lg {
 		height: 100%;
 		width: auto;
-		max-width: 100px;
 		filter: drop-shadow(0 3px 6px rgba(0,0,0,0.45));
 		image-rendering: pixelated;
 	}
