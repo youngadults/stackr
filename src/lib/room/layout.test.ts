@@ -21,18 +21,18 @@ describe('ROOM_ITEMS', () => {
 		}
 	});
 
-	it('forms a contiguous 3x3 rug at rows 14-16', () => {
+	it('forms a contiguous 3x3 rug at rows 7-8', () => {
 		const rug = ROOM_ITEMS.filter((item) => RUG_IDS.includes(item.id));
 		expect(rug).toHaveLength(9);
 		for (const tile of rug) {
-			expect([14, 15, 16]).toContain(tile.y);
-			expect([8, 9, 10]).toContain(tile.x);
+			expect([7, 7.5, 8]).toContain(tile.y);
+			expect([4, 4.5, 5]).toContain(tile.x);
 		}
 		// nine unique grid spots = the full block
 		expect(new Set(rug.map((t) => `${t.y}:${t.x}`)).size).toBe(9);
 	});
 
 	it('places the pet on the rug middle row', () => {
-		expect(ROOM_ITEMS.find((item) => item.id === 'pet')?.y).toBe(15.2);
+		expect(ROOM_ITEMS.find((item) => item.id === 'pet')?.y).toBe(7.6);
 	});
 });
