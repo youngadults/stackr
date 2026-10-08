@@ -155,7 +155,7 @@
 		top: 15%;
 		height: 85%;
 		background-image: var(--floor-tile);
-		background-size: 10% 11.3636%;
+		background-size: 10% 11.7647%;
 	}
 	.lofi-item {
 		position: absolute;
