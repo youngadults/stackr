@@ -53,6 +53,13 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   `bookshelf-2.png` (row 12, col 43), `bookshelf-3.png` (row 12, col 45),
   `shelf-empty.png` (row 13, col 43).
 
+## Composed sprites
+
+`rug.png` (96x80, a 6x5-tile carpet) and `bookshelf.png` (48x16, a 3-tile
+shelf strip) are composed in-repo from the crops listed above by
+`scripts/compose-room-sprites.py`; the piece crops stay in this directory
+as the composition source and provenance.
+
 ## Ninja Adventure asset pack (pet sprite)
 
 - Source: https://pixel-boy.itch.io/ninja-adventure-asset-pack
