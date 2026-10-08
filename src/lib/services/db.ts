@@ -6,7 +6,16 @@ import { openDB, type IDBPDatabase } from 'idb';
 import type { Stack, Habit, Completion, Achievement, Profile } from '$lib/types';
 
 const DB_NAME = 'stackr';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
+
+/** Key/value settings persisted locally (e.g. garden theme). */
+export interface Setting {
+	key: string;
+	value: string | number | boolean;
+	updated_at: string;
+}
+
+export type GardenTheme = 'plant' | 'machine';
 
 interface StackrDB {
 	stacks: Stack;
@@ -14,6 +23,7 @@ interface StackrDB {
 	completions: Completion;
 	achievements: Achievement;
 	profile: Profile;
+	settings: Setting;
 }
 
 let dbInstance: IDBPDatabase<StackrDB> | null = null;
@@ -58,6 +68,13 @@ async function getDB(): Promise<IDBPDatabase<StackrDB>> {
 				const store = transaction.objectStore('achievements');
 				if (!store.indexNames.contains('user_id')) {
 					store.createIndex('user_id', 'user_id');
+				}
+			}
+
+			// v4: settings key/value store (garden theme etc.)
+			if (oldVersion < 4) {
+				if (!db.objectStoreNames.contains('settings')) {
+					db.createObjectStore('settings', { keyPath: 'key' });
 				}
 			}
 		},
@@ -253,4 +270,18 @@ export async function getAchievementsByUser(userId: string): Promise<Achievement
 export async function saveAchievement(achievement: Achievement): Promise<void> {
 	const db = await getDB();
 	await db.put('achievements', achievement);
+}
+
+// ============ SETTINGS OPERATIONS ============
+
+export async function getSetting<T extends string | number | boolean>(key: string): Promise<T | undefined> {
+	const db = await getDB();
+	const setting = await db.get('settings', key);
+	return setting?.value as T | undefined;
+}
+
+export async function saveSetting(key: string, value: string | number | boolean): Promise<void> {
+	const db = await getDB();
+	const setting: Setting = { key, value, updated_at: new Date().toISOString() };
+	await db.put('settings', setting);
 }
