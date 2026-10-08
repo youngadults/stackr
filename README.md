@@ -110,14 +110,6 @@ src/
 - Level N requires `25 × N × (N+1)` total XP
 - Level 1 = 50 XP, Level 5 = 750 XP, Level 10 = 2,750 XP
 
-### Rewards Room
-The rewards page renders one lofi-style cozy room (CC0 pixel tiles) that gains
-furniture with cumulative XP: bare floor at 0 XP → desk (150) → plant & poster
-(400) → proper bed & rug (800) → pet & bookshelves (1,400) → media shelf &
-string lights (2,200). The room follows your local hour (night: lamp glow,
-window rain, film grain; day: bright) and dims sleepily if nothing is
-completed for 3+ days — progress never regresses.
-
 ### Badges (data model)
 20 achievement keys across 5 categories still unlock silently from the same
 XP/streak data and are stored in IndexedDB:
@@ -126,6 +118,58 @@ XP/streak data and are stored in IndexedDB:
 - **Stacks:** First stack, 5 stacks, full stack completion
 - **Levels:** 5, 10, 25, 50
 - **Special:** Night owl, early bird
+
+## Rewards Room & Progression
+
+The achievements page renders one lofi-style cozy room built from 16px CC0
+tiles (attribution in `src/lib/assets/room/CREDITS.md`; 29 sprites total —
+26 stage-gated furniture sprites placed via `ROOM_ITEMS` in
+`src/lib/room/layout.ts`, plus the wall, baseboard and floor shell tiles
+rendered as CSS backgrounds).
+
+Furniture reveals are gated by **cumulative profile XP**, independent of the
+level curve above. The stage is derived only from XP
+(`stageFromXp` in `src/lib/room/room-stage.ts`), so it never regresses, and
+the bar under the room shows the percentage toward the next stage reveal
+(`stageProgress`) — it sits at 100% once the final stage is reached.
+
+### Room stages
+
+| Stage | Name | Unlocks at (cumulative profile XP) |
+| --- | --- | --- |
+| 1 | Floor Days | 0 |
+| 2 | First Desk | 150 |
+| 3 | Green Corner | 400 |
+| 4 | Proper Pad | 800 |
+| 5 | Lived In | 1,400 |
+| 6 | Sanctuary | 2,200 |
+
+### What appears at each stage
+
+- **Stage 1 — Floor Days:** bare walls and floor with a night window, a folded
+  blanket and pillow, a rolled-up sleeping mat, a wooden storage crate and a
+  lit candelabra.
+- **Stage 2 — First Desk:** a small wooden desk with a tucked-in chair.
+- **Stage 3 — Green Corner:** a potted sprout on the desk and a framed poster
+  on the wall.
+- **Stage 4 — Proper Pad:** a proper bed (replaces the floor blanket and
+  bedroll) and a 3×3 tiled rug.
+- **Stage 5 — Lived In:** a three-section bookshelf and a pet pig napping on
+  the rug.
+- **Stage 6 — Sanctuary:** a media shelf with a speaker, plus string lights
+  along the wall.
+
+### Moods
+
+The room's mood is `deriveRoomMood(hour, lastCompletionDate, today)` in
+`src/lib/room/room-stage.ts`, rendered in `LofiRoom.svelte`:
+
+- **Night (19:00–06:00 local):** warm lamp glow around the candelabra, rain
+  streaks in the window and a film-grain overlay. **Day:** bright with a soft
+  warm tint.
+- **Sleepy:** when no habit was completed in the last 3 days (or ever), the
+  lamp glow dims and a sleepy vignette settles over the room. Sleepy is
+  cosmetic only — the stage never regresses.
 
 ## Offline-First Architecture
 
