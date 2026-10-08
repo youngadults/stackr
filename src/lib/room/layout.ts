@@ -1,8 +1,8 @@
 // Cozy room layout — every sprite is a 16x16 CC0 tile (see CREDITS.md).
-// Coordinates use a 10x12.5 tile grid inside a 4:5 hero (2x content scale:
-// fewer, bigger tiles — same percent-of-scene footprint): wall rows 0-1.5,
-// floor rows 1.5-12.5. Painter order of ROOM_ITEMS is intentional — later
-// entries render on top.
+// Coordinates use a 10x10 tile grid inside a 1:1 hero (2x content scale versus
+// the original 20x25 portrait: fewer, bigger tiles, denser composition):
+// wall rows 0-1.5, floor rows 1.5-10.
+// Painter order of ROOM_ITEMS is intentional — later entries render on top.
 import wallTile from '$lib/assets/room/wall.png';
 import wallBaseTile from '$lib/assets/room/wall-base.png';
 import floorTile from '$lib/assets/room/floor.png';
@@ -33,7 +33,7 @@ import shelfEmpty from '$lib/assets/room/shelf-empty.png';
 import speakerImg from '$lib/assets/room/speaker.png';
 import petImg from '$lib/assets/room/pet.png';
 
-export const ROOM_GRID = { cols: 10, rows: 12.5, wallRows: 1.5 } as const;
+export const ROOM_GRID = { cols: 10, rows: 10, wallRows: 1.5 } as const;
 
 export const TILE_URLS = {
 	wall: wallTile,
@@ -42,10 +42,10 @@ export const TILE_URLS = {
 } as const;
 
 /** Where the lamp (and its glow) stands. */
-export const LAMP_SPOT = { x: 9.25, y: 1.6 } as const;
+export const LAMP_SPOT = { x: 9.35, y: 3 } as const;
 
 /** The window (source of the night rain layer), in tile units. */
-export const WINDOW_SPOT = { x: 6.5, y: 0.45, w: 1, h: 1 } as const;
+export const WINDOW_SPOT = { x: 6.75, y: 0.35, w: 2, h: 1 } as const;
 
 export interface RoomItem {
 	id: string;
@@ -67,33 +67,55 @@ export interface RoomItem {
  * Stage-gated reveals (cumulative profile XP):
  * 1 bare (floor bed, crate, lamp, window) -> 2 desk+chair ->
  * 3 desk sprout+poster -> 4 proper bed+rug (retires the floor bed) ->
- * 5 pet+bookshelf -> 6 media shelf+speaker.
+ * 5 pet+bookshelf -> 6 media shelf+speaker. Rug is a 6x5-piece carpet
+ * (30 tiles, ~a third of the floor).
  */
 export const ROOM_ITEMS: RoomItem[] = [
-	{ id: 'window', src: windowImg, x: 6.5, y: 0.45, w: 1, h: 1, stage: 1, alt: 'Night window with four dark panes' },
-	{ id: 'poster', src: posterImg, x: 1.5, y: 0.65, w: 0.5, h: 0.5, stage: 3, alt: 'Framed poster on the wall' },
-	{ id: 'blanket', src: blanketImg, x: 1, y: 8.8333, w: 0.5, h: 0.5, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
-	{ id: 'bedroll', src: bedrollImg, x: 1.5, y: 8.8333, w: 0.5, h: 0.5, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
-	{ id: 'crate', src: crateImg, x: 8.5, y: 8.8333, w: 0.5, h: 0.5, stage: 1, alt: 'Simple wooden storage box' },
-	{ id: 'lamp', src: lampImg, x: 9, y: 1.5, w: 0.5, h: 0.5, stage: 1, alt: 'Lit candelabra standing by the wall' },
-	{ id: 'desk', src: deskImg, x: 2.5, y: 1.5, w: 0.5, h: 0.5, stage: 2, alt: 'Small wooden desk against the wall' },
-	{ id: 'chair', src: chairImg, x: 2.5, y: 2, w: 0.5, h: 0.5, stage: 2, alt: 'Wooden chair tucked at the desk' },
-	{ id: 'sprout', src: sproutImg, x: 2.5, y: 1.375, w: 0.5, h: 0.5, stage: 3, alt: 'Little potted sprout on the desk' },
-	{ id: 'bed-top', src: bedTopImg, x: 1, y: 1.5, w: 0.5, h: 0.5, stage: 4, alt: 'Head of a proper bed against the wall' },
-	{ id: 'bed-bot', src: bedBotImg, x: 1, y: 2, w: 0.5, h: 0.5, stage: 4, alt: 'Proper bed with an orange blanket' },
-	{ id: 'rug-tl', src: rugTl, x: 4, y: 7, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-t', src: rugT, x: 4.5, y: 7, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-tr', src: rugTr, x: 5, y: 7, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-l', src: rugL, x: 4, y: 7.5, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-c', src: rugC, x: 4.5, y: 7.5, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-r', src: rugR, x: 5, y: 7.5, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-bl', src: rugBl, x: 4, y: 8, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-b', src: rugB, x: 4.5, y: 8, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'rug-br', src: rugBr, x: 5, y: 8, w: 0.5, h: 0.5, stage: 4, alt: '' },
-	{ id: 'bookshelf-1', src: bookshelf1, x: 4.5, y: 1.5, w: 0.5, h: 0.5, stage: 5, alt: 'Bookshelf with colorful book spines' },
-	{ id: 'bookshelf-2', src: bookshelf2, x: 5, y: 1.5, w: 0.5, h: 0.5, stage: 5, alt: '' },
-	{ id: 'bookshelf-3', src: bookshelf3, x: 5.5, y: 1.5, w: 0.5, h: 0.5, stage: 5, alt: '' },
-	{ id: 'pet', src: petImg, x: 4.5, y: 7.6, w: 0.5, h: 0.5, stage: 5, alt: 'Pet pig napping on the rug' },
-	{ id: 'shelf-media', src: shelfEmpty, x: 7.5, y: 1.5, w: 0.5, h: 0.5, stage: 6, alt: 'Media shelf against the wall' },
-	{ id: 'speaker', src: speakerImg, x: 7.5, y: 1.1, w: 0.5, h: 0.5, stage: 6, alt: 'Speaker sitting on the media shelf' }
+	{ id: 'window', src: windowImg, x: 6.75, y: 0.35, w: 2, h: 1, stage: 1, alt: 'Night window with four dark panes' },
+	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.55, w: 0.85, h: 0.5, stage: 6, alt: 'Media shelf against the wall' },
+	{ id: 'speaker', src: speakerImg, x: 9, y: 0.27, w: 0.6, h: 0.5, stage: 6, alt: 'Speaker sitting on the media shelf' },
+	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: 'Bookshelf with colorful book spines' },
+	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
+	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
+	{ id: 'poster', src: posterImg, x: 1.2, y: 0.55, w: 0.9, h: 0.5, stage: 3, alt: 'Framed poster on the wall' },
+	{ id: 'lamp', src: lampImg, x: 8.85, y: 2.6, w: 1, h: 1, stage: 1, alt: 'Lit candelabra standing by the wall' },
+	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.2, h: 1, stage: 2, alt: 'Small wooden desk against the wall' },
+	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.1, h: 1, stage: 2, alt: 'Wooden chair tucked at the desk' },
+	{ id: 'sprout', src: sproutImg, x: 7.3, y: 1.15, w: 0.65, h: 0.5, stage: 3, alt: 'Little potted sprout on the desk' },
+	{ id: 'bed-top', src: bedTopImg, x: 0.35, y: 1.55, w: 1.35, h: 1, stage: 4, alt: 'Head of a proper bed against the wall' },
+	{ id: 'bed-bot', src: bedBotImg, x: 0.35, y: 2.9, w: 1.35, h: 1, stage: 4, alt: 'Proper bed with an orange blanket' },
+	{ id: 'blanket', src: blanketImg, x: 0.45, y: 2.9, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
+	{ id: 'bedroll', src: bedrollImg, x: 1.65, y: 3, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
+	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 0.9, h: 1, stage: 1, alt: 'Simple wooden storage box' },
+	{ id: 'rug-tl', src: rugTl, x: 2, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-t-a', src: rugT, x: 3, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-t-b', src: rugT, x: 4, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-t-c', src: rugT, x: 5, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-t-d', src: rugT, x: 6, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-tr', src: rugTr, x: 7, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-l-a', src: rugL, x: 2, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-a', src: rugC, x: 3, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-b', src: rugC, x: 4, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-c', src: rugC, x: 5, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-d', src: rugC, x: 6, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-r-a', src: rugR, x: 7, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-l-b', src: rugL, x: 2, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-e', src: rugC, x: 3, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-f', src: rugC, x: 4, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-g', src: rugC, x: 5, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-h', src: rugC, x: 6, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-r-b', src: rugR, x: 7, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-l-c', src: rugL, x: 2, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-i', src: rugC, x: 3, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-j', src: rugC, x: 4, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-k', src: rugC, x: 5, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-c-l', src: rugC, x: 6, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-r-c', src: rugR, x: 7, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-bl', src: rugBl, x: 2, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-b-a', src: rugB, x: 3, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-b-b', src: rugB, x: 4, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-b-c', src: rugB, x: 5, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-b-d', src: rugB, x: 6, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'rug-br', src: rugBr, x: 7, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
+	{ id: 'pet', src: petImg, x: 4.55, y: 6.85, w: 0.9, h: 1, stage: 5, alt: 'Pet pig napping on the rug' }
 ];
