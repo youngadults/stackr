@@ -23,11 +23,11 @@ const STAGES = [
 	{ name: 'stage6-sleepy', xp: 2400, hour: 12, idleDays: 5 }
 ];
 
-/** Count of room items expected per stage (matches src/lib/room/layout.ts):
- *  s1: left-window+window+floorbed+crate+lamp; s2: +desk+chair; s3: +sprout+poster;
- *  s4: floor bed retires (-1), +bed+nightstand+6x5 carpet(30) = 40;
- *  s6: +3 bookshelves+pet+media shelf+speaker = 46. */
-const EXPECTED_ITEMS = { 1: 5, 2: 7, 4: 40, 6: 46 };
+/** Count of room placements expected per stage (matches src/lib/room/layout.ts):
+ *  s1: window+window-left+floorbed+crate+lamp; s2: +desk+chair; s3: +sprout+poster;
+ *  s4: floor bed retires (-1), +bed+nightstand+composed rug = 11;
+ *  s6: +composed bookshelf+pet+media shelf+speaker = 15. */
+const EXPECTED_ITEMS = { 1: 5, 2: 7, 4: 11, 6: 15 };
 
 const browser = await chromium.launch();
 

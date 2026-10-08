@@ -24,7 +24,9 @@
 	};
 
 	let visibleItems = $derived(
-		ROOM_ITEMS.filter((item) => stage >= item.stage && (item.until === undefined || stage < item.until))
+		ROOM_ITEMS.filter(
+			(item) => item.source === 'user' || (stage >= item.stage && (item.until === undefined || stage < item.until))
+		)
 	);
 
 	let hasStringLights = $derived(stage >= 6);
