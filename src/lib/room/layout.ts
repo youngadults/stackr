@@ -45,7 +45,7 @@ export const TILE_URLS = {
 export const LAMP_SPOT = { x: 9.4, y: 8.7 } as const;
 
 /** The window (source of the night rain layer), in tile units. */
-export const WINDOW_SPOT = { x: 6.9, y: 0.22, w: 1.1, h: 1.1 } as const;
+export const WINDOW_SPOT = { x: 6.95, y: 0.08, w: 0.85, h: 0.85 } as const;
 
 export interface RoomItem {
 	id: string;
@@ -53,7 +53,7 @@ export interface RoomItem {
 	/** left/top in tile units (fractions allowed for on-furniture stacking). */
 	x: number;
 	y: number;
-	/** size in tile units; height follows the native sprite aspect. */
+	/** size in tile units; h must equal the rendered height (native sprite aspect). */
 	w: number;
 	h: number;
 	/** first stage at which the item is revealed */
@@ -71,22 +71,22 @@ export interface RoomItem {
  * (30 tiles, ~a third of the floor).
  */
 export const ROOM_ITEMS: RoomItem[] = [
-	{ id: 'window', src: windowImg, x: 6.9, y: 0.22, w: 1.1, h: 1.1, stage: 1, alt: 'Night window with four dark panes' },
-	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.55, w: 0.85, h: 0.5, stage: 6, alt: 'Media shelf against the wall' },
-	{ id: 'speaker', src: speakerImg, x: 9, y: 0.27, w: 0.6, h: 0.5, stage: 6, alt: 'Speaker sitting on the media shelf' },
-	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: 'Bookshelf with colorful book spines' },
-	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
-	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
-	{ id: 'poster', src: posterImg, x: 1.2, y: 0.55, w: 0.9, h: 0.5, stage: 3, alt: 'Framed poster on the wall' },
+	{ id: 'window', src: windowImg, x: 6.95, y: 0.08, w: 0.85, h: 0.85, stage: 1, alt: 'Night window with four dark panes' },
+	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.15, w: 0.8, h: 0.8, stage: 6, alt: 'Media shelf against the wall' },
+	{ id: 'speaker', src: speakerImg, x: 9.05, y: 0.18, w: 0.4, h: 0.4, stage: 6, alt: 'Speaker sitting on the media shelf' },
+	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: 'Bookshelf with colorful book spines' },
+	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
+	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
+	{ id: 'poster', src: posterImg, x: 1.25, y: 0.12, w: 0.7, h: 0.7, stage: 3, alt: 'Framed poster on the wall' },
 	{ id: 'lamp', src: lampImg, x: 9.05, y: 8.35, w: 0.7, h: 0.7, stage: 1, alt: 'Lit candelabra standing on the storage crate' },
 	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.2, h: 1.1, stage: 2, alt: 'Small wooden desk against the wall' },
-	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.1, h: 1, stage: 2, alt: 'Wooden chair tucked at the desk' },
-	{ id: 'sprout', src: sproutImg, x: 7.3, y: 1.15, w: 0.65, h: 0.5, stage: 3, alt: 'Little potted sprout on the desk' },
+	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.1, h: 1.1, stage: 2, alt: 'Wooden chair tucked at the desk' },
+	{ id: 'sprout', src: sproutImg, x: 7.3, y: 1.15, w: 0.65, h: 0.65, stage: 3, alt: 'Little potted sprout on the desk' },
 	{ id: 'bed', src: bedImg, x: 0.35, y: 1.55, w: 1.35, h: 2.7, stage: 4, alt: 'Proper bed with an orange blanket against the wall' },
 	{ id: 'nightstand', src: nightstandImg, x: 1.75, y: 2, w: 0.9, h: 0.9, stage: 4, alt: 'Small bedside cabinet next to the bed' },
-	{ id: 'blanket', src: blanketImg, x: 0.45, y: 2.9, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
-	{ id: 'bedroll', src: bedrollImg, x: 1.65, y: 3, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
-	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 0.9, h: 1, stage: 1, alt: 'Simple wooden storage box' },
+	{ id: 'blanket', src: blanketImg, x: 0.45, y: 2.9, w: 0.9, h: 0.9, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
+	{ id: 'bedroll', src: bedrollImg, x: 1.35, y: 2.95, w: 0.9, h: 0.9, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
+	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 0.9, h: 0.97, stage: 1, alt: 'Simple wooden storage box' },
 	{ id: 'rug-tl', src: rugTl, x: 2, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-t-a', src: rugT, x: 3, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-t-b', src: rugT, x: 4, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
@@ -117,5 +117,5 @@ export const ROOM_ITEMS: RoomItem[] = [
 	{ id: 'rug-b-c', src: rugB, x: 5, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-b-d', src: rugB, x: 6, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-br', src: rugBr, x: 7, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'pet', src: petImg, x: 4.55, y: 6.85, w: 0.9, h: 1, stage: 5, alt: 'Pet pig napping on the rug' }
+	{ id: 'pet', src: petImg, x: 4.55, y: 6.85, w: 0.9, h: 0.9, stage: 5, alt: 'Pet pig napping on the rug' }
 ];
