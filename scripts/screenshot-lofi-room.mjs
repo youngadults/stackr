@@ -24,10 +24,10 @@ const STAGES = [
 ];
 
 /** Count of room items expected per stage (matches src/lib/room/layout.ts):
- *  s1: window+floorbed+crate+lamp; s2: +desk+chair; s3: +sprout+poster;
- *  s4: floor bed retires (-1), +bed+nightstand+6x5 carpet(30) = 39;
- *  s6: +3 bookshelves+pet+media shelf+speaker = 45. */
-const EXPECTED_ITEMS = { 1: 4, 2: 6, 4: 39, 6: 45 };
+ *  s1: left-window+window+floorbed+crate+lamp; s2: +desk+chair; s3: +sprout+poster;
+ *  s4: floor bed retires (-1), +bed+nightstand+6x5 carpet(30) = 40;
+ *  s6: +3 bookshelves+pet+media shelf+speaker = 46. */
+const EXPECTED_ITEMS = { 1: 5, 2: 7, 4: 40, 6: 46 };
 
 const browser = await chromium.launch();
 
