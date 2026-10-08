@@ -101,7 +101,9 @@ describe('composed one-sprite objects', () => {
 	});
 
 	it('derives the lamp glow and night rain anchors from the placements', () => {
-		expect(LAMP_SPOT).toEqual({ x: 9.45, y: 8.7 });
+		// raw floats; the component rounds at the 4dp CSS boundary
+		expect(LAMP_SPOT.x).toBeCloseTo(9.445, 12);
+		expect(LAMP_SPOT.y).toBeCloseTo(8.695, 12);
 		expect(WINDOW_SPOT).toEqual({ x: 6.95, y: 0.08, w: 0.85, h: 0.85 });
 	});
 });

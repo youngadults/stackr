@@ -226,6 +226,12 @@ export const ITEM_KINDS = {
 		footprintW: 0.9,
 		zone: 'floor',
 		category: 'pet',
+		/**
+		 * Explicit pet-on-carpet rule (mode 'inside'). Rug-vs-pet legality also
+		 * holds via the rug's walkable flag; the declared rule documents intent
+		 * and pins the inside geometry. Soft on zone 'floor' — a pet may roam.
+		 */
+		stacksOn: [{ target: 'rug', mode: 'inside' }],
 		alt: 'Pet pig napping on the rug'
 	}
 } as const satisfies Record<string, ItemKind>;

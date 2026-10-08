@@ -113,28 +113,21 @@ function placementById(id: string): RoomPlacement {
 	return p;
 }
 
-/** Center of a placement, rounded to 2dp (percent-of-scene positions). */
+/**
+ * Derived anchors, raw floats — consumers round at the CSS boundary (the
+ * component formats every position to 4 decimal places of the scene).
+ */
 function centerOf(id: string): { x: number; y: number } {
 	const p = placementById(id);
 	const kind = kindOf(p.kindId);
-	const round2 = (v: number) => Math.round(v * 100) / 100;
-	return {
-		x: round2(p.x + kind.footprintW / 2),
-		y: round2(p.y + footprintH(kind) / 2)
-	};
+	return { x: p.x + kind.footprintW / 2, y: p.y + footprintH(kind) / 2 };
 }
 
 /** Rect of a placement, rounded to 2dp (percent-of-scene geometry). */
 function rectOfId(id: string): { x: number; y: number; w: number; h: number } {
 	const p = placementById(id);
 	const kind = kindOf(p.kindId);
-	const round2 = (v: number) => Math.round(v * 100) / 100;
-	return {
-		x: round2(p.x),
-		y: round2(p.y),
-		w: round2(kind.footprintW),
-		h: round2(footprintH(kind))
-	};
+	return { x: p.x, y: p.y, w: kind.footprintW, h: footprintH(kind) };
 }
 
 /** Where the lamp (and its glow) stands — derived from the `lamp` placement. */

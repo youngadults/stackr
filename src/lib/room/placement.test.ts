@@ -151,7 +151,52 @@ describe('occupancy', () => {
 	});
 });
 
-// keep the catalog import exercised for its docs-visible contract
-it('kindOf rejects unknown ids loudly', () => {
-	expect(() => kindOf('ghost')).toThrow(/Unknown room item kind/);
+describe('kindOf', () => {
+	it('rejects unknown ids loudly', () => {
+		expect(() => kindOf('ghost')).toThrow(/Unknown room item kind/);
+	});
+});
+
+describe('phase-2 contract: user placements', () => {
+	it('floor kinds with declared stack rules stay soft in validation', () => {
+		// a chair parked free of any desk must not fail validation (parity fix)
+		expect(validatePlacements([{ kindId: 'chair', x: 3, y: 6, id: 'c1' }])).toEqual([]);
+	});
+
+	it('a user placement ignores stage gates but not live or future items', () => {
+		// the proper bed reveals at stage 4: conservatively blocked even before,
+		// because the later reveal would collide with the saved item
+		const res = canPlace(
+			{ kindId: 'nightstand', x: 1, y: 3, source: 'user' },
+			[{ kindId: 'bed', x: 0.35, y: 1.55, stage: 4 }]
+		);
+		expect(res.ok).toBe(false);
+	});
+
+	it('a retired scripted placement stops blocking once its stage has passed', () => {
+		const floorbed = { kindId: 'floorbed', x: 0.45, y: 2.9, stage: 1, until: 4 };
+		// the floorbed's old sliver frees up the moment its stage passes
+		expect(canPlace(at('crate', 2, 3), [floorbed], { atStage: 4 }).ok).toBe(true);
+		expect(canPlace(at('crate', 2, 3), [floorbed], { atStage: 2 }).ok).toBe(false);
+		expect(canPlace(at('crate', 2, 3), [floorbed]).ok).toBe(false);
+	});
+
+	it('moving an existing placement by id ignores its old ghost spot', () => {
+		const moved = canPlace(
+			{ id: 'desk', kindId: 'desk', x: 6.3, y: 2 },
+			[{ id: 'desk', kindId: 'desk', x: 6.4, y: 1.55, stage: 2 }]
+		);
+		expect(moved.ok).toBe(true);
+		// without the id, the old twin phantom-blocks
+		const ghosted = canPlace(
+			at('desk', 6.3, 2),
+			[{ id: 'desk', kindId: 'desk', x: 6.4, y: 1.55, stage: 2 }]
+		);
+		expect(ghosted.ok).toBe(false);
+	});
+
+	it('inside mode pins pet-in-carpet geometry', () => {
+		expect(stackSatisfied(at('pet', 4.55, 6.85), [at('rug', 2, 4.75)])).toBe(true);
+		expect(stackSatisfied(at('pet', 8.5, 5.2), [at('rug', 2, 4.75)])).toBe(false);
+	});
 });

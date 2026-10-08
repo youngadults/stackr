@@ -9,7 +9,7 @@ Writes:
 One sprite per object: the renderer places a single <img> per object instead
 of stacking per-tile entries, and the item catalog (src/lib/room/catalog.ts)
 carries the composed sprite with its native pixel size + footprint. The piece
-crops stay in assets/ room as the composition source and provenance.
+crops stay in assets/room as the composition source and provenance.
 """
 from PIL import Image
 from pathlib import Path

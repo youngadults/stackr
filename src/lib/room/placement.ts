@@ -152,18 +152,23 @@ function satisfiesRule(item: PlacedLike, rule: StackRule, surface: PlacedLike): 
 /**
  * Does the item satisfy its declared stack rules among its siblings? Kinds
  * without stacksOn rules are always satisfied; stacksOn is a set of
- * alternatives — any one listed surface suffices.
+ * alternatives — any one listed surface suffices. A sibling with the same id
+ * is skipped: moving an existing placement must not satisfy itself from its
+ * old spot.
  */
 export function stackSatisfied(
-	p: PlacedLike & WithReveal,
+	p: PlacedLike & WithReveal & { id?: string },
 	siblings: readonly (PlacedLike & WithReveal & { id?: string })[]
 ): boolean {
 	const kind = kindOf(p.kindId);
 	if (!kind.stacksOn || kind.stacksOn.length === 0) return true;
+	/** Same-id twin (or the very same object): not a sibling surface. */
+	const staleTwin = (a: { id?: string }, b: { id?: string }) =>
+		a !== b && a.id !== undefined && a.id === b.id;
 	return kind.stacksOn.some((rule) =>
 		siblings.some(
 			(other) =>
-				other !== (p as unknown) &&
+				!staleTwin(p, other) &&
 				kindExists(other.kindId) &&
 				coexistsWith(p, other) &&
 				satisfiesRule(p, rule, other)
@@ -196,10 +201,12 @@ function outOfBounds(rect: Rect): boolean {
 }
 
 /**
- * Full rules pass over a whole layout. Zone bands, bounds, declared stack
- * rules and collisions — the same checks canPlace() runs for user saves, so a
- * green scripted layout today is exactly what a user-placed item has to
- * satisfy tomorrow.
+ * Full rules pass over a whole layout: bounds, zone bands, collisions, and
+ * stack rules for `on-surface` kinds (whose sprite art assumes a surface).
+ * Declared stack rules on floor kinds (a chair in front of a desk) are
+ * compositional and stay soft — they only matter through the collision pass,
+ * where any overlap without a valid stack relation is still flagged. Bounds
+ * + zone + collision here are exactly what canPlace() runs for user saves.
  */
 export function validatePlacements(
 	placements: readonly (PlacedLike & WithReveal & { id?: string })[]
@@ -223,7 +230,7 @@ export function validatePlacements(
 			issues.push({ placementId: p.id, kindId: p.kindId, message: 'outside its placement zone' });
 			continue;
 		}
-		if (!stackSatisfied(p, placements)) {
+		if (kind.zone === 'on-surface' && !stackSatisfied(p, placements)) {
 			const targets = (kind.stacksOn ?? []).map((s) => s.target).join(', ');
 			issues.push({
 				placementId: p.id,
@@ -249,7 +256,7 @@ export function validatePlacements(
 				issues.push({
 					placementId: a.id ?? kindOf(a.kindId).id,
 					kindId: a.kindId,
-					message: `overlaps placement ${b.id ?? kindOf(b.kindId).id}`
+					message: `overlaps placement ${b.id ?? kindOf(b.kindId).label}`
 				});
 			}
 		}
@@ -263,11 +270,15 @@ export function validatePlacements(
  * Hard rules: bounds, zone band, stacks for `on-surface` kinds (their sprite
  * art assumes a surface), collisions. Declared stack rules on zone 'floor'
  * kinds (a chair in front of a desk) stay soft — a user may place those free.
- * To move an existing placement, pass the list without it.
+ * Not-yet-revealed scripted placements still block (a later reveal would
+ * collide with the saved item); `opts.atStage` additionally stops *retired*
+ * placements (whose `until` has passed) from blocking. To move an existing
+ * placement, pass a candidate carrying the same `id` (or the list without it).
  */
 export function canPlace(
-	candidate: PlacedLike & WithReveal,
-	placements: readonly (PlacedLike & WithReveal & { id?: string })[]
+	candidate: PlacedLike & WithReveal & { id?: string },
+	placements: readonly (PlacedLike & WithReveal & { id?: string })[],
+	opts: { atStage?: number } = {}
 ): { ok: true } | { ok: false; reason: string } {
 	let kind: ItemKind;
 	try {
@@ -291,7 +302,9 @@ export function canPlace(
 	}
 	for (const other of placements) {
 		if (other === (candidate as unknown)) continue;
+		if (candidate.id !== undefined && other.id === candidate.id) continue;
 		if (!kindExists(other.kindId)) continue;
+		if (opts.atStage !== undefined && windowOf(other).end <= opts.atStage) continue;
 		if (
 			coexistsWith(candidate, other) &&
 			overlaps(rectOf(candidate), rectOf(other)) &&
