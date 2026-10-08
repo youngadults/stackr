@@ -4,6 +4,8 @@
 	import '$lib/services/pwa';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/state';
+	import { fly } from 'svelte/transition';
+	import { quartOut } from 'svelte/easing';
 	import Toast from '$lib/components/Toast.svelte';
 	import { setToastInstance } from '$lib/stores/toast';
 
@@ -54,8 +56,12 @@
 	</div>
 {:else}
 	<div class="min-h-screen flex flex-col bg-slate-950">
-		<main class="flex-1 px-4 pb-16 pt-6 max-w-lg mx-auto w-full">
-			{@render children()}
+		<main class="flex-1 px-4 pb-24 pt-6 max-w-lg mx-auto w-full">
+			{#key page.url.pathname}
+				<div in:fly={{ y: 8, duration: 180, easing: quartOut }}>
+					{@render children()}
+				</div>
+			{/key}
 		</main>
 
 		<nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 z-40">

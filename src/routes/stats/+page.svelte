@@ -35,25 +35,25 @@
 	const progress = $derived(appState.profile ? xpProgressInLevel(appState.profile.xp) : null);
 </script>
 
-<div class="animate-fade-in">
+<div>
 	<h1 class="text-2xl font-bold text-white mb-6">Stats</h1>
 
 	{#if appState.profile}
 		<!-- Profile Summary -->
 		<div class="grid grid-cols-2 gap-3 mb-6">
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+			<div class="card p-4 text-center">
 				<div class="text-2xl font-bold text-indigo-400">Lv.{appState.profile.level}</div>
 				<div class="text-xs text-slate-400 mt-1">Level</div>
 			</div>
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+			<div class="card p-4 text-center">
 				<div class="text-2xl font-bold text-amber-400">{appState.profile.xp}</div>
 				<div class="text-xs text-slate-400 mt-1">Total XP</div>
 			</div>
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+			<div class="card p-4 text-center">
 				<div class="text-2xl font-bold text-orange-400">{appState.profile.streak_days}</div>
 				<div class="text-xs text-slate-400 mt-1">Current Streak</div>
 			</div>
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+			<div class="card p-4 text-center">
 				<div class="text-2xl font-bold text-emerald-400">{appState.profile.total_completions}</div>
 				<div class="text-xs text-slate-400 mt-1">Total Logged</div>
 			</div>
@@ -61,7 +61,7 @@
 
 		<!-- XP Progress -->
 		{#if progress}
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
+			<div class="card p-4 mb-6">
 				<div class="flex justify-between text-sm mb-2">
 					<span class="text-slate-400">Level {appState.profile.level}</span>
 					<span class="text-indigo-400">{appState.profile.xp} XP</span>
@@ -80,7 +80,7 @@
 	{/if}
 
 	<!-- Last 7 Days Bar Chart -->
-	<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
+	<div class="card p-4 mb-6">
 		<h2 class="text-sm font-semibold text-white mb-4">Last 7 Days</h2>
 		<div class="flex items-end justify-between gap-3" style="height: 140px;">
 			{#each last7Days as day}
@@ -105,7 +105,7 @@
 
 	<!-- Habit Streaks -->
 	{#if streaks.length > 0}
-		<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+		<div class="card p-4">
 			<h2 class="text-sm font-semibold text-white mb-3">Habit Streaks</h2>
 			<div class="space-y-2">
 				{#each streaks as item (item.habitId)}

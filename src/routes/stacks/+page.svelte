@@ -48,7 +48,7 @@
 	}
 </script>
 
-<div class="animate-fade-in">
+<div>
 	<div class="flex items-center justify-between mb-6">
 		<h1 class="text-2xl font-bold text-white">Stacks</h1>
 		<div class="flex items-center gap-2">
@@ -77,7 +77,7 @@
 		<div class="space-y-3">
 			{#each appState.stacks as stack, i (stack.id)}
 				{@const habitCount = appState.habits.filter(h => h.stack_id === stack.id).length}
-				<div class="rounded-xl border {colorClasses(stack.color)} p-4">
+				<div class="rounded-2xl border {colorClasses(stack.color)} p-4">
 					{#if editingStackId === stack.id}
 						<div class="space-y-3">
 							<input

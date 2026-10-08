@@ -61,7 +61,7 @@
 	}
 </script>
 
-<div class="animate-fade-in">
+<div>
 	<a href="/stacks" class="text-indigo-400 hover:text-indigo-300 text-sm mb-4 inline-block">← All Stacks</a>
 
 	{#if stack}
@@ -69,7 +69,7 @@
 			<div class="flex items-center gap-3">
 				<span class="text-3xl">{stack.icon}</span>
 				<div>
-					<h1 class="text-xl font-bold text-white">{stack.name}</h1>
+					<h1 class="text-2xl font-bold text-white">{stack.name}</h1>
 					<p class="text-sm text-slate-400">{stack.trigger}</p>
 				</div>
 			</div>
@@ -85,7 +85,7 @@
 
 		<div class="space-y-2">
 			{#each habits as habit, i (habit.id)}
-				<div class="rounded-lg bg-slate-900 border border-slate-800 p-3">
+				<div class="rounded-xl bg-slate-900 border border-slate-800 p-3">
 					{#if editingHabitId === habit.id}
 						<div class="space-y-2">
 							<input
@@ -169,7 +169,7 @@
 
 		<!-- Add Habit -->
 		{#if showAddHabit}
-			<div class="mt-3 p-4 bg-slate-900 border border-slate-700 rounded-lg">
+			<div class="mt-3 p-4 card">
 				<h3 class="text-sm font-medium text-white mb-3">New Habit</h3>
 				<div class="space-y-2">
 					<input
@@ -194,7 +194,7 @@
 		{:else}
 			<button
 				onclick={() => showAddHabit = true}
-				class="w-full mt-3 py-3 border border-dashed border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-indigo-500 transition-colors text-sm"
+				class="w-full mt-3 py-3 border border-dashed border-slate-700 rounded-xl text-slate-400 hover:text-white hover:border-indigo-500 transition-colors text-sm"
 			>
 				+ Add Habit
 			</button>

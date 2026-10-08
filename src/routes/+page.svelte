@@ -134,7 +134,7 @@
 	let isPastDate = $derived(selectedDate < today());
 </script>
 
-<div class="animate-fade-in">
+<div>
 	<!-- Date Navigation -->
 	<DateNav bind:selectedDate={selectedDate} />
 
@@ -176,23 +176,19 @@
 
 	<!-- Streak Nudge (only today) -->
 	{#if streakAtRisk.length > 0}
-		{#if streakAtRisk.length === 1}
-			<div class="mb-4 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3">
-				<span class="text-2xl">⚠️</span>
-				<div>
-					<p class="text-sm font-medium text-amber-400">Streak at risk!</p>
-					<p class="text-xs text-slate-400">{streakAtRisk[0].name} — {streakAtRisk[0].streak}-day streak</p>
-				</div>
+		<div class="mb-4 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3">
+			<span class="text-2xl">⚠️</span>
+			<div>
+				<p class="text-sm font-medium text-amber-400">
+					{streakAtRisk.length === 1 ? 'Streak at risk!' : `${streakAtRisk.length} streaks at risk`}
+				</p>
+				<p class="text-xs text-slate-400">
+					{streakAtRisk.length === 1
+						? `${streakAtRisk[0].name} — ${streakAtRisk[0].streak}-day streak`
+						: 'Complete them today to keep your streaks alive'}
+				</p>
 			</div>
-		{:else}
-			<div class="mb-4 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3">
-				<span class="text-2xl">⚠️</span>
-				<div>
-					<p class="text-sm font-medium text-amber-400">{streakAtRisk.length} streaks at risk</p>
-					<p class="text-xs text-slate-400">Complete them today to keep your streaks alive</p>
-				</div>
-			</div>
-		{/if}
+		</div>
 	{/if}
 
 	<!-- Stacks Checklist -->
@@ -213,7 +209,7 @@
 	{:else}
 		<div class="space-y-4">
 			{#each checklist as stack (stack.id)}
-				<div class="rounded-xl border {colorClasses(stack.color)} overflow-hidden">
+				<div class="rounded-2xl border {colorClasses(stack.color)} overflow-hidden">
 					<a href="/stacks/{stack.id}" class="block px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
 						<div class="flex items-center gap-2">
 							<span class="text-xl">{stack.icon}</span>
@@ -242,7 +238,7 @@
 								{@const streak = getHabitStreak(habit.id)}
 								<button
 									onclick={() => handleToggle(habit.id)}
-									class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all {completed
+									class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all {completed
 										? 'bg-slate-800/50'
 										: 'bg-slate-900/50 hover:bg-slate-800/50'}"
 								>
