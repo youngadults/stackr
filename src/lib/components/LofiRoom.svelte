@@ -25,7 +25,7 @@
 
 	let visibleItems = $derived(
 		ROOM_ITEMS.filter(
-			(item) => item.source === 'user' || (stage >= item.stage && (item.until === undefined || stage < item.until))
+			(item) => item.source === 'user' || (stage >= (item.stage ?? 1) && (item.until === undefined || stage < item.until))
 		)
 	);
 

@@ -162,9 +162,10 @@ export function stackSatisfied(
 ): boolean {
 	const kind = kindOf(p.kindId);
 	if (!kind.stacksOn || kind.stacksOn.length === 0) return true;
-	/** Same-id twin (or the very same object): not a sibling surface. */
+	/** Same-id twin (or the very same object): not a sibling surface. No
+	 * current kind stacks on its own kind — this guard is for phase-2 kinds. */
 	const staleTwin = (a: { id?: string }, b: { id?: string }) =>
-		a !== b && a.id !== undefined && a.id === b.id;
+		a === b || (a.id !== undefined && a.id === b.id);
 	return kind.stacksOn.some((rule) =>
 		siblings.some(
 			(other) =>

@@ -29,8 +29,12 @@ export interface RoomPlacement {
 	/** left/top in tile units (fractions allowed for on-furniture stacking). */
 	x: number;
 	y: number;
-	/** first stage at which the item is revealed */
-	stage: number;
+	/**
+	 * First stage at which the item is revealed. Scripted placements set it;
+	 * the documented user-save contract (`{ id, kindId, x, y, source: 'user' }`)
+	 * omits it — user items skip the gate entirely.
+	 */
+	stage?: number;
 	/** optional last stage at which the item is still visible (exclusive) */
 	until?: number;
 	/**
@@ -77,8 +81,8 @@ export interface RoomItem {
 	/** size in tile units; h derives from the native sprite aspect (see catalog). */
 	w: number;
 	h: number;
-	/** first stage at which the item is revealed */
-	stage: number;
+	/** first stage at which the item is revealed (undefined for user items) */
+	stage?: number;
 	/** optional last stage at which the item is still visible (exclusive) */
 	until?: number;
 	/** `'user'` placements skip the stage gate in the component. */
@@ -123,7 +127,7 @@ function centerOf(id: string): { x: number; y: number } {
 	return { x: p.x + kind.footprintW / 2, y: p.y + footprintH(kind) / 2 };
 }
 
-/** Rect of a placement, rounded to 2dp (percent-of-scene geometry). */
+/** Rect of a placement: raw floats; consumers round at the CSS boundary. */
 function rectOfId(id: string): { x: number; y: number; w: number; h: number } {
 	const p = placementById(id);
 	const kind = kindOf(p.kindId);

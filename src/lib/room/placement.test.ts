@@ -10,7 +10,7 @@ import {
 	validatePlacements,
 	occupancy
 } from './placement';
-import { ROOM_PLACEMENTS } from './layout';
+import { ROOM_PLACEMENTS, resolveItem } from './layout';
 import { kindOf } from './catalog';
 
 const at = (kindId: string, x: number, y: number) => ({ kindId, x, y });
@@ -198,5 +198,13 @@ describe('phase-2 contract: user placements', () => {
 	it('inside mode pins pet-in-carpet geometry', () => {
 		expect(stackSatisfied(at('pet', 4.55, 6.85), [at('rug', 2, 4.75)])).toBe(true);
 		expect(stackSatisfied(at('pet', 8.5, 5.2), [at('rug', 2, 4.75)])).toBe(false);
+	});
+
+	it('the documented user-save shape (no stage) resolves and validates', () => {
+		const save = { id: 'my-pig', kindId: 'pet', x: 3, y: 5, source: 'user' as const };
+		const item = resolveItem(save);
+		expect(item.source).toBe('user');
+		expect(item.stage).toBeUndefined();
+		expect(validatePlacements([save])).toEqual([]);
 	});
 });

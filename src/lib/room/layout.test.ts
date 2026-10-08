@@ -19,8 +19,9 @@ describe('ROOM_PLACEMENTS', () => {
 
 	it('gates every scripted item between stage 1 and MAX_STAGE', () => {
 		for (const item of ROOM_ITEMS) {
-			expect(item.stage).toBeGreaterThanOrEqual(1);
-			expect(item.stage).toBeLessThanOrEqual(MAX_STAGE);
+			if (item.source === 'user') continue; // user items skip the gate
+			expect(item.stage ?? 0).toBeGreaterThanOrEqual(1);
+			expect(item.stage ?? 0).toBeLessThanOrEqual(MAX_STAGE);
 		}
 	});
 });
