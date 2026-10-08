@@ -45,7 +45,7 @@ export const TILE_URLS = {
 export const LAMP_SPOT = { x: 9.4, y: 8.7 } as const;
 
 /** The window (source of the night rain layer), in tile units. */
-export const WINDOW_SPOT = { x: 6.9, y: 0, w: 1.5, h: 1.5 } as const;
+export const WINDOW_SPOT = { x: 6.9, y: 0.22, w: 1.1, h: 1.1 } as const;
 
 export interface RoomItem {
 	id: string;
@@ -71,7 +71,7 @@ export interface RoomItem {
  * (30 tiles, ~a third of the floor).
  */
 export const ROOM_ITEMS: RoomItem[] = [
-	{ id: 'window', src: windowImg, x: 6.9, y: 0, w: 1.5, h: 1.5, stage: 1, alt: 'Night window with four dark panes' },
+	{ id: 'window', src: windowImg, x: 6.9, y: 0.22, w: 1.1, h: 1.1, stage: 1, alt: 'Night window with four dark panes' },
 	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.55, w: 0.85, h: 0.5, stage: 6, alt: 'Media shelf against the wall' },
 	{ id: 'speaker', src: speakerImg, x: 9, y: 0.27, w: 0.6, h: 0.5, stage: 6, alt: 'Speaker sitting on the media shelf' },
 	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: 'Bookshelf with colorful book spines' },
