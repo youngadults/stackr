@@ -40,10 +40,10 @@
 	let lampTop = `${((LAMP_SPOT.y / rows) * 100).toFixed(4)}%`;
 
 	// rain falls inside the window glass, slightly inset from the frame
-	let rainX = WINDOW_SPOT.x + 0.3;
-	let rainY = WINDOW_SPOT.y + 0.3;
-	let rainW = WINDOW_SPOT.w - 0.6;
-	let rainH = WINDOW_SPOT.h - 0.55;
+	let rainX = WINDOW_SPOT.x + 0.15;
+	let rainY = WINDOW_SPOT.y + 0.15;
+	let rainW = WINDOW_SPOT.w - 0.3;
+	let rainH = WINDOW_SPOT.h - 0.275;
 </script>
 
 <section
@@ -57,7 +57,7 @@
 		class="lofi-scene relative w-full"
 		style="aspect-ratio: 4 / 5;"
 	>
-		<!-- background layers: wall body (2 tiles) + baseboard row (1 tile) + floor -->
+		<!-- background layers: wall body (1 tile) + baseboard (half tile) + floor -->
 		<div class="lofi-wall" aria-hidden="true"></div>
 		<div class="lofi-wall-base" aria-hidden="true"></div>
 		<div class="lofi-floor" aria-hidden="true"></div>
@@ -136,26 +136,26 @@
 		image-rendering: pixelated;
 		pointer-events: none;
 	}
-	/* wall body: rows 0-1 (each tile = 4% of scene height on the 25-row grid) */
+	/* wall body: rows 0-1 (each tile = 8% of scene height on the 12.5-row grid) */
 	.lofi-wall {
 		top: 0;
 		height: 8%;
 		background-image: var(--wall-tile);
-		background-size: 5% 50%;
+		background-size: 10% 100%;
 	}
-	/* baseboard: row 2 */
+	/* baseboard: half tile below the wall body */
 	.lofi-wall-base {
 		top: 8%;
 		height: 4%;
 		background-image: var(--wall-base-tile);
-		background-size: 5% 100%;
+		background-size: 10% 100%;
 	}
-	/* floor: rows 3-24 */
+	/* floor: rows 1.5-12.5 */
 	.lofi-floor {
 		top: 12%;
 		height: 88%;
 		background-image: var(--floor-tile);
-		background-size: 5% 4.5455%;
+		background-size: 10% 9.0909%;
 	}
 	.lofi-item {
 		position: absolute;
@@ -170,7 +170,7 @@
 		pointer-events: none;
 		mix-blend-mode: screen;
 		background: radial-gradient(
-			circle at var(--lamp-x, 92.5%) var(--lamp-y, 21.3%),
+			circle at var(--lamp-x, 92.5%) var(--lamp-y, 12.8%),
 			rgba(255, 176, 86, 0.55) 0%,
 			rgba(255, 156, 64, 0.22) 18%,
 			rgba(255, 140, 60, 0.08) 34%,
