@@ -226,8 +226,17 @@ export function buildPlantArt(
 
 	const { lines, tips } = buildGeometry(seed, clampedStage, p, wilting);
 
+	// Coincident polylines (repeated sibling branches like [+X][+X] pop back
+	// to the same start state and expand to identical geometry) are drawn on
+	// top of each other — keep one so each-block keys stay unique.
+	const seenPts = new Set<string>();
 	const linesOut: PlantLine[] = lines
 		.filter(l => l.pts.trim().split(/\s+/).length >= 4)
+		.filter(l => {
+			if (seenPts.has(l.pts)) return false;
+			seenPts.add(l.pts);
+			return true;
+		})
 		.map(l => {
 			const { color, width } = lineColorFor(l.depth, clampedStage, hash);
 			return {

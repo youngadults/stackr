@@ -64,7 +64,7 @@
 		<rect x="29" y="77" width="4" height="2" fill="#e0c36a" opacity="0.6" />
 	{:else if art.hasFoliage}
 		<g style={mood} class="plant-body">
-			{#each art.lines as line (line.pts)}
+			{#each art.lines as line, i (i)}
 				<polyline
 					points={line.pts}
 					fill="none"
