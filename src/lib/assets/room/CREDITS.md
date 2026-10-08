@@ -22,8 +22,8 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   16px tiles with a 1px margin between tiles): `lamp.png` (row 0, col 20),
   `desk.png` (row 4, cols 4-5 merged into one 32x16 tabletop),
   `chair.png` (row 7, col 2), `sprout.png` (row 0, col 17),
-  `poster.png` (row 13, col 19), `bed.png` (rows 0-1, cols 12-13 merged
-  into one 32x32 bed), `nightstand.png` (row 5, col 5), `speaker.png`
+  `poster.png` (row 13, col 19), `bed.png` (rows 5-6, col 14 merged
+  into one 16x32 bed), `nightstand.png` (row 5, col 5), `speaker.png`
   (row 9, col 25).
 
 ## Kenney Roguelike RPG pack
