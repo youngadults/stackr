@@ -157,7 +157,7 @@ reached.
 - **Stage 3 — Green Corner:** a potted sprout on the desk and a framed poster
   on the wall.
 - **Stage 4 — Proper Pad:** a proper bed (replaces the floor blanket and
-  bedroll) and a 3×3 tiled rug.
+  bedroll) and a 6×5 tiled carpet.
 - **Stage 5 — Lived In:** a three-section bookshelf and a pet pig napping on
   the rug.
 - **Stage 6 — Sanctuary:** a media shelf with a speaker, plus string lights
@@ -178,7 +178,7 @@ The room's mood is `deriveRoomMood(hour, lastCompletionDate, today)` in
 
 Screenshots: before/after hero renders at mobile (390×844) and desktop
 (1280×900) sizes live in `docs/screenshots/`, along with stage-4 night
-renders showing the finished 3×3 rug.
+renders showing the finished 6×5 carpet.
 
 ## Offline-First Architecture
 
