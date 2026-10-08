@@ -43,8 +43,8 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
 - Files used (sliced from `Spritesheet/roguelikeSheet_transparent.png`,
   16px tiles with a 1px margin between tiles): `floor.png` (row 15, col 17),
   `wall.png` (row 22, col 39), `wall-base.png` (row 12, col 14),
-  `window.png` (row 3, col 44), `blanket.png` (row 2, col 12),
-  `bedroll.png` (row 2, col 13),
+  `window.png` (row 3, col 44), `floorbed.png` (rows 2, cols 12-13
+  merged into one 32x16 floor bed),
   `rug-tl.png` (row 16, col 10), `rug-t.png` (row 16, col 11),
   `rug-tr.png` (row 16, col 12), `rug-l.png` (row 17, col 10),
   `rug-c.png` (row 17, col 11), `rug-r.png` (row 17, col 12),

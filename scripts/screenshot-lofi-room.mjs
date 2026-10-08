@@ -27,7 +27,7 @@ const STAGES = [
  *  s1: window+blanket+bedroll+crate+lamp; s2: +desk+chair; s3: +sprout+poster;
  *  s4: floor bed retires (-2), +bed+nightstand+6x5 carpet(30) = 39;
  *  s6: +3 bookshelves+pet+media shelf+speaker = 45. */
-const EXPECTED_ITEMS = { 1: 5, 2: 7, 4: 39, 6: 45 };
+const EXPECTED_ITEMS = { 1: 4, 2: 6, 4: 39, 6: 45 };
 
 const browser = await chromium.launch();
 
