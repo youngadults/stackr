@@ -20,9 +20,11 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
 - Author: Kenney Vleugels (Kenney.nl)
 - Files used (sliced from `Tilesheets/roguelikeIndoor_transparent.png`,
   16px tiles with a 1px margin between tiles): `lamp.png` (row 0, col 20),
-  `desk.png` (row 4, col 4), `chair.png` (row 4, col 1), `sprout.png`
-  (row 0, col 17), `poster.png` (row 13, col 19), `bed-top.png` (row 5, col 14),
-  `bed-bot.png` (row 6, col 14), `speaker.png` (row 9, col 25).
+  `desk.png` (row 4, cols 4-5 merged into one 32x16 tabletop),
+  `chair.png` (row 7, col 2), `sprout.png` (row 0, col 17),
+  `poster.png` (row 13, col 19), `bed.png` (rows 0-1, cols 12-13 merged
+  into one 32x32 bed), `nightstand.png` (row 5, col 5), `speaker.png`
+  (row 9, col 25).
 
 ## Kenney Roguelike RPG pack
 
@@ -42,7 +44,7 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   16px tiles with a 1px margin between tiles): `floor.png` (row 15, col 17),
   `wall.png` (row 22, col 39), `wall-base.png` (row 12, col 14),
   `window.png` (row 3, col 44), `blanket.png` (row 2, col 12),
-  `bedroll.png` (row 2, col 13), `crate.png` (row 0, col 16),
+  `bedroll.png` (row 2, col 13),
   `rug-tl.png` (row 16, col 10), `rug-t.png` (row 16, col 11),
   `rug-tr.png` (row 16, col 12), `rug-l.png` (row 17, col 10),
   `rug-c.png` (row 17, col 11), `rug-r.png` (row 17, col 12),
@@ -60,8 +62,10 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   (http://creativecommons.org/publicdomain/zero/1.0/) — stated on the pack page
   ("Creative Commons Zero (CC0) license.")
 - Author: pixel-boy
-- File used: `pet.png` — single frame cropped from
-  `content/character/pig/pig.png` (frame 1 of the walk sheet).
+- Files used: `pet.png` — single frame cropped from
+  `content/character/pig/pig.png` (frame 1 of the walk sheet);
+  `crate.png` — single tile cropped from `content/destroyable/crate.png`
+  (wooden storage box).
 
 ## Note
 

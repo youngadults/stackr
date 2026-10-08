@@ -170,7 +170,7 @@
 		pointer-events: none;
 		mix-blend-mode: screen;
 		background: radial-gradient(
-			circle at var(--lamp-x, 93.5%) var(--lamp-y, 30%),
+			circle at var(--lamp-x, 94%) var(--lamp-y, 87%),
 			rgba(255, 176, 86, 0.55) 0%,
 			rgba(255, 156, 64, 0.22) 18%,
 			rgba(255, 140, 60, 0.08) 34%,
