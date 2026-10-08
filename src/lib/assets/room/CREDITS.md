@@ -22,8 +22,7 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   16px tiles with a 1px margin between tiles): `lamp.png` (row 0, col 20),
   `desk.png` (row 4, cols 4-5 merged into one 32x16 tabletop),
   `chair.png` (row 7, col 2), `sprout.png` (row 0, col 17),
-  `poster.png` (row 13, col 19), `bed.png` (rows 5-6, col 14 merged
-  into one 16x32 bed), `nightstand.png` (row 5, col 5), `speaker.png`
+  `poster.png` (row 13, col 19), `bed.png` (composed: rows 5-6, col 14 — see Composed sprites), `nightstand.png` (row 5, col 5), `speaker.png`
   (row 9, col 25).
 
 ## Kenney Roguelike RPG pack
@@ -55,10 +54,14 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
 
 ## Composed sprites
 
-`rug.png` (96x80, a 6x5-tile carpet) and `bookshelf.png` (48x16, a 3-tile
-shelf strip) are composed in-repo from the crops listed above by
+`rug.png` (96x80, a 6x5-tile carpet), `bookshelf.png` (48x16, a 3-tile
+shelf strip) and `bed.png` (16x32: `bed-half-head.png` (row 6) stacked
+above `bed-half-body.png` (row 5) — headboard/pillow against the wall,
+footboard at the feet) are composed in-repo from the crops listed above by
 `scripts/compose-room-sprites.py`; the piece crops stay in this directory
-as the composition source and provenance.
+as the composition source and provenance. The bed pair was originally
+stitched inverted (foot half above the pillow half) and re-stitched
+2026-10-08 after the user spotted the misalignment.
 
 ## Ninja Adventure asset pack (pet sprite)
 

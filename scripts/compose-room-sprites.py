@@ -5,6 +5,7 @@ Run from the repo root:  python3 scripts/compose-room-sprites.py
 Writes:
   src/lib/assets/room/rug.png        (96x80,  6x5 tiles)
   src/lib/assets/room/bookshelf.png  (48x16,  3x1 tiles)
+  src/lib/assets/room/bed.png        (16x32,  2x1 tiles, head-above-body)
 
 One sprite per object: the renderer places a single <img> per object instead
 of stacking per-tile entries, and the item catalog (src/lib/room/catalog.ts)
@@ -28,6 +29,11 @@ RUG_PIECES = [
 
 BOOKSHELF_PIECES = [["bookshelf-1", "bookshelf-2", "bookshelf-3"]]
 
+# bed.png: the Kenney designed pair (col 14, rows 5-6) -- the headboard/pillow
+# tile stacks ABOVE the plain blanket slab. Stacked the other way around the
+# bed reads top-half-below-bottom-half (user-reported 2026-10-08).
+BED_PIECES = [["bed-half-head"], ["bed-half-body"]]
+
 
 def compose(pieces: list[list[str]], out_name: str) -> None:
     rows = len(pieces)
@@ -46,3 +52,4 @@ def compose(pieces: list[list[str]], out_name: str) -> None:
 if __name__ == "__main__":
     compose(RUG_PIECES, "rug.png")
     compose(BOOKSHELF_PIECES, "bookshelf.png")
+    compose(BED_PIECES, "bed.png")
