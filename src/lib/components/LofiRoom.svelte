@@ -47,7 +47,7 @@
 </script>
 
 <section
-	class="lofi-room relative mx-auto my-6 w-[min(92vw,30rem)] overflow-hidden rounded-2xl border border-violet-900/50 shadow-xl"
+	class="lofi-room relative mx-auto my-6 w-[min(96vw,40rem,52vh)] overflow-hidden rounded-2xl border border-violet-900/50 shadow-xl"
 	role="img"
 	aria-label={`Reward room at stage ${stage} of ${STAGE_NAMES.length}: ${STAGE_NAMES[stage - 1]}`}
 	data-test="lofi-room-hero"
@@ -55,7 +55,7 @@
 >
 	<div
 		class="lofi-scene relative w-full"
-		style="aspect-ratio: 4 / 3;"
+		style="aspect-ratio: 4 / 5;"
 	>
 		<!-- background layers: wall body (2 tiles) + baseboard row (1 tile) + floor -->
 		<div class="lofi-wall" aria-hidden="true"></div>
@@ -136,26 +136,26 @@
 		image-rendering: pixelated;
 		pointer-events: none;
 	}
-	/* wall body: rows 0-1 */
+	/* wall body: rows 0-1 (each tile = 4% of scene height on the 25-row grid) */
 	.lofi-wall {
 		top: 0;
-		height: 13.3334%;
+		height: 8%;
 		background-image: var(--wall-tile);
 		background-size: 5% 50%;
 	}
 	/* baseboard: row 2 */
 	.lofi-wall-base {
-		top: 13.3334%;
-		height: 6.6667%;
+		top: 8%;
+		height: 4%;
 		background-image: var(--wall-base-tile);
 		background-size: 5% 100%;
 	}
-	/* floor: rows 3-14 */
+	/* floor: rows 3-24 */
 	.lofi-floor {
-		top: 20%;
-		height: 80%;
+		top: 12%;
+		height: 88%;
 		background-image: var(--floor-tile);
-		background-size: 5% 8.3334%;
+		background-size: 5% 4.5455%;
 	}
 	.lofi-item {
 		position: absolute;
