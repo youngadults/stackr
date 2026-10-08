@@ -1,4 +1,4 @@
-// Cozy room layout — every sprite is a 16x16 CC0 tile (see CREDITS.md).
+// Cozy room layout — CC0 sprites merged from the packs documented in CREDITS.md.
 // Coordinates use a 10x10 tile grid inside a 1:1 hero (2x content scale versus
 // the original 20x25 portrait: fewer, bigger tiles, denser composition):
 // wall rows 0-1.5, floor rows 1.5-10.
@@ -15,8 +15,8 @@ import deskImg from '$lib/assets/room/desk.png';
 import chairImg from '$lib/assets/room/chair.png';
 import sproutImg from '$lib/assets/room/sprout.png';
 import posterImg from '$lib/assets/room/poster.png';
-import bedTopImg from '$lib/assets/room/bed-top.png';
-import bedBotImg from '$lib/assets/room/bed-bot.png';
+import bedImg from '$lib/assets/room/bed.png';
+import nightstandImg from '$lib/assets/room/nightstand.png';
 import rugTl from '$lib/assets/room/rug-tl.png';
 import rugT from '$lib/assets/room/rug-t.png';
 import rugTr from '$lib/assets/room/rug-tr.png';
@@ -41,8 +41,8 @@ export const TILE_URLS = {
 	floor: floorTile
 } as const;
 
-/** Where the lamp (and its glow) stands. */
-export const LAMP_SPOT = { x: 9.35, y: 3 } as const;
+/** Where the lamp (and its glow) stands — atop the storage crate. */
+export const LAMP_SPOT = { x: 9.4, y: 8.7 } as const;
 
 /** The window (source of the night rain layer), in tile units. */
 export const WINDOW_SPOT = { x: 6.9, y: 0, w: 1.5, h: 1.5 } as const;
@@ -65,8 +65,8 @@ export interface RoomItem {
 
 /**
  * Stage-gated reveals (cumulative profile XP):
- * 1 bare (floor bed, crate, lamp, window) -> 2 desk+chair ->
- * 3 desk sprout+poster -> 4 proper bed+rug (retires the floor bed) ->
+ * 1 bare (floor bed, crate with lamp, window) -> 2 desk+chair ->
+ * 3 desk sprout+poster -> 4 proper bed+nightstand+rug (retires the floor bed) ->
  * 5 pet+bookshelf -> 6 media shelf+speaker. Rug is a 6x5-piece carpet
  * (30 tiles, ~a third of the floor).
  */
@@ -78,12 +78,12 @@ export const ROOM_ITEMS: RoomItem[] = [
 	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
 	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.5, stage: 5, alt: '' },
 	{ id: 'poster', src: posterImg, x: 1.2, y: 0.55, w: 0.9, h: 0.5, stage: 3, alt: 'Framed poster on the wall' },
-	{ id: 'lamp', src: lampImg, x: 8.85, y: 2.6, w: 1, h: 1, stage: 1, alt: 'Lit candelabra standing by the wall' },
-	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.2, h: 1, stage: 2, alt: 'Small wooden desk against the wall' },
+	{ id: 'lamp', src: lampImg, x: 9.05, y: 8.35, w: 0.7, h: 0.7, stage: 1, alt: 'Lit candelabra standing on the storage crate' },
+	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.2, h: 1.1, stage: 2, alt: 'Small wooden desk against the wall' },
 	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.1, h: 1, stage: 2, alt: 'Wooden chair tucked at the desk' },
 	{ id: 'sprout', src: sproutImg, x: 7.3, y: 1.15, w: 0.65, h: 0.5, stage: 3, alt: 'Little potted sprout on the desk' },
-	{ id: 'bed-top', src: bedTopImg, x: 0.35, y: 1.55, w: 1.35, h: 1, stage: 4, alt: 'Head of a proper bed against the wall' },
-	{ id: 'bed-bot', src: bedBotImg, x: 0.35, y: 2.9, w: 1.35, h: 1, stage: 4, alt: 'Proper bed with an orange blanket' },
+	{ id: 'bed', src: bedImg, x: 0.35, y: 1.6, w: 2, h: 2, stage: 4, alt: 'Proper bed with an orange blanket against the wall' },
+	{ id: 'nightstand', src: nightstandImg, x: 2.45, y: 2.6, w: 0.9, h: 0.9, stage: 4, alt: 'Small bedside cabinet next to the bed' },
 	{ id: 'blanket', src: blanketImg, x: 0.45, y: 2.9, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
 	{ id: 'bedroll', src: bedrollImg, x: 1.65, y: 3, w: 0.9, h: 1, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
 	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 0.9, h: 1, stage: 1, alt: 'Simple wooden storage box' },
