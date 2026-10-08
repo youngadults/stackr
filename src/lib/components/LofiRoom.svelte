@@ -55,7 +55,7 @@
 >
 	<div
 		class="lofi-scene relative w-full"
-		style="aspect-ratio: 4 / 5;"
+		style="aspect-ratio: 1 / 1;"
 	>
 		<!-- background layers: wall body (1 tile) + baseboard (half tile) + floor -->
 		<div class="lofi-wall" aria-hidden="true"></div>
@@ -136,26 +136,26 @@
 		image-rendering: pixelated;
 		pointer-events: none;
 	}
-	/* wall body: rows 0-1 (each tile = 8% of scene height on the 12.5-row grid) */
+	/* wall body: rows 0-1 (each tile = 10% of scene height on the 10-row grid) */
 	.lofi-wall {
 		top: 0;
-		height: 8%;
+		height: 10%;
 		background-image: var(--wall-tile);
 		background-size: 10% 100%;
 	}
 	/* baseboard: half tile below the wall body */
 	.lofi-wall-base {
-		top: 8%;
-		height: 4%;
+		top: 10%;
+		height: 5%;
 		background-image: var(--wall-base-tile);
 		background-size: 10% 100%;
 	}
-	/* floor: rows 1.5-12.5 */
+	/* floor: rows 1.5-10 */
 	.lofi-floor {
-		top: 12%;
-		height: 88%;
+		top: 15%;
+		height: 85%;
 		background-image: var(--floor-tile);
-		background-size: 10% 9.0909%;
+		background-size: 10% 11.3636%;
 	}
 	.lofi-item {
 		position: absolute;
@@ -170,7 +170,7 @@
 		pointer-events: none;
 		mix-blend-mode: screen;
 		background: radial-gradient(
-			circle at var(--lamp-x, 92.5%) var(--lamp-y, 12.8%),
+			circle at var(--lamp-x, 93.5%) var(--lamp-y, 30%),
 			rgba(255, 176, 86, 0.55) 0%,
 			rgba(255, 156, 64, 0.22) 18%,
 			rgba(255, 140, 60, 0.08) 34%,
