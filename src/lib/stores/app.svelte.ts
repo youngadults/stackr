@@ -195,7 +195,9 @@ export async function toggleCompletion(habitId: string, date?: string): Promise<
 		await db.deleteCompletion(existing.id);
 		completions = completions.filter(c => c.id !== existing.id);
 		if (profile) {
-			profile = await doUpdateProfileUncomplete(profile, completions, stacks, habits);
+			profile = await doUpdateProfileUncomplete(
+				profile, completions, stacks, habits, habitId, completedDate
+			);
 		}
 		return false;
 	}
@@ -208,7 +210,9 @@ export async function toggleCompletion(habitId: string, date?: string): Promise<
 	completions = [...completions, completion];
 
 	if (profile) {
-		profile = await doUpdateProfileComplete(profile, completions, stacks, habits);
+		profile = await doUpdateProfileComplete(
+			profile, completions, stacks, habits, habitId, completedDate
+		);
 		// Check for new achievements
 		const result = await doCheckAchievements(
 			profile, achievements, stacks, userId!, checkIfFullStackToday(stacks, habits, completions)

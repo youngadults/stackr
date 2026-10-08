@@ -52,7 +52,10 @@
 
 		if (nowCompleted && !wasCompleted && oldProfile) {
 			// Completed
-			const xpGain = calculateCompletionXP(appState.completions, appState.stacks, appState.habits, oldProfile.streak_days + 1);
+			const xpGain = calculateCompletionXP(
+				appState.completions, appState.stacks, appState.habits,
+				oldProfile.streak_days + 1, habitId, selectedDate
+			);
 			showToast('xp', `+${xpGain.total} XP`, undefined, '✨');
 
 			// Check for level up
@@ -62,10 +65,12 @@
 				}, 800);
 			}
 
-			// Check for full stack
-			const checklist = getStackChecklist();
-			const justCompletedStack = checklist.find(s => s.allComplete && s.completedCount === s.totalCount);
-			if (justCompletedStack) {
+			// Check for full stack — only THIS habit's own stack, consistent
+			// with the scoped +25 XP bonus (the toggled habit was not complete
+			// before, so allComplete now means this completion completed it)
+			const habitStackId = appState.habits.find(h => h.id === habitId)?.stack_id;
+			const ownStack = getStackChecklist().find(s => s.id === habitStackId);
+			if (ownStack?.allComplete) {
 				setTimeout(() => {
 					showToast('success', 'Stack complete!', `+25 bonus XP`, '✅');
 				}, 400);
