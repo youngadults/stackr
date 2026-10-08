@@ -13,8 +13,9 @@ const XP_STACK_BONUS = 25;
 const XP_STREAK_PER_DAY = 5;
 const MAX_STREAK_BONUS = 50;
 
-/** All habits in the given stack have a completion on `dateStr` in `completions`. */
-function isStackCompleteOnDate(
+/** All habits in the given stack have a completion on `dateStr` in `completions`.
+ *  Exported for badge/garden mapping (stack stage) and tests. */
+export function isStackCompleteOnDate(
 	stackId: string,
 	habits: Habit[],
 	completions: Completion[],

@@ -51,10 +51,14 @@
 		const nowCompleted = appState.completions.some(c => c.habit_id === habitId && c.completed_at === selectedDate);
 
 		if (nowCompleted && !wasCompleted && oldProfile) {
-			// Completed
+			// Completed — show the streak the real award actually used: profile.ts
+			// recalculates it from completion dates (not simply old streak + 1, e.g.
+			// after a gap in completions), so the displayed streak bonus can never
+			// overstate. Display-only.
+			const awardedStreak = calculateStreak(appState.completions.map(c => c.completed_at));
 			const xpGain = calculateCompletionXP(
 				appState.completions, appState.stacks, appState.habits,
-				oldProfile.streak_days + 1, habitId, selectedDate
+				awardedStreak, habitId, selectedDate
 			);
 			showToast('xp', `+${xpGain.total} XP`, undefined, '✨');
 
