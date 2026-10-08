@@ -84,11 +84,10 @@
 	<!-- header row: garden title + theme picker -->
 	<div class="relative z-10 flex items-center justify-between px-4 pt-4">
 		<h2 class="garden-title">Your Garden</h2>
-		<div class="flex items-center rounded-full bg-black/30 border border-white/10 p-0.5" role="tablist" aria-label="Garden theme">
+		<div class="flex items-center rounded-full bg-black/30 border border-white/10 p-0.5" role="group" aria-label="Garden theme">
 			<button
 				onclick={() => onSetTheme('plant')}
-				role="tab"
-				aria-selected={theme === 'plant'}
+				aria-pressed={theme === 'plant'}
 				data-test="theme-plant"
 				class="px-2.5 py-1 rounded-full text-xs font-medium transition-colors {theme === 'plant'
 					? 'bg-emerald-600/80 text-white'
@@ -96,8 +95,7 @@
 			>🌱 Plants</button>
 			<button
 				onclick={() => onSetTheme('machine')}
-				role="tab"
-				aria-selected={theme === 'machine'}
+				aria-pressed={theme === 'machine'}
 				data-test="theme-machine"
 				class="px-2.5 py-1 rounded-full text-xs font-medium transition-colors {theme === 'machine'
 					? 'bg-amber-600/80 text-white'

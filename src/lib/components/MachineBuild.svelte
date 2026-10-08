@@ -10,6 +10,7 @@
 		SOIL_GRADIENTS,
 		PLANT_VIEWBOX
 	} from '$lib/utils/plant-renderer';
+	import { MACHINE_PARTS } from '$lib/utils/plant-growth';
 
 	interface Props {
 		stepsBuilt: number; // 0-6 completed parts
@@ -20,7 +21,7 @@
 
 	let { stepsBuilt, progress, seed, class: cls = '' }: Props = $props();
 
-	const MAX_PARTS = 6;
+	const MAX_PARTS = MACHINE_PARTS.length;
 	const idp = $derived(`mc-${hashSeed(seed).toString(36)}`);
 	const built = $derived(Math.max(0, Math.min(MAX_PARTS, Math.round(stepsBuilt))));
 	// Ghost of the NEXT part — fills in as progress accumulates

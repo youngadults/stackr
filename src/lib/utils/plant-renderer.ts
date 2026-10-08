@@ -152,14 +152,9 @@ function turtleWalk(program: string, opts: TurtleOpts, startAngle: number): Turt
 				break;
 			case ']':
 				lines.push({ pts, depth, startX: cx, startY: cy });
-				{
-					const s = stack.pop();
-					if (s) {
-						x = s.x; y = s.y; angle = s.angle; cx = s.cx; cy = s.cy;
-					}
-				}
+				tips.push({ x, y }); // real branch tip — pushed BEFORE pop restores fork state
+				{ const s = stack.pop(); if (s) { x = s.x; y = s.y; angle = s.angle; cx = s.cx; cy = s.cy; } }
 				pts = `${x.toFixed(1)} ${y.toFixed(1)}`;
-				tips.push({ x, y });
 				depth--;
 				break;
 			default:
@@ -180,6 +175,17 @@ function lineColorFor(depth: number, stage: number, hash: number): { color: stri
 	return { color: STEM_LIGHT_COLORS[(hash + depth) % STEM_LIGHT_COLORS.length], width: 3 };
 }
 
+/** Dedupe helper — keep first entry per key; identical entries draw identically. */
+function dedupeUnique<T, K>(items: T[], key: (item: T) => K): T[] {
+	const seen = new Set<K>();
+	return items.filter(item => {
+		const k = key(item);
+		if (seen.has(k)) return false;
+		seen.add(k);
+		return true;
+	});
+}
+
 function buildGeometry(
 	seed: string,
 	stage: number,
@@ -188,9 +194,7 @@ function buildGeometry(
 ): { lines: TurtleResult['lines']; tips: TurtleResult['tips'] } {
 	const hash = hashSeed(seed);
 	const { iters, production } = stageBuild(stage, hash);
-	if (iters === 0 || !production) {
-		return { lines: [], tips: [] };
-	}
+	if (iters === 0 || !production) return { lines: [], tips: [] };
 
 	const ls = new LSystem({ axiom: 'X', productions: { X: production } });
 	const program = ls.iterate(iters);
@@ -204,21 +208,14 @@ function buildGeometry(
 	const droop = wilting ? (hash % 2 === 0 ? 7 : -7) : 0;
 	const startAngle = (hash % 7) - 3; // slight lean ±3°
 
-	const walked = turtleWalk(program, { angleStep: angleStepBase, segLen, droop }, startAngle);
-
-	return walked;
+	return turtleWalk(program, { angleStep: angleStepBase, segLen, droop }, startAngle);
 }
 
 /** Full render plan for one plant — consumed by GardenPlant.svelte's SVG. */
-export function buildPlantArt(
-	seed: string,
-	stage: number,
-	progress: number,
-	wilting: boolean
-): PlantArt {
+export function buildPlantArt(seed: string, stage: number, progress: number, wilting: boolean): PlantArt {
 	const hash = hashSeed(seed);
 	const clampedStage = Math.max(0, Math.min(4, Math.round(stage)));
-	const p = Math.max(0, Math.min(1, progress));
+	const p = Math.max(0, Math.min(1, progress)); // progress clamps hard to 0..1
 
 	if (clampedStage === 0) {
 		return { lines: [], leaves: [], blooms: [], hasFoliage: false };
@@ -228,33 +225,21 @@ export function buildPlantArt(
 
 	// Coincident polylines (repeated sibling branches like [+X][+X] pop back
 	// to the same start state and expand to identical geometry) are drawn on
-	// top of each other — keep one so each-block keys stay unique.
-	const seenPts = new Set<string>();
-	const linesOut: PlantLine[] = lines
-		.filter(l => l.pts.trim().split(/\s+/).length >= 4)
-		.filter(l => {
-			if (seenPts.has(l.pts)) return false;
-			seenPts.add(l.pts);
-			return true;
-		})
-		.map(l => {
-			const { color, width } = lineColorFor(l.depth, clampedStage, hash);
-			return {
-				pts: l.pts,
-				color: wilting ? '#8a7a3a' : color,
-				width: wilting ? Math.max(2, width - 1) : width
-			};
-		});
+	// top of each other — keep one so each-block content keys stay unique.
+	const linesOut: PlantLine[] = dedupeUnique(
+		lines.filter(l => l.pts.trim().split(/\s+/).length >= 4),
+		l => l.pts
+	).map(l => {
+		const { color, width } = lineColorFor(l.depth, clampedStage, hash);
+		return { pts: l.pts, color: wilting ? '#8a7a3a' : color, width: wilting ? Math.max(2, width - 1) : width };
+	});
 
 	// Pixel-ish diamond leaves along branches — count interpolates with progress
 	const leafColor = wilting ? '#a89040' : LEAF_COLORS[(hash + 1) % LEAF_COLORS.length];
 	const leafAccent = wilting ? '#b8a850' : LEAF_COLORS[(hash + 2) % LEAF_COLORS.length];
 	const leafEvery = 2 + (hash % 2);
 	const maxLeaves = Math.max(1, tips.length * 2);
-	const leafCount = Math.min(
-		maxLeaves,
-		clampedStage === 1 ? Math.ceil(p * 4) + 1 : Math.ceil(p * maxLeaves)
-	);
+	const leafCount = Math.min(maxLeaves, clampedStage === 1 ? Math.ceil(p * 4) + 1 : Math.ceil(p * maxLeaves));
 	const leaves: PlantLeaf[] = [];
 	let leafIdx = 0;
 	for (const line of linesOut) {
@@ -262,37 +247,37 @@ export function buildPlantArt(
 		for (let i = 2; i + 1 < pts.length; i += 2 * leafEvery) {
 			if (leafIdx >= leafCount) break;
 			const nearTip = i >= pts.length - 8;
-			leaves.push({
-				x: pts[i],
-				y: pts[i + 1],
-				rot: 38 + ((hash + i) % 24),
-				size: nearTip ? 5 : 4,
-				color: leafIdx % 2 === 0 ? leafColor : leafAccent
-			});
+			leaves.push({ x: pts[i], y: pts[i + 1], rot: 38 + ((hash + i) % 24), size: nearTip ? 5 : 4, color: leafIdx % 2 === 0 ? leafColor : leafAccent });
 			leafIdx++;
 		}
 		if (leafIdx >= leafCount) break;
 	}
+	// Overlapping branches revisit the same points — duplicate leaf rects draw
+	// identically, so keep one per spot for unique each-block content keys.
+	const leavesOut: PlantLeaf[] = dedupeUnique(
+		leaves,
+		l => `${l.x},${l.y},${l.rot},${l.size},${l.color}`
+	);
 
-	// Blooms only on the blooming stage — seeded palette, dots on branch tips
+	// Blooms only on the blooming stage — seeded palette, dots on real tips.
+	// Tips repeat for coincident branches; bloom on distinct tips only so each
+	// bloom marks its own tip (and keyed content stays unique).
 	const blooms: PlantBloom[] = [];
 	if (clampedStage === 3 && !wilting) {
 		const bloom = BLOOMS[hash % BLOOMS.length];
-		const bloomCount = Math.max(2, Math.min(tips.length, Math.ceil(p * 6) + 2));
-		for (let i = 0; i < Math.min(bloomCount, tips.length); i++) {
-			const tip = tips[(i * 7 + hash) % tips.length];
-			blooms.push({
-				x: tip.x,
-				y: tip.y,
-				size: 5 + (i % 2),
-				color: bloom.base,
-				petals: bloom.deep,
-				knot: bloom.knot
-			});
+		const distinctTips = dedupeUnique(tips, t => `${t.x.toFixed(1)},${t.y.toFixed(1)}`);
+		const bloomCount = Math.min(distinctTips.length, Math.ceil(p * 6) + 2);
+		const used = new Set<number>();
+		for (let i = 0; i < bloomCount; i++) {
+			let ti = (i * 7 + hash) % distinctTips.length;
+			while (used.has(ti)) ti = (ti + 1) % distinctTips.length; // never repeat a tip
+			used.add(ti);
+			const tip = distinctTips[ti];
+			blooms.push({ x: tip.x, y: tip.y, size: 5 + (i % 2), color: bloom.base, petals: bloom.deep, knot: bloom.knot });
 		}
 	}
 
-	return { lines: linesOut, leaves, blooms, hasFoliage: true };
+	return { lines: linesOut, leaves: leavesOut, blooms, hasFoliage: true };
 }
 
 /** Deterministic gradient id prefix — unique per stack seed, stable across renders. */

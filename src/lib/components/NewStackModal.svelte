@@ -10,18 +10,56 @@
 		color?: string;
 		icon?: string;
 	}>();
+
+	let dialogEl: HTMLDivElement | undefined = $state();
+	let nameInput: HTMLInputElement | undefined = $state();
+
+	// Focus the first field whenever the sheet opens — Escape works immediately.
+	$effect(() => {
+		if (show) nameInput?.focus();
+	});
+
+	function focusables(): HTMLElement[] {
+		const els = dialogEl?.querySelectorAll<HTMLElement>(
+			'button, input, [href], [tabindex]:not([tabindex="-1"])'
+		);
+		return els ? [...els].filter(el => !el.hasAttribute('disabled')) : [];
+	}
+
+	// Basic focus containment: Tab cycles inside the sheet, Escape closes it.
+	function handleDialogKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			onclose();
+			return;
+		}
+		if (e.key !== 'Tab' || !dialogEl) return;
+		const list = focusables();
+		if (list.length === 0) return;
+		const first = list[0];
+		const last = list[list.length - 1];
+		const target = e.target as HTMLElement;
+		const atStart = target === first || target === dialogEl;
+		if (e.shiftKey && (atStart || !dialogEl.contains(target))) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && (target === last || !dialogEl.contains(target))) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
 </script>
 
 {#if show}
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
+		bind:this={dialogEl}
 		class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center animate-fade-in"
 		role="dialog"
 		aria-modal="true"
 		aria-label="Create new stack"
 		tabindex="-1"
 		onclick={(e) => { if (e.target === e.currentTarget) onclose(); }}
-		onkeydown={(e) => { if (e.key === 'Escape') onclose(); }}
+		onkeydown={handleDialogKeydown}
 	>
 		<div class="w-full max-w-lg bg-slate-900 rounded-t-2xl px-6 pt-4 pb-10 animate-slide-up">
 			<!-- drag-handle bar (bottom sheet) -->
@@ -33,6 +71,7 @@
 					<label for="new-stack-name" class="block text-sm font-medium text-slate-300 mb-1">Stack Name</label>
 					<input
 						id="new-stack-name"
+						bind:this={nameInput}
 						type="text"
 						bind:value={name}
 						placeholder="Morning Routine"

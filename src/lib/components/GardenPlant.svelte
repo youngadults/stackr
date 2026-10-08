@@ -10,6 +10,7 @@
 		SOIL_SIDE,
 		SOIL_GRADIENTS
 	} from '$lib/utils/plant-renderer';
+	import { GROWTH_STAGES } from '$lib/utils/plant-growth';
 
 	interface Props {
 		stage: number; // 0-4: seed, sprout, growing, blooming, mature
@@ -31,9 +32,11 @@
 			: { top: `url(#${idp}-top)`, front: `url(#${idp}-front)`, side: SOIL_GRADIENTS.soilSide.from }
 	);
 	const mood = $derived(wilting ? 'filter: saturate(0.5) brightness(0.92);' : '');
+	// Accessible name is prop-derivable — stage number → growth stage label
+	const stageLabel = $derived(GROWTH_STAGES[Math.max(0, Math.min(4, Math.round(stage)))]);
 </script>
 
-<svg viewBox={PLANT_VIEWBOX} class={cls} role="img" data-test="garden-plant">
+<svg viewBox={PLANT_VIEWBOX} class={cls} role="img" aria-label="{stageLabel} plant" data-test="garden-plant">
 	<defs>
 			<linearGradient id="{idp}-top" x1="0" y1="0" x2="0" y2="1">
 				<stop offset="0%" stop-color={SOIL_GRADIENTS.soilTop.from} />
@@ -64,7 +67,7 @@
 		<rect x="29" y="77" width="4" height="2" fill="#e0c36a" opacity="0.6" />
 	{:else if art.hasFoliage}
 		<g style={mood} class="plant-body">
-			{#each art.lines as line, i (i)}
+			{#each art.lines as line (line.pts)}
 				<polyline
 					points={line.pts}
 					fill="none"
@@ -74,7 +77,7 @@
 					stroke-linejoin="round"
 				/>
 			{/each}
-			{#each art.leaves as leaf, i (i)}
+			{#each art.leaves as leaf (leaf.x + ',' + leaf.y + ',' + leaf.rot + ',' + leaf.size + ',' + leaf.color)}
 				<rect
 					x={leaf.x - leaf.size / 2}
 					y={leaf.y - leaf.size / 2}
@@ -85,7 +88,7 @@
 					opacity="0.9"
 				/>
 			{/each}
-			{#each art.blooms as bloom, i (i)}
+			{#each art.blooms as bloom (bloom.x + ',' + bloom.y)}
 				<g>
 					<rect x={bloom.x - 3} y={bloom.y - 3} width="6" height="6" fill={bloom.petals} />
 					<rect x={bloom.x - 4} y={bloom.y - 1} width="2" height="2" fill={bloom.color} />
