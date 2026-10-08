@@ -129,9 +129,13 @@ rendered as CSS backgrounds).
 
 Furniture reveals are gated by **cumulative profile XP**, independent of the
 level curve above. The stage is derived only from XP
-(`stageFromXp` in `src/lib/room/room-stage.ts`), so it never regresses, and
-the bar under the room shows the percentage toward the next stage reveal
-(`stageProgress`) — it sits at 100% once the final stage is reached.
+(`stageFromXp` in `src/lib/room/room-stage.ts`), and it always follows
+current XP: completing habits never lowers XP, but XP is deducted when
+completions are un-done (`calculateUncompletionXP` in
+`src/lib/stores/profile.ts`), so the stage can regress after big
+un-completions. The bar under the room shows the percentage toward the next
+stage reveal (`stageProgress`) — it sits at 100% once the final stage is
+reached.
 
 ### Room stages
 
@@ -169,7 +173,12 @@ The room's mood is `deriveRoomMood(hour, lastCompletionDate, today)` in
   warm tint.
 - **Sleepy:** when no habit was completed in the last 3 days (or ever), the
   lamp glow dims and a sleepy vignette settles over the room. Sleepy is
-  cosmetic only — the stage never regresses.
+  cosmetic only — the sleepy mood itself never regresses the stage (only XP
+  changes can, see above).
+
+Screenshots: before/after hero renders at mobile (390×844) and desktop
+(1280×900) sizes live in `docs/screenshots/`, along with stage-4 night
+renders showing the finished 3×3 rug.
 
 ## Offline-First Architecture
 
