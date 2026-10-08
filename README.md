@@ -67,10 +67,13 @@ src/
 ├── lib/
 │   ├── components/
 │   │   ├── DateNav.svelte      # Date navigation
-│   │   ├── NewStackModal.svelte # Stack creation modal
+│   │   ├── NewStackModal.svelte # Stack creation bottom sheet
+│   │   ├── GardenPlant.svelte  # Deterministic L-system garden plant SVG
+│   │   ├── MachineBuild.svelte # Vintage-radio machine theme SVG
+│   │   ├── GardenHero.svelte   # Rewards garden scene (per-stack plots)
 │   │   └── Toast.svelte         # Toast notifications
 │   ├── services/
-│   │   ├── db.ts               # IndexedDB offline storage
+│   │   ├── db.ts               # IndexedDB offline storage (incl. settings store)
 │   │   └── pwa.ts              # Service worker registration
 │   ├── stores/
 │   │   ├── app.svelte.ts       # Svelte 5 runes-based state (CRUD)
@@ -80,6 +83,8 @@ src/
 │   │   └── index.ts            # TypeScript type definitions
 │   └── utils/
 │       ├── badges.ts           # Achievement definitions & checks
+│       ├── plant-renderer.ts   # Cozy L-system plant → SVG geometry
+│       ├── plant-growth.ts     # Stack activity → plant stage/progress map
 │       ├── gamification.ts     # XP, levels, streaks
 │       └── helpers.ts          # Date, color, ID utilities
 ├── routes/
@@ -89,7 +94,7 @@ src/
 │   │   ├── +page.svelte        # Stack management
 │   │   └── [id]/+page.svelte  # Individual stack detail
 │   ├── stats/+page.svelte      # Statistics
-│   └── achievements/+page.svelte # Badge gallery
+│   └── achievements/+page.svelte # Rewards garden + badge gallery
 ├── app.css                     # Global styles + Tailwind
 └── app.html                    # HTML shell
 ```
