@@ -7,8 +7,7 @@ import wallTile from '$lib/assets/room/wall.png';
 import wallBaseTile from '$lib/assets/room/wall-base.png';
 import floorTile from '$lib/assets/room/floor.png';
 import windowImg from '$lib/assets/room/window.png';
-import blanketImg from '$lib/assets/room/blanket.png';
-import bedrollImg from '$lib/assets/room/bedroll.png';
+import floorbedImg from '$lib/assets/room/floorbed.png';
 import crateImg from '$lib/assets/room/crate.png';
 import lampImg from '$lib/assets/room/lamp.png';
 import deskImg from '$lib/assets/room/desk.png';
@@ -42,7 +41,7 @@ export const TILE_URLS = {
 } as const;
 
 /** Where the lamp (and its glow) stands — atop the storage crate. */
-export const LAMP_SPOT = { x: 9.4, y: 8.7 } as const;
+export const LAMP_SPOT = { x: 9.45, y: 8.7 } as const;
 
 /** The window (source of the night rain layer), in tile units. */
 export const WINDOW_SPOT = { x: 6.95, y: 0.08, w: 0.85, h: 0.85 } as const;
@@ -78,15 +77,14 @@ export const ROOM_ITEMS: RoomItem[] = [
 	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
 	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
 	{ id: 'poster', src: posterImg, x: 1.25, y: 0.12, w: 0.7, h: 0.7, stage: 3, alt: 'Framed poster on the wall' },
-	{ id: 'lamp', src: lampImg, x: 9.05, y: 8.35, w: 0.7, h: 0.7, stage: 1, alt: 'Lit candelabra standing on the storage crate' },
-	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.2, h: 1.1, stage: 2, alt: 'Small wooden desk against the wall' },
-	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.1, h: 1.1, stage: 2, alt: 'Wooden chair tucked at the desk' },
-	{ id: 'sprout', src: sproutImg, x: 7.3, y: 1.15, w: 0.65, h: 0.65, stage: 3, alt: 'Little potted sprout on the desk' },
-	{ id: 'bed', src: bedImg, x: 0.35, y: 1.55, w: 1.35, h: 2.7, stage: 4, alt: 'Proper bed with an orange blanket against the wall' },
-	{ id: 'nightstand', src: nightstandImg, x: 1.75, y: 2, w: 0.9, h: 0.9, stage: 4, alt: 'Small bedside cabinet next to the bed' },
-	{ id: 'blanket', src: blanketImg, x: 0.45, y: 2.9, w: 0.9, h: 0.9, stage: 1, until: 4, alt: 'Folded blanket with a pillow on the floor' },
-	{ id: 'bedroll', src: bedrollImg, x: 1.35, y: 2.95, w: 0.9, h: 0.9, stage: 1, until: 4, alt: 'Rolled-up sleeping mat on the floor' },
-	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 0.9, h: 0.97, stage: 1, alt: 'Simple wooden storage box' },
+	{ id: 'lamp', src: lampImg, x: 9.07, y: 8.32, w: 0.75, h: 0.75, stage: 1, alt: 'Lit candelabra standing on the storage crate' },
+	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.6, h: 1.3, stage: 2, alt: 'Small wooden desk against the wall' },
+	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.3, h: 1.3, stage: 2, alt: 'Wooden chair tucked at the desk' },
+	{ id: 'sprout', src: sproutImg, x: 7.35, y: 1.1, w: 0.75, h: 0.75, stage: 3, alt: 'Little potted sprout on the desk' },
+	{ id: 'bed', src: bedImg, x: 0.35, y: 1.55, w: 1.6, h: 3.2, stage: 4, alt: 'Proper bed with an orange blanket against the wall' },
+	{ id: 'nightstand', src: nightstandImg, x: 2, y: 2, w: 1, h: 1, stage: 4, alt: 'Small bedside cabinet next to the bed' },
+	{ id: 'floorbed', src: floorbedImg, x: 0.45, y: 2.9, w: 2.2, h: 1.1, stage: 1, until: 4, alt: 'Floor bed: a rolled-out blanket over a sleeping mat' },
+	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 1, h: 1.07, stage: 1, alt: 'Simple wooden storage box' },
 	{ id: 'rug-tl', src: rugTl, x: 2, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-t-a', src: rugT, x: 3, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
 	{ id: 'rug-t-b', src: rugT, x: 4, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
