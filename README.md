@@ -17,7 +17,7 @@ A **Stack** has a trigger ("After I make coffee") and a set of micro-habits atta
 - **Streak Tracking** — Per-habit streaks with fire indicators
 - **Last 7 Days** — Bar chart showing daily completion activity
 - **XP & Levels** — Earn XP for every completion, bonus for full stacks and streaks
-- **Achievement Badges** — Unlock milestones as you build consistency
+- **Rewards Room** — A cozy lofi-style pixel room that furnishes itself as you earn XP
 - **Offline-First** — All data stored locally in IndexedDB, works without internet
 - **PWA** — Install on iOS/Android homescreen
 
@@ -65,13 +65,15 @@ For other platforms, install the appropriate SvelteKit adapter (e.g., `@sveltejs
 ```
 src/
 ├── lib/
+│   ├── assets/room/           # CC0 16px room tiles + CREDITS.md
+│   ├── room/
+│   │   ├── layout.ts          # Room furniture layout map (stage-gated)
+│   │   └── room-stage.ts      # XP → stage, day/night + sleepy mood
 │   ├── components/
 │   │   ├── DateNav.svelte      # Date navigation
 │   │   ├── NewStackModal.svelte # Stack creation bottom sheet
-│   │   ├── GardenPlant.svelte  # Deterministic L-system garden plant SVG
-│   │   ├── MachineBuild.svelte # Vintage-radio machine theme SVG
-│   │   ├── GardenHero.svelte   # Rewards garden scene (per-stack plots)
-│   │   └── Toast.svelte         # Toast notifications
+│   │   ├── LofiRoom.svelte    # Rewards lofi-room hero (pixel art)
+│   │   └── Toast.svelte        # Toast notifications
 │   ├── services/
 │   │   ├── db.ts               # IndexedDB offline storage (incl. settings store)
 │   │   └── pwa.ts              # Service worker registration
@@ -83,8 +85,6 @@ src/
 │   │   └── index.ts            # TypeScript type definitions
 │   └── utils/
 │       ├── badges.ts           # Achievement definitions & checks
-│       ├── plant-renderer.ts   # Cozy L-system plant → SVG geometry
-│       ├── plant-growth.ts     # Stack activity → plant stage/progress map
 │       ├── gamification.ts     # XP, levels, streaks
 │       └── helpers.ts          # Date, color, ID utilities
 ├── routes/
@@ -94,7 +94,7 @@ src/
 │   │   ├── +page.svelte        # Stack management
 │   │   └── [id]/+page.svelte  # Individual stack detail
 │   ├── stats/+page.svelte      # Statistics
-│   └── achievements/+page.svelte # Rewards garden + badge gallery
+│   └── achievements/+page.svelte # Rewards lofi-room hero + stage progress
 ├── app.css                     # Global styles + Tailwind
 └── app.html                    # HTML shell
 ```
@@ -110,8 +110,17 @@ src/
 - Level N requires `25 × N × (N+1)` total XP
 - Level 1 = 50 XP, Level 5 = 750 XP, Level 10 = 2,750 XP
 
-### Badges
-20 achievements across 5 categories:
+### Rewards Room
+The rewards page renders one lofi-style cozy room (CC0 pixel tiles) that gains
+furniture with cumulative XP: bare floor at 0 XP → desk (150) → plant & poster
+(400) → proper bed & rug (800) → pet & bookshelves (1,400) → media shelf &
+string lights (2,200). The room follows your local hour (night: lamp glow,
+window rain, film grain; day: bright) and dims sleepily if nothing is
+completed for 3+ days — progress never regresses.
+
+### Badges (data model)
+20 achievement keys across 5 categories still unlock silently from the same
+XP/streak data and are stored in IndexedDB:
 - **Streaks:** 3, 7, 14, 30, 100 day streaks
 - **Completions:** 1, 10, 50, 100, 500, 1000 habits
 - **Stacks:** First stack, 5 stacks, full stack completion
