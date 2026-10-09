@@ -52,12 +52,41 @@ Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
   `bookshelf-2.png` (row 12, col 43), `bookshelf-3.png` (row 12, col 45),
   `shelf-empty.png` (row 13, col 43).
 
+## Kenney Roguelike Characters pack
+
+- Source: direct OGA file fetch (kenney.nl's download links don't scrape):
+  https://opengameart.org/sites/default/files/Roguelike%20Characters%20pack.zip
+- License (verbatim from the pack's `License.txt`):
+
+```
+License (Creative Commons Zero, CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
+
+You may use these assets in personal and commercial projects.
+Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
+```
+
+- Author: Kenney Vleugels (Kenney.nl)
+- Files used (sliced from `Spritesheet/roguelikeChar_transparent.png`,
+  918x203, 16px tiles with a 1px margin between tiles):
+  `char-base.png` (row 0, col 0 — the avatar kit's body/base layer),
+  `char-chest.png` (row 0, col 6 — the orange-shirt torso layer),
+  `char-legs-a.png` (row 1, col 3 — stand legs: together),
+  `char-legs-b.png` (row 1, col 4 — walk legs: apart). The kit is a
+  layered avatar — every layer is authored on the same 16x16 grid, so
+  stacking them reproduces Kenney's own assemblies (see his pack Preview
+  for the explainer). These four build the room's ambient resident
+  (Composed sprites).
+
 ## Composed sprites
 
 `rug.png` (96x80, a 6x5-tile carpet), `bookshelf.png` (48x16, a 3-tile
-shelf strip) and `bed.png` (16x32: `bed-half-head.png` (row 6) stacked
+shelf strip), `bed.png` (16x32: `bed-half-head.png` (row 6) stacked
 above `bed-half-body.png` (row 7) — headboard/pillow on top, blanket
-running to the foot's fold edge) are composed in-repo from the crops listed above by
+running to the foot's fold edge) and `character.png` (16x32 — the ambient
+resident's 2-frame walk sheet: row 0 = stand, row 1 = walk; each frame =
+`char-base` + `char-chest` composited, then that frame's leg strip) are
+composed in-repo from the crops listed above by
 `scripts/compose-room-sprites.py`; the piece crops stay in this directory
 as the composition source and provenance. The bed was first stitched
 inverted (foot above the pillow half), then re-stitched; after user review

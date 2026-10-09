@@ -121,8 +121,11 @@ XP/streak data and are stored in IndexedDB:
 
 ## Rewards Room & Progression
 
-The achievements page renders one lofi-style cozy room from CC0 sprites
-(attribution in `src/lib/assets/room/CREDITS.md`; the wall, baseboard and
+The achievements page renders one lofi-style cozy room with an ambient
+resident who lives in it — by day he works the desk, lounges on the rug or
+watches the windows, after 19:00 he's asleep under a blanket — from CC0
+sprites (attribution in `src/lib/assets/room/CREDITS.md`; the wall,
+baseboard and
 floor shell tiles render as CSS backgrounds — everything else is placed
 sprites, one sprite per object). The 6x5 rug and the 3-tile bookshelf strip
 are composed multi-tile sprites, rebuilt by
@@ -140,6 +143,10 @@ to every placement of that kind.
 - `src/lib/room/placement.ts` — the grid placement engine: footprint rects,
   integer cell coverage, zone bands, collision (stage-aware windows;
   walkable rug sits under furniture) and `canPlace()`.
+- `src/lib/room/character.ts` — the ambient resident: a pure time-state
+  scheduler (activity spots gated by stage and day period; asleep under a
+  blanket at night; walks routed around furniture by BFS on half-tile
+  cells). Each habit completion earns him a little celebratory hop.
 
 This is the groundwork for the planned **unlock & place** feature: a player
 room adds unlocked kinds as placements (`{ id, kindId, x, y, source: 'user' }`)
