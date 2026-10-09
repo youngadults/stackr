@@ -71,6 +71,7 @@ export interface RoomItem {
  */
 export const ROOM_ITEMS: RoomItem[] = [
 	{ id: 'window', src: windowImg, x: 6.95, y: 0.08, w: 0.85, h: 0.85, stage: 1, alt: 'Night window with four dark panes' },
+	{ id: 'window-left', src: windowImg, x: 0.3, y: 0.08, w: 0.85, h: 0.85, stage: 1, alt: 'Night window on the left wall' },
 	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.15, w: 0.8, h: 0.8, stage: 6, alt: 'Media shelf against the wall' },
 	{ id: 'speaker', src: speakerImg, x: 9.05, y: 0.18, w: 0.4, h: 0.4, stage: 6, alt: 'Speaker sitting on the media shelf' },
 	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: 'Bookshelf with colorful book spines' },
