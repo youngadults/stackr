@@ -6,6 +6,8 @@ Writes:
   src/lib/assets/room/rug.png        (96x80,  6x5 tiles)
   src/lib/assets/room/bookshelf.png  (48x16,  3x1 tiles)
   src/lib/assets/room/bed.png        (16x32,  2x1 tiles, head-above-body)
+  src/lib/assets/room/character.png  (16x32,  2-frame walk sheet:
+                                      row 0 = stand, row 1 = walk)
 
 One sprite per object: the renderer places a single <img> per object instead
 of stacking per-tile entries, and the item catalog (src/lib/room/catalog.ts)
@@ -34,6 +36,17 @@ BOOKSHELF_PIECES = [["bookshelf-1", "bookshelf-2", "bookshelf-3"]]
 # bed reads top-half-below-bottom-half (user-reported 2026-10-08).
 BED_PIECES = [["bed-half-head"], ["bed-half-body"]]
 
+# character.png: the ambient room resident, assembled from the layered Kenney
+# avatar kit (Roguelike Characters pack, 2026-10-09): every layer is authored
+# on the same 16x16 grid, so the frame = char-base (skin/body) UNDER
+# char-chest (orange shirt) UNDER nothing else; the two LEGS strips (a =
+# together, b = apart) give stand/walk frames. Two frames stack into the
+# 16x32 2-frame sheet the renderer toggles for the walk cycle.
+CHAR_FRAMES = [
+    ("char-stand", ["char-base", "char-chest", "char-legs-a"]),
+    ("char-walk", ["char-base", "char-chest", "char-legs-b"]),
+]
+
 
 def compose(pieces: list[list[str]], out_name: str) -> None:
     rows = len(pieces)
@@ -49,7 +62,24 @@ def compose(pieces: list[list[str]], out_name: str) -> None:
     print(f"{out_name}: {sheet.size[0]}x{sheet.size[1]}")
 
 
+def compose_overlay(layers: list[str], out_name: str) -> None:
+    """Avatar-kit assembly: alpha-composite the layer pieces at one 16px
+    frame. The kit (Roguelike Characters pack) authors every layer on the
+    same 16x16 grid, so stacking reproduces Kenney's own assemblies."""
+    frame = Image.new("RGBA", (TILE, TILE), (0, 0, 0, 0))
+    for piece in layers:
+        tile = Image.open(ROOM / f"{piece}.png").convert("RGBA")
+        if tile.size != (TILE, TILE):
+            raise SystemExit(f"{piece}.png is {tile.size}, expected ({TILE},{TILE})")
+        frame.alpha_composite(tile)
+    frame.save(ROOM / out_name)
+    print(f"{out_name}: {frame.size[0]}x{frame.size[1]}")
+
+
 if __name__ == "__main__":
     compose(RUG_PIECES, "rug.png")
     compose(BOOKSHELF_PIECES, "bookshelf.png")
     compose(BED_PIECES, "bed.png")
+    for frame_name, layers in CHAR_FRAMES:
+        compose_overlay(layers, f"{frame_name}.png")
+    compose([["char-stand"], ["char-walk"]], "character.png")

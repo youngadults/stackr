@@ -46,7 +46,7 @@
 	</div>
 
 	<!-- Lofi room hero -->
-	<LofiRoom {stage} {mood} />
+	<LofiRoom {stage} {mood} pulse={appState.completions.length} />
 
 	<!-- Stage label -->
 	<p

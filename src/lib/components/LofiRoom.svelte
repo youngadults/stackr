@@ -2,14 +2,18 @@
 	// Lofi room hero — one cozy pixel-art room built from 16px CC0 tiles.
 	// Stage-gated reveals; mood (night/day + sleepy) is pure CSS.
 	import { ROOM_ITEMS, ROOM_GRID, TILE_URLS, LAMP_SPOT, WINDOW_SPOT } from '$lib/room/layout';
+	import characterUrl from '$lib/assets/room/character.png';
+	import { characterState } from '$lib/room/character';
 	import { STAGE_NAMES, type RoomMood, type RoomPeriod } from '$lib/room/room-stage';
 
 	interface Props {
 		stage: number;
 		mood: RoomMood;
+		/** increments when a habit is completed; each increase = one hop */
+		pulse?: number;
 	}
 
-	let { stage, mood }: Props = $props();
+	let { stage, mood, pulse = 0 }: Props = $props();
 
 	const { cols, rows } = ROOM_GRID;
 
@@ -31,6 +35,25 @@
 
 	let hasStringLights = $derived(stage >= 6);
 	let isNight = $derived(mood.period === 'night');
+
+	// ambient resident: pure time-state derived from (stage, mood, wall clock)
+	let charNow = $state(new Date());
+	$effect(() => {
+		const timer = setInterval(() => { charNow = new Date(); }, 4000);
+		return () => clearInterval(timer);
+	});
+	let charState = $derived(characterState(stage, mood, charNow, charNow.toDateString()));
+	// celebration: one hop per completion pulse increase
+	let charHop = $state(false);
+	let lastPulse = $state<number | null>(null);
+	$effect(() => {
+		const p = pulse;
+		if (lastPulse !== null && p > lastPulse) {
+			charHop = true;
+			setTimeout(() => { charHop = false; }, 950);
+		}
+		lastPulse = p;
+	});
 
 	// percent-of-scene geometry helpers (tile units -> fractions of the hero)
 	let pctX = (x: number) => `${((x / cols) * 100).toFixed(4)}%`;
@@ -77,6 +100,23 @@
 				draggable="false"
 			/>
 		{/each}
+
+		<!-- ambient resident after furniture: sheet-sprite row 0 = stand,
+		     row 1 = walk; asleep = hidden, ZZZ marks the pillow zone -->
+		{#if charState.pose === 'sleep'}
+			<div
+				class="lofi-zzz"
+				style="left: {pctX(charState.zzzAt?.x ?? 0)}; top: {pctY(charState.zzzAt?.y ?? 0)};"
+				aria-hidden="true"
+			><span>z</span><span>z</span><span>z</span></div>
+		{:else}
+			<div
+				class="lofi-item lofi-char {charState.pose === 'walk' ? 'lofi-char-walk' : ''} {charHop ? 'lofi-char-hop' : ''}"
+				data-test="lofi-character"
+				style="left: {pctX(charState.x)}; top: {pctY(charState.y)}; width: {pctW(1)}; background-image: url({characterUrl});"
+				aria-hidden="true"
+			></div>
+		{/if}
 
 		<!-- string-light strand, revealed with the media shelf -->
 		{#if hasStringLights}
@@ -165,6 +205,58 @@
 		image-rendering: pixelated;
 		pointer-events: none;
 		user-select: none;
+	}
+	/* ambient resident: avatar kit assembled to the 16x32 2-frame sheet
+	   (row 0 = stand, row 1 = walk); glides between activity spots.
+	   Asleep = sprite hidden; a ZZZ bubble marks the pillow zone. */
+	.lofi-char {
+		aspect-ratio: 1;
+		background-repeat: no-repeat;
+		background-size: 100% 200%;
+		transition:
+			left 0.5s ease-in-out,
+			top 0.5s ease-in-out;
+	}
+	.lofi-char-walk {
+		animation:
+			lofi-char-step 0.5s steps(1, end) infinite,
+			lofi-char-bob 0.5s ease-in-out infinite;
+	}
+	@keyframes lofi-char-step {
+		0%, 100% { background-position: 0 0; }
+		50% { background-position: 0 100%; }
+	}
+	@keyframes lofi-char-bob {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-6%); }
+	}
+	.lofi-char-hop {
+		animation: lofi-char-hop 0.95s cubic-bezier(0.3, 0, 0.2, 1);
+	}
+	@keyframes lofi-char-hop {
+		0% { transform: translateY(0); }
+		25% { transform: translateY(-16%); }
+		50% { transform: translateY(0); }
+		75% { transform: translateY(-9%); }
+		100% { transform: translateY(0); }
+	}
+	.lofi-zzz {
+		position: absolute;
+		display: flex;
+		gap: 0.15rem;
+		color: rgba(255, 236, 190, 0.95);
+		font-family: ui-monospace, monospace;
+		font-size: 0.75rem;
+		line-height: 1;
+		pointer-events: none;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	}
+	.lofi-zzz span { animation: lofi-zzz-float 2.2s ease-in-out infinite; }
+	.lofi-zzz span:nth-child(2) { animation-delay: 0.25s; }
+	.lofi-zzz span:nth-child(3) { animation-delay: 0.5s; }
+	@keyframes lofi-zzz-float {
+		0%, 100% { transform: translateY(0); opacity: 0.35; }
+		50% { transform: translateY(-25%); opacity: 1; }
 	}
 	.lofi-glow {
 		position: absolute;
