@@ -121,11 +121,30 @@ XP/streak data and are stored in IndexedDB:
 
 ## Rewards Room & Progression
 
-The achievements page renders one lofi-style cozy room built from 16px CC0
-tiles (attribution in `src/lib/assets/room/CREDITS.md`; 29 sprites total —
-26 stage-gated furniture sprites placed via `ROOM_ITEMS` in
-`src/lib/room/layout.ts`, plus the wall, baseboard and floor shell tiles
-rendered as CSS backgrounds).
+The achievements page renders one lofi-style cozy room from CC0 sprites
+(attribution in `src/lib/assets/room/CREDITS.md`; the wall, baseboard and
+floor shell tiles render as CSS backgrounds — everything else is placed
+sprites, one sprite per object). The 6x5 rug and the 3-tile bookshelf strip
+are composed multi-tile sprites, rebuilt by
+`scripts/compose-room-sprites.py`, not stacks of tile crops.
+
+The room is driven by three domain modules:
+
+- `src/lib/room/catalog.ts` — item-kind registry: sprite, native pixel size,
+  footprint width (height derives from the sprite aspect), placement zone
+  (`wall` / `floor` / `on-surface`), category, and stack rules. Swapping a
+  sprite or resizing an object is a one-line change here, and it propagates
+to every placement of that kind.
+- `src/lib/room/layout.ts` — `ROOM_PLACEMENTS`, the scripted default room:
+  a kind id + tile position + stage reveal window per placement.
+- `src/lib/room/placement.ts` — the grid placement engine: footprint rects,
+  integer cell coverage, zone bands, collision (stage-aware windows;
+  walkable rug sits under furniture) and `canPlace()`.
+
+This is the groundwork for the planned **unlock & place** feature: a player
+room adds unlocked kinds as placements (`{ id, kindId, x, y, source: 'user' }`)
+whenever `canPlace()` clears the spot — user placements already skip the
+stage gate in the renderer, and the same engine validates them.
 
 Furniture reveals are gated by **cumulative profile XP**, independent of the
 level curve above. The stage is derived only from XP

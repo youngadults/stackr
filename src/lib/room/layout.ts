@@ -2,35 +2,16 @@
 // Coordinates use a 10x10 tile grid inside a 1:1 hero (2x content scale versus
 // the original 20x25 portrait: fewer, bigger tiles, denser composition):
 // wall rows 0-1.5, floor rows 1.5-10.
-// Painter order of ROOM_ITEMS is intentional — later entries render on top.
+// Painter order of ROOM_PLACEMENTS is intentional — later entries render on top.
+// A placement is just a kind reference + position + reveal window: sprite,
+// footprint size and alt text come from the item-kind catalog (catalog.ts),
+// so swapping a sprite or rebalancing a footprint is a one-line catalog change.
+// The scripted layout below validates itself against the placement engine
+// (placement.ts) in layout.test.ts.
+import { footprintH, kindOf } from './catalog';
 import wallTile from '$lib/assets/room/wall.png';
 import wallBaseTile from '$lib/assets/room/wall-base.png';
 import floorTile from '$lib/assets/room/floor.png';
-import windowImg from '$lib/assets/room/window.png';
-import floorbedImg from '$lib/assets/room/floorbed.png';
-import crateImg from '$lib/assets/room/crate.png';
-import lampImg from '$lib/assets/room/lamp.png';
-import deskImg from '$lib/assets/room/desk.png';
-import chairImg from '$lib/assets/room/chair.png';
-import sproutImg from '$lib/assets/room/sprout.png';
-import posterImg from '$lib/assets/room/poster.png';
-import bedImg from '$lib/assets/room/bed.png';
-import nightstandImg from '$lib/assets/room/nightstand.png';
-import rugTl from '$lib/assets/room/rug-tl.png';
-import rugT from '$lib/assets/room/rug-t.png';
-import rugTr from '$lib/assets/room/rug-tr.png';
-import rugL from '$lib/assets/room/rug-l.png';
-import rugC from '$lib/assets/room/rug-c.png';
-import rugR from '$lib/assets/room/rug-r.png';
-import rugBl from '$lib/assets/room/rug-bl.png';
-import rugB from '$lib/assets/room/rug-b.png';
-import rugBr from '$lib/assets/room/rug-br.png';
-import bookshelf1 from '$lib/assets/room/bookshelf-1.png';
-import bookshelf2 from '$lib/assets/room/bookshelf-2.png';
-import bookshelf3 from '$lib/assets/room/bookshelf-3.png';
-import shelfEmpty from '$lib/assets/room/shelf-empty.png';
-import speakerImg from '$lib/assets/room/speaker.png';
-import petImg from '$lib/assets/room/pet.png';
 
 export const ROOM_GRID = { cols: 10, rows: 10, wallRows: 1.5 } as const;
 
@@ -40,81 +21,121 @@ export const TILE_URLS = {
 	floor: floorTile
 } as const;
 
-/** Where the lamp (and its glow) stands — atop the storage crate. */
-export const LAMP_SPOT = { x: 9.45, y: 8.7 } as const;
-
-/** The window (source of the night rain layer), in tile units. */
-export const WINDOW_SPOT = { x: 6.95, y: 0.08, w: 0.85, h: 0.85 } as const;
-
-export interface RoomItem {
+export interface RoomPlacement {
+	/** Unique, stable — DOM data-test ids and future saved-user-rooms key on it. */
 	id: string;
-	src: string;
+	/** Item-kind catalog reference (catalog.ts). */
+	kindId: string;
 	/** left/top in tile units (fractions allowed for on-furniture stacking). */
 	x: number;
 	y: number;
-	/** size in tile units; h must equal the rendered height (native sprite aspect). */
-	w: number;
-	h: number;
-	/** first stage at which the item is revealed */
-	stage: number;
+	/**
+	 * First stage at which the item is revealed. Scripted placements set it;
+	 * the documented user-save contract (`{ id, kindId, x, y, source: 'user' }`)
+	 * omits it — user items skip the gate entirely.
+	 */
+	stage?: number;
 	/** optional last stage at which the item is still visible (exclusive) */
 	until?: number;
-	alt: string;
+	/**
+	 * `'user'` placements are owned by a player room (the future
+	 * unlock-and-place feature) and skip the stage gate — the component shows
+	 * them whenever they are present in the state.
+	 */
+	source?: 'user';
 }
 
 /**
  * Stage-gated reveals (cumulative profile XP):
- * 1 bare (floor bed, crate with lamp, window) -> 2 desk+chair ->
+ * 1 bare (floor bed, crate with lamp, windows) -> 2 desk+chair ->
  * 3 desk sprout+poster -> 4 proper bed+nightstand+rug (retires the floor bed) ->
- * 5 pet+bookshelf -> 6 media shelf+speaker. Rug is a 6x5-piece carpet
- * (30 tiles, ~a third of the floor).
+ * 5 pet+bookshelf -> 6 media shelf+speaker. Rug is a composed 6-tile x 5-tile
+ * sprite (~a third of the floor); bookshelf is a composed 3-tile strip.
  */
-export const ROOM_ITEMS: RoomItem[] = [
-	{ id: 'window', src: windowImg, x: 6.95, y: 0.08, w: 0.85, h: 0.85, stage: 1, alt: 'Night window with four dark panes' },
-	{ id: 'window-left', src: windowImg, x: 0.3, y: 0.08, w: 0.85, h: 0.85, stage: 1, alt: 'Night window on the left wall' },
-	{ id: 'shelf-media', src: shelfEmpty, x: 8.9, y: 0.15, w: 0.8, h: 0.8, stage: 6, alt: 'Media shelf against the wall' },
-	{ id: 'speaker', src: speakerImg, x: 9.05, y: 0.18, w: 0.4, h: 0.4, stage: 6, alt: 'Speaker sitting on the media shelf' },
-	{ id: 'bookshelf-1', src: bookshelf1, x: 4.2, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: 'Bookshelf with colorful book spines' },
-	{ id: 'bookshelf-2', src: bookshelf2, x: 5.05, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
-	{ id: 'bookshelf-3', src: bookshelf3, x: 5.9, y: 0.62, w: 0.85, h: 0.85, stage: 5, alt: '' },
-	{ id: 'poster', src: posterImg, x: 1.25, y: 0.12, w: 0.7, h: 0.7, stage: 3, alt: 'Framed poster on the wall' },
-	{ id: 'lamp', src: lampImg, x: 9.07, y: 8.32, w: 0.75, h: 0.75, stage: 1, alt: 'Lit candelabra standing on the storage crate' },
-	{ id: 'desk', src: deskImg, x: 6.4, y: 1.55, w: 2.6, h: 1.3, stage: 2, alt: 'Small wooden desk against the wall' },
-	{ id: 'chair', src: chairImg, x: 7.25, y: 2.7, w: 1.3, h: 1.3, stage: 2, alt: 'Wooden chair tucked at the desk' },
-	{ id: 'sprout', src: sproutImg, x: 7.35, y: 1.1, w: 0.75, h: 0.75, stage: 3, alt: 'Little potted sprout on the desk' },
-	{ id: 'bed', src: bedImg, x: 0.35, y: 1.55, w: 1.6, h: 3.2, stage: 4, alt: 'Proper bed with an orange blanket against the wall' },
-	{ id: 'nightstand', src: nightstandImg, x: 2, y: 2, w: 1, h: 1, stage: 4, alt: 'Small bedside cabinet next to the bed' },
-	{ id: 'floorbed', src: floorbedImg, x: 0.45, y: 2.9, w: 2.2, h: 1.1, stage: 1, until: 4, alt: 'Floor bed: a rolled-out blanket over a sleeping mat' },
-	{ id: 'crate', src: crateImg, x: 8.95, y: 8.9, w: 1, h: 1.07, stage: 1, alt: 'Simple wooden storage box' },
-	{ id: 'rug-tl', src: rugTl, x: 2, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-t-a', src: rugT, x: 3, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-t-b', src: rugT, x: 4, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-t-c', src: rugT, x: 5, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-t-d', src: rugT, x: 6, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-tr', src: rugTr, x: 7, y: 4.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-l-a', src: rugL, x: 2, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-a', src: rugC, x: 3, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-b', src: rugC, x: 4, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-c', src: rugC, x: 5, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-d', src: rugC, x: 6, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-r-a', src: rugR, x: 7, y: 5.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-l-b', src: rugL, x: 2, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-e', src: rugC, x: 3, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-f', src: rugC, x: 4, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-g', src: rugC, x: 5, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-h', src: rugC, x: 6, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-r-b', src: rugR, x: 7, y: 6.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-l-c', src: rugL, x: 2, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-i', src: rugC, x: 3, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-j', src: rugC, x: 4, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-k', src: rugC, x: 5, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-c-l', src: rugC, x: 6, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-r-c', src: rugR, x: 7, y: 7.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-bl', src: rugBl, x: 2, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-b-a', src: rugB, x: 3, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-b-b', src: rugB, x: 4, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-b-c', src: rugB, x: 5, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-b-d', src: rugB, x: 6, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'rug-br', src: rugBr, x: 7, y: 8.75, w: 1, h: 1, stage: 4, alt: '' },
-	{ id: 'pet', src: petImg, x: 4.55, y: 6.85, w: 0.9, h: 0.9, stage: 5, alt: 'Pet pig napping on the rug' }
+export const ROOM_PLACEMENTS: RoomPlacement[] = [
+	{ id: 'window', kindId: 'window', x: 6.95, y: 0.08, stage: 1 },
+	{ id: 'window-left', kindId: 'window', x: 0.3, y: 0.08, stage: 1 },
+	{ id: 'shelf-media', kindId: 'shelf-media', x: 8.9, y: 0.15, stage: 6 },
+	{ id: 'speaker', kindId: 'speaker', x: 9.05, y: 0.18, stage: 6 },
+	{ id: 'bookshelf', kindId: 'bookshelf', x: 4.2, y: 0.62, stage: 5 },
+	{ id: 'poster', kindId: 'poster', x: 1.25, y: 0.12, stage: 3 },
+	{ id: 'lamp', kindId: 'lamp', x: 9.07, y: 8.32, stage: 1 },
+	{ id: 'desk', kindId: 'desk', x: 6.4, y: 1.55, stage: 2 },
+	{ id: 'chair', kindId: 'chair', x: 7.25, y: 2.7, stage: 2 },
+	{ id: 'sprout', kindId: 'sprout', x: 7.35, y: 1.1, stage: 3 },
+	{ id: 'bed', kindId: 'bed', x: 0.35, y: 1.55, stage: 4 },
+	{ id: 'nightstand', kindId: 'nightstand', x: 2, y: 2, stage: 4 },
+	{ id: 'floorbed', kindId: 'floorbed', x: 0.45, y: 2.9, stage: 1, until: 4 },
+	{ id: 'crate', kindId: 'crate', x: 8.95, y: 8.9, stage: 1 },
+	{ id: 'rug', kindId: 'rug', x: 2, y: 4.75, stage: 4 },
+	{ id: 'pet', kindId: 'pet', x: 4.55, y: 6.85, stage: 5 }
 ];
+
+export interface RoomItem {
+	id: string;
+	kindId: string;
+	src: string;
+	/** left/top in tile units. */
+	x: number;
+	y: number;
+	/** size in tile units; h derives from the native sprite aspect (see catalog). */
+	w: number;
+	h: number;
+	/** first stage at which the item is revealed (undefined for user items) */
+	stage?: number;
+	/** optional last stage at which the item is still visible (exclusive) */
+	until?: number;
+	/** `'user'` placements skip the stage gate in the component. */
+	source?: 'user';
+	alt: string;
+}
+
+/** Resolve a placement against its kind: sprite src, size and alt text. */
+export function resolveItem(p: RoomPlacement): RoomItem {
+	const kind = kindOf(p.kindId);
+	return {
+		id: p.id,
+		kindId: kind.id,
+		src: kind.sprite,
+		x: p.x,
+		y: p.y,
+		w: kind.footprintW,
+		h: footprintH(kind),
+		stage: p.stage,
+		until: p.until,
+		source: p.source,
+		alt: kind.alt
+	};
+}
+
+/** Render-ready items in painter order — what LofiRoom.svelte draws. */
+export const ROOM_ITEMS: RoomItem[] = ROOM_PLACEMENTS.map(resolveItem);
+
+function placementById(id: string): RoomPlacement {
+	const p = ROOM_PLACEMENTS.find((item) => item.id === id);
+	if (!p) throw new Error(`No room placement with id: ${id}`);
+	return p;
+}
+
+/**
+ * Derived anchors, raw floats — consumers round at the CSS boundary (the
+ * component formats every position to 4 decimal places of the scene).
+ */
+function centerOf(id: string): { x: number; y: number } {
+	const p = placementById(id);
+	const kind = kindOf(p.kindId);
+	return { x: p.x + kind.footprintW / 2, y: p.y + footprintH(kind) / 2 };
+}
+
+/** Rect of a placement: raw floats; consumers round at the CSS boundary. */
+function rectOfId(id: string): { x: number; y: number; w: number; h: number } {
+	const p = placementById(id);
+	const kind = kindOf(p.kindId);
+	return { x: p.x, y: p.y, w: kind.footprintW, h: footprintH(kind) };
+}
+
+/** Where the lamp (and its glow) stands — derived from the `lamp` placement. */
+export const LAMP_SPOT = centerOf('lamp');
+
+/** The window (source of the night rain layer) — derived from the `window` placement. */
+export const WINDOW_SPOT = rectOfId('window');
