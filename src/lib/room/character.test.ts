@@ -99,11 +99,10 @@ describe('walkPath — routes around furniture', () => {
 	it('never crosses a furniture footprint (bed rect at stage 4)', () => {
 		// bed spans 0.35-1.95 x 1.55-4.75; route from left of it to below it
 		const path = walkPath({ x: 0.05, y: 5 }, { x: 0.05, y: 2 }, 4);
-		if (path) {
-			for (const c of path) {
-				const insideBed = c.x > 0.34 && c.x < 1.96 && c.y > 1.54 && c.y < 4.76;
-				expect(insideBed).toBe(false);
-			}
+		expect(path).not.toBeNull();
+		for (const c of path!) {
+			const insideBed = c.x > 0.34 && c.x < 1.96 && c.y > 1.54 && c.y < 4.76;
+			expect(insideBed).toBe(false);
 		}
 	});
 
@@ -142,6 +141,20 @@ describe('sleep spots', () => {
 		for (const stage of [1, 2, 3, 4, 5, 6]) {
 			const s = sleepSpotForStage(stage);
 			expect(s.period).toBe('night');
+		}
+	});
+});
+
+describe('walk window', () => {
+	it('walk pose ends on arrival — no in-place striding', { timeout: 20000 }, () => {
+		// 19s into a 20s walk window: every real route (tens of half-cells at
+		// most in a 10x10 room) has finished, so he must already be standing.
+		// Regression pin for the walk-pose-held-at-destination bug.
+		for (const stage of [1, 2, 3, 4, 5, 6]) {
+			for (let minute = 0; minute < 1440; minute += 1) {
+				const s = characterState(stage, mood('day'), new Date(2026, 9, 9, 12, minute, 19));
+				expect(s.pose).toBe('stand');
+			}
 		}
 	});
 });

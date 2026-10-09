@@ -42,8 +42,8 @@ interface Spot {
 /**
  * His schedule's places, hand-measured on the 10x10 grid against the shipped
  * furniture footprints (layout.ts): desk 6.4-9.0 x 1.55-2.85 (chair at
- * 7.25,2.7 tucked under), rug 2-8.4 x 4.75-10 with the pet at 4.55,6.85 from
- * stage 5, crate at 8.95,8.9, floor bed 0.45-2.45 x 2.9-3.9 (stage 1-3),
+ * 7.25,2.7 tucked under), rug 2-8.0 x 4.75-9.75 with the pet at 4.55,6.85
+ * from stage 5, crate at 8.95,8.9, floor bed 0.45-2.65 x 2.9-4.0 (stage 1-3),
  * bed 0.35-1.95 x 1.55-4.75 (stage 4+).
  */
 export const SPOTS: Spot[] = [
@@ -210,8 +210,13 @@ export function characterState(stage: number, mood: RoomMood, now: Date, seed = 
 		const seq = [...route, { x: spot.x, y: spot.y }];
 		if (route.length > 0) {
 			const idx = Math.min(Math.floor(slotAgeSec / STEP_SECONDS), seq.length - 1);
-			const cell = seq[idx] ?? seq[seq.length - 1];
-			return { x: cell.x, y: cell.y, pose: 'walk', activity: 'on the move' };
+			if (idx < seq.length - 1) {
+				// mid-trek: hop along the route; the tail step glides in and he
+				// settles below, so walk never renders while standing still
+				const cell = seq[idx];
+				return { x: cell.x, y: cell.y, pose: 'walk', activity: 'on the move' };
+			}
+			// route finished for this slot — fall through and stand at the spot
 		}
 	}
 
